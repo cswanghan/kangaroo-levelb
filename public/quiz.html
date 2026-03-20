@@ -479,6 +479,19 @@
     </div>
 </div>
 
+<!-- Generic confirm modal -->
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal-box">
+        <div class="modal-icon" id="confirmIcon">⚠️</div>
+        <h3 id="confirmTitle">确认</h3>
+        <p id="confirmMsg">确定要执行此操作吗？</p>
+        <div class="modal-actions">
+            <button class="btn btn-outline" onclick="closeConfirmModal()">取消</button>
+            <button class="btn btn-primary" id="confirmOkBtn" onclick="">确定</button>
+        </div>
+    </div>
+</div>
+
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
     <img id="lightboxImg" alt="题目大图">
@@ -576,6 +589,21 @@
     function closeStartModal() {
         document.getElementById('startModal').classList.remove('open');
         pendingYear = null; pendingData = null;
+    }
+
+    // Generic confirm modal
+    let confirmCallback = null;
+    function showConfirmModal(icon, title, msg, onConfirm) {
+        document.getElementById('confirmIcon').textContent = icon;
+        document.getElementById('confirmTitle').textContent = title;
+        document.getElementById('confirmMsg').textContent = msg;
+        confirmCallback = onConfirm;
+        document.getElementById('confirmOkBtn').onclick = () => { closeConfirmModal(); if (confirmCallback) confirmCallback(); };
+        document.getElementById('confirmModal').classList.add('open');
+    }
+    function closeConfirmModal() {
+        document.getElementById('confirmModal').classList.remove('open');
+        confirmCallback = null;
     }
 
     function confirmStart() {
@@ -776,8 +804,13 @@
         if (quizSubmitted) return;
         const unanswered = questions.filter(q => !userAnswers[q.number]);
         if (unanswered.length > 0) {
-            if (!confirm(`还有 ${unanswered.length} 题未作答（未答题不加不扣分），确认提交？`)) return;
+            showConfirmModal('📝', '确认提交？', `还有 ${unanswered.length} 题未作答（未答题不加不扣分）。`, doSubmitQuiz);
+            return;
         }
+        doSubmitQuiz();
+    }
+    function doSubmitQuiz() {
+        if (quizSubmitted) return;
         quizSubmitted = true;
         stopTimer();
         currentIndex = 0;
@@ -868,8 +901,12 @@
     function goHome() {
         // 做题中（未提交）弹窗确认
         if (!quizSubmitted && quizStartTime && document.getElementById('quizPage').style.display === 'flex') {
-            if (!confirm('做题尚未完成，确定要退出吗？当前进度不会保存。')) return;
+            showConfirmModal('🚪', '确定退出？', '做题尚未完成，当前进度不会保存。', doGoHome);
+            return;
         }
+        doGoHome();
+    }
+    function doGoHome() {
         stopTimer();
         document.getElementById('homePage').style.display = 'block';
         document.getElementById('quizPage').style.display = 'none';
