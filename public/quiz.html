@@ -417,8 +417,11 @@
         document.getElementById('options').innerHTML = ['A','B','C','D','E'].map(o => {
             let c = 'option', d = answered ? 'disabled' : '';
             if (answered) {
-                if (o === userAnswers[q.number]) c += o === q.answer ? ' correct' : ' wrong';
-                if (o === q.answer) c += ' correct';
+                if (o === userAnswers[q.number]) {
+                    c += o === q.answer ? ' correct selected' : ' wrong selected';
+                } else if (o === q.answer) {
+                    c += ' correct';
+                }
             }
             return `<div class="${c} ${d}" onclick="selectOption('${o}')">
                 <div class="opt-check"></div>
