@@ -5,176 +5,146 @@
     {
       "number": 1,
       "points": 3,
-      "question": "Which square is cut into 2 different shapes?\n请问哪个正方形被划分为两个不同的形状?",
-      "options": ["(A)", "(B)", "(C)", "(D)", "(E)"],
       "answer": "A",
-      "hasImage": true
+      "image": "q1.png"
     },
     {
       "number": 2,
       "points": 3,
-      "question": "What is the smallest number of ladders the firefighter must use to reach the fire without jumping?\n在不跳跃的情况下，消防员最少要用多少把梯子才能去救火?",
-      "options": ["4", "5", "6", "7", "8"],
-      "answer": "C"
+      "answer": "C",
+      "image": "q2.png"
     },
     {
       "number": 3,
       "points": 3,
-      "question": "The table consists of 28 white cells. Ira paints 2 rows and 1 column. A row is from left to right. A column is from top to bottom. How many cells will remain white?\n小艾为其中 2 行和 1 列方格涂色。请问最后还剩多少个白色方格?",
-      "options": ["8", "10", "12", "14", "17"],
-      "answer": "C"
+      "answer": "C",
+      "image": "q3.png"
     },
     {
       "number": 4,
       "points": 3,
-      "question": "Soccer players numbered 1 to 11 stand in a circle. Each player kicks the ball to the third player on their left. Player 1 starts. This kicking pattern continues until a player has the ball for the second time. What is the number of the player who kicked the ball last?\n编号为 1 到 11 的足球运动员站成一个圆圈...请问最后一名踢球的是几号球员?",
-      "options": ["7", "8", "9", "10", "11"],
-      "answer": "C"
+      "answer": "C",
+      "image": "q4.png"
     },
     {
       "number": 5,
       "points": 3,
-      "question": "Mohammad wrote 3 consecutive 4-digit numbers in a row. His sister erased some digits. What are the missing digits (from left to right)?\n4897, 4898, 4899\n小莫将 3 个连续的四位数写成一行...请问哪些数字被擦掉了?",
-      "options": ["389, 3, 99", "489, 3, 96", "489, 4, 98", "489, 4, 99", "488, 4, 99"],
-      "answer": "D"
+      "answer": "D",
+      "image": "q5.png"
     },
     {
       "number": 6,
       "points": 3,
-      "question": "Lizzy pays 7 dollars for 3 items. The cost of each item is different and is a whole number. How much is the most expensive item?\n小李花 7 美元买了 3 件物品。每件物品价格不同...请问最贵的物品价格是多少?",
-      "options": ["2 dollars", "3 dollars", "4 dollars", "5 dollars", "6 dollars"],
-      "answer": "C"
+      "answer": "C",
+      "image": "q6.png"
     },
     {
       "number": 7,
       "points": 3,
-      "question": "A cat knocks off 1 block from Felix's construction. What could this construction have looked like before the block was knocked off?\n小菲用积木搭建出一个形状，一只小猫撞掉了其中一块积木...请问在这块积木被撞掉前可能是什么形状?",
-      "options": ["(A)", "(B)", "(C)", "(D)", "(E)"],
       "answer": "E",
-      "hasImage": true
+      "image": "q7.png"
     },
     {
       "number": 8,
       "points": 3,
-      "question": "Alex has a Kangaroo poster on the kitchen wall. 2024\nHow many grey tiles are there behind the poster?\n小亚在厨房的墙上贴了一张袋鼠海报...请问海报后面有多少块灰色瓷砖?",
-      "options": ["15", "21", "25", "30", "35"],
-      "answer": "B"
+      "answer": "B",
+      "image": "q8.png"
     },
     {
       "number": 9,
       "points": 4,
-      "question": "Antonia and Lucian toss a coin. If the child sees the purple side, the child advances 3 steps. If the child sees the green side, the child goes back 1 step or stays at the starting position. Both started in front of number 1 and each tossed the coin 4 times. Antonia advanced to number 4 and Lucian advanced to number 8. How many times in total did they see the green side of the coin?\n小安和小卢在掷硬币...请问他们一共有几次掷出硬币绿色的一面?",
-      "options": ["1", "2", "3", "4", "5"],
-      "answer": "C"
+      "answer": "C",
+      "image": "q9.png"
     },
     {
       "number": 10,
       "points": 4,
-      "question": "There are five different kinds of fruit in a bowl. Ann likes ●, Ben likes ▲, Cam likes ■, Dan likes ◆, Eli likes ★. Everyone gets a fruit they like. Everyone gets a different kind of fruit. What does Ben get?\n小安喜欢●, 小卡喜欢■, 小丹喜欢◆, 小伊喜欢★, 小本喜欢▲...请问小本得到了什么水果?",
-      "options": ["●", "▲", "■", "◆", "★"],
       "answer": "A",
-      "hasImage": true
+      "image": "q10.png"
     },
     {
       "number": 11,
       "points": 4,
-      "question": "Ada has built a tower of 8 discs. Ada removes the second disc from the bottom, then the third, then the fourth, then the fifth. Which tower does Ada end up with?\n小艾用 8 个圆盘建了一座塔...请问下列哪项是小艾最终得到的塔?",
-      "options": ["(A)", "(B)", "(C)", "(D)", "(E)"],
       "answer": "D",
-      "hasImage": true
+      "image": "q11.png"
     },
     {
       "number": 12,
       "points": 4,
-      "question": "Peter the penguin goes fishing every day and brings back 9 fish for his 2 chicks. Each day, he gives 5 fish to the first chick he sees and 4 fish to the second chick. Over the last few days, 1 chick has eaten 26 fish. How many fish has the other chick eaten?\n企鹅小皮每天都去钓鱼...请问另一只小企鹅吃了多少条鱼?",
-      "options": ["19", "22", "25", "28", "31"],
-      "answer": "D"
+      "answer": "D",
+      "image": "q12.png"
     },
     {
       "number": 13,
       "points": 4,
-      "question": "7 cards, numbered 1 to 7, are placed in 4 overlapping rings. The sum of the numbers in each ring is 10. Which number is under the question mark?\n将 7 张分别写有数字 1-7 的卡片放在 4 个依次相交的圆环中...请问问号下面是哪个数字?",
-      "options": ["1", "2", "4", "5", "7"],
       "answer": "A",
-      "hasImage": true
+      "image": "q13.png"
     },
     {
       "number": 14,
       "points": 4,
-      "question": "Lucas wants to make a caterpillar that has a head, a tail and either 1, 2 or 3 puzzle pieces in between. How many different caterpillars can Lucas make without flipping pieces?\n小卢想拼接一条有头有尾的毛毛虫...请问可以拼接几条不同的毛毛虫?",
-      "options": ["3", "4", "5", "6", "7"],
-      "answer": "D"
+      "answer": "D",
+      "image": "q14.png"
     },
     {
       "number": 15,
       "points": 4,
-      "question": "John writes the numbers 1 to 4 on a sheet. Then he flips the sheet and writes the numbers 5 to 8. After that, he cuts the sheet into 4 rectangular cards and puts them in a row: ? 5 ? 6\nWhat is the sum of the numbers represented by the question marks?\n请问图中问号所代表的数字之和是多少?",
-      "options": ["3", "4", "5", "6", "7"],
-      "answer": "B"
+      "answer": "B",
+      "image": "q15.png"
     },
     {
       "number": 16,
       "points": 4,
-      "question": "A floor is covered with 2 kinds of tile. The rectangles have size 23 cm × 11 cm. The picture shows a part of the floor. What is the side-length of the square tiles?\n长方形瓷砖的尺寸是 23 cm × 11 cm...请问正方形瓷砖的边长是多少?",
-      "options": ["3 cm", "4 cm", "5 cm", "6 cm", "7 cm"],
-      "answer": "D"
+      "answer": "D",
+      "image": "q16.png"
     },
     {
       "number": 17,
       "points": 5,
-      "question": "A student has 3 cards with numbers on them. Their sum is 782. Unfortunately, a worm ate part of each card. What is the sum of the 3 missing digits?\n卡片上的数字之和是 782...请问被吃掉的 3 个数字之和是多少?",
-      "options": ["8", "9", "10", "11", "12"],
-      "answer": "D"
+      "answer": "D",
+      "image": "q17.png"
     },
     {
       "number": 18,
       "points": 5,
-      "question": "Lucy weighs some blocks. 200g, 100g, 240g. How much do the 3 different blocks weigh together?\n小露给一些积木称重...请问这 3 种不同的积木一共有多重?",
-      "options": ["270 g", "280 g", "290 g", "300 g", "310 g"],
-      "answer": "A"
+      "answer": "A",
+      "image": "q18.png"
     },
     {
       "number": 19,
       "points": 5,
-      "question": "There are 60 pupils on a trip. When they line up, the colours of their reflective vests follow the pattern: yellow, green, yellow, green... The colours of their backpacks follow: red, brown, orange, red, brown, orange... How many pupils with a yellow reflective vest also have an orange backpack?\n有 60 名小学生去旅行...请问有多少名小学生穿着黄色反光背心并且背着橙色书包?",
-      "options": ["3", "4", "6", "8", "10"],
-      "answer": "E"
+      "answer": "E",
+      "image": "q19.png"
     },
     {
       "number": 20,
       "points": 5,
-      "question": "In the following calculations, the same digits are hidden under the same figures. Different digits are hidden under different figures. ⭐ × ⭐ + ⭐ × ⭐ = ⭐⭐, ⭐ + ⭐⭐ = ⭐⭐, ⭐ × ⭐ × ⭐ = ?\n相同图形代表相同的一位数...请问 ⭐ × ⭐ × ⭐ 的值是多少?",
-      "options": ["0", "15", "18", "28", "30"],
-      "answer": "D"
+      "answer": "D",
+      "image": "q20.png"
     },
     {
       "number": 21,
       "points": 5,
-      "question": "There are exactly 2 frogs in each row and each column. The frogs decide that 2 of them will jump to a neighbouring empty cell at the same time. After that, there still are exactly 2 frogs in each row and in each column. In how many ways can the frogs do this?\n下方每行每列都恰好有两只青蛙...请问这些青蛙有几种跳跃方式?",
-      "options": ["1", "2", "3", "4", "5"],
-      "answer": "D"
+      "answer": "D",
+      "image": "q21.png"
     },
     {
       "number": 22,
       "points": 5,
-      "question": "The figure below shows a beehive with 9 cells. There is honey in some cells. The number in each cell shows how many neighbouring cells contain honey. How many cells contain honey?\n蜂巢中有多少个巢穴含有蜂蜜?",
-      "options": ["4", "5", "6", "7", "8"],
-      "answer": "D"
+      "answer": "D",
+      "image": "q22.png"
     },
     {
       "number": 23,
       "points": 5,
-      "question": "3 girls go to the tray one after the other and take some cookies. One girl takes all the hearts, another takes all the white cookies, another takes all the large cookies. One takes 3 cookies, one takes 6 cookies and one takes 7 cookies. Which of the following sets of cookies does one of these girls take?\n3 个女孩相继走到托盘前拿走一些饼干...请问以下哪组饼干是其中一个女孩拿走的?",
-      "options": ["(A)", "(B)", "(C)", "(D)", "(E)"],
       "answer": "A",
-      "hasImage": true
+      "image": "q23.png"
     },
     {
       "number": 24,
       "points": 5,
-      "question": "There are 2 types of blocks: white and red. A small cube can be made of 4 white blocks or of 1 white and 1 red block. The large cube is made of small cubes. What is the smallest number of white blocks needed to make the large cube?\n最少需要几块白色积木才能搭成这个大立方体?",
-      "options": ["8", "11", "13", "14", "23"],
-      "answer": "D"
+      "answer": "D",
+      "image": "q24.png"
     }
   ]
 }

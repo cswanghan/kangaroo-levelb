@@ -10,26 +10,26 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         :root {
             --primary: #667eea;
             --success: #10b981;
             --error: #ef4444;
             --bg: #f5f7fa;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg);
             min-height: 100vh;
             padding: 15px;
         }
-        
+
         .container {
             max-width: 700px;
             margin: 0 auto;
         }
-        
+
         /* Home Page */
         .home-header {
             text-align: center;
@@ -39,18 +39,18 @@
             border-radius: 20px;
             margin-bottom: 30px;
         }
-        
+
         .home-header h1 {
             font-size: 2rem;
             margin-bottom: 10px;
         }
-        
+
         .year-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 15px;
         }
-        
+
         .year-card {
             background: white;
             padding: 30px 20px;
@@ -60,18 +60,24 @@
             color: #333;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: transform 0.3s;
+            cursor: pointer;
         }
-        
+
         .year-card:hover {
             transform: translateY(-5px);
         }
-        
+
         .year-card .year {
             font-size: 2rem;
             font-weight: bold;
             color: var(--primary);
         }
-        
+
+        .year-card .count {
+            color: #666;
+            margin-top: 5px;
+        }
+
         /* Quiz Header */
         .quiz-header {
             background: white;
@@ -85,28 +91,28 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-        
+
         .quiz-title {
             font-size: 1.2rem;
             color: #333;
         }
-        
+
         .quiz-stats {
             display: flex;
             gap: 15px;
         }
-        
+
         .stat-value {
             font-size: 1.3rem;
             font-weight: bold;
             color: var(--primary);
         }
-        
+
         .stat-label {
             font-size: 0.7rem;
             color: #666;
         }
-        
+
         /* Progress */
         .progress-bar {
             height: 6px;
@@ -115,13 +121,13 @@
             margin-bottom: 15px;
             overflow: hidden;
         }
-        
+
         .progress-fill {
             height: 100%;
             background: var(--primary);
             transition: width 0.3s;
         }
-        
+
         /* Question Card */
         .question-card {
             background: white;
@@ -130,14 +136,14 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             margin-bottom: 15px;
         }
-        
+
         .question-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
-        
+
         .question-badge {
             background: var(--primary);
             color: white;
@@ -146,25 +152,25 @@
             font-weight: bold;
             font-size: 1.1rem;
         }
-        
+
         .question-points {
             color: #666;
             font-size: 0.9rem;
         }
-        
+
         .question-image {
             width: 100%;
             border-radius: 12px;
             margin-bottom: 20px;
             border: 2px solid #eee;
         }
-        
+
         /* Options */
         .options {
             display: grid;
             gap: 12px;
         }
-        
+
         .option {
             padding: 15px 20px;
             border: 2px solid #e5e7eb;
@@ -175,32 +181,32 @@
             align-items: center;
             gap: 15px;
         }
-        
+
         .option:hover:not(.disabled) {
             border-color: var(--primary);
             background: #f0f4ff;
         }
-        
+
         .option.selected {
             border-color: var(--primary);
             background: #e0e7ff;
         }
-        
+
         .option.correct {
             border-color: var(--success);
             background: #d1fae5;
         }
-        
+
         .option.wrong {
             border-color: var(--error);
             background: #fee2e2;
         }
-        
+
         .option.disabled {
             cursor: default;
             opacity: 0.7;
         }
-        
+
         .option-letter {
             width: 36px;
             height: 36px;
@@ -213,26 +219,26 @@
             font-size: 1.1rem;
             flex-shrink: 0;
         }
-        
+
         .option.selected .option-letter {
             background: var(--primary);
             color: white;
         }
-        
+
         .option.correct .option-letter {
             background: var(--success);
             color: white;
         }
-        
+
         .option.wrong .option-letter {
             background: var(--error);
             color: white;
         }
-        
+
         .option-text {
             font-size: 1rem;
         }
-        
+
         /* Feedback */
         .feedback {
             margin-top: 15px;
@@ -241,27 +247,27 @@
             display: none;
             font-weight: 500;
         }
-        
+
         .feedback.show {
             display: block;
         }
-        
+
         .feedback.correct {
             background: #d1fae5;
             color: #065f46;
         }
-        
+
         .feedback.wrong {
             background: #fee2e2;
             color: #991b1b;
         }
-        
+
         /* Buttons */
         .nav-buttons {
             display: flex;
             gap: 15px;
         }
-        
+
         .btn {
             flex: 1;
             padding: 14px 20px;
@@ -272,32 +278,32 @@
             font-weight: 500;
             transition: all 0.2s;
         }
-        
+
         .btn-primary {
             background: var(--primary);
             color: white;
         }
-        
+
         .btn-primary:hover {
             background: #5568d3;
         }
-        
+
         .btn-primary:disabled {
             background: #ccc;
             cursor: not-allowed;
         }
-        
+
         .btn-outline {
             background: transparent;
             border: 2px solid var(--primary);
             color: var(--primary);
         }
-        
+
         .btn-outline:hover {
             background: var(--primary);
             color: white;
         }
-        
+
         /* Results */
         .results-card {
             background: white;
@@ -306,18 +312,18 @@
             text-align: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        
+
         .results-score {
             font-size: 4rem;
             font-weight: bold;
             color: var(--primary);
         }
-        
+
         .results-detail {
             color: #666;
             margin: 15px 0 30px;
         }
-        
+
         .results-grade {
             padding: 15px 30px;
             border-radius: 12px;
@@ -325,25 +331,32 @@
             margin-bottom: 30px;
             font-size: 1.3rem;
         }
-        
+
         .grade-a { background: #d1fae5; color: #065f46; }
         .grade-b { background: #dbeafe; color: #1e40af; }
         .grade-c { background: #fef3c7; color: #92400e; }
         .grade-d { background: #fee2e2; color: #991b1b; }
-        
+
         .results-actions {
             display: flex;
             gap: 15px;
             justify-content: center;
         }
-        
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
         /* Responsive */
         @media (max-width: 600px) {
             .quiz-header {
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .nav-buttons {
                 flex-direction: column;
             }
@@ -358,18 +371,15 @@
                 <h1>🦘 袋鼠数学 Level B</h1>
                 <p>交互式做题系统</p>
             </div>
-            <div class="year-grid">
-                <a href="javascript:startQuiz(2024)" class="year-card">
-                    <div class="year">2024</div>
-                    <div>24 道题</div>
-                </a>
+            <div class="year-grid" id="yearGrid">
+                <div class="loading">加载中...</div>
             </div>
         </div>
-        
+
         <!-- Quiz Page -->
         <div id="quizPage" style="display: none;">
             <div class="quiz-header">
-                <div class="quiz-title">2024年真题</div>
+                <div class="quiz-title" id="quizTitle">真题</div>
                 <div class="quiz-stats">
                     <div>
                         <div class="stat-value" id="currentQ">1</div>
@@ -385,23 +395,23 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
-            
+
             <div class="question-card">
                 <div class="question-header">
                     <div class="question-badge" id="questionBadge">第 1 题</div>
                     <div class="question-points" id="questionPoints">3 分</div>
                 </div>
-                
-                <img class="question-image" id="questionImage" src="images/page-01.png" alt="题目图片">
-                
+
+                <img class="question-image" id="questionImage" alt="题目图片">
+
                 <div class="options" id="options"></div>
-                
+
                 <div class="feedback" id="feedback"></div>
-                
+
                 <div class="nav-buttons" style="margin-top: 20px;">
                     <button class="btn btn-outline" id="prevBtn" onclick="prevQuestion()">← 上一题</button>
                     <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()">提交答案</button>
@@ -409,7 +419,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Results Page -->
         <div id="resultsPage" style="display: none;">
             <div class="results-card">
@@ -426,89 +436,87 @@
     </div>
 
     <script>
+        let currentYear = null;
+        let questions = [];
         let currentIndex = 0;
         let userAnswers = {};
         let correctCount = 0;
-        
-        // Question data: which page each question is on
-        const questions = [
-            { number: 1, points: 3, page: 1, answer: 'A' },
-            { number: 2, points: 3, page: 1, answer: 'C' },
-            { number: 3, points: 3, page: 2, answer: 'C' },
-            { number: 4, points: 3, page: 2, answer: 'C' },
-            { number: 5, points: 3, page: 3, answer: 'D' },
-            { number: 6, points: 3, page: 3, answer: 'C' },
-            { number: 7, points: 3, page: 4, answer: 'E' },
-            { number: 8, points: 3, page: 4, answer: 'B' },
-            { number: 9, points: 4, page: 5, answer: 'C' },
-            { number: 10, points: 4, page: 5, answer: 'A' },
-            { number: 11, points: 4, page: 6, answer: 'D' },
-            { number: 12, points: 4, page: 6, answer: 'D' },
-            { number: 13, points: 4, page: 7, answer: 'A' },
-            { number: 14, points: 4, page: 7, answer: 'D' },
-            { number: 15, points: 4, page: 8, answer: 'B' },
-            { number: 16, points: 4, page: 8, answer: 'D' },
-            { number: 17, points: 5, page: 9, answer: 'D' },
-            { number: 18, points: 5, page: 9, answer: 'A' },
-            { number: 19, points: 5, page: 10, answer: 'E' },
-            { number: 20, points: 5, page: 10, answer: 'D' },
-            { number: 21, points: 5, page: 11, answer: 'D' },
-            { number: 22, points: 5, page: 11, answer: 'D' },
-            { number: 23, points: 5, page: 12, answer: 'A' },
-            { number: 24, points: 5, page: 12, answer: 'D' }
-        ];
-        
-        // Render home
-        function renderHome() {
-            document.getElementById('homePage').style.display = 'block';
-            document.getElementById('quizPage').style.display = 'none';
-            document.getElementById('resultsPage').style.display = 'none';
+
+        // Load year index and render home page
+        async function init() {
+            try {
+                const resp = await fetch('data/index.json');
+                const data = await resp.json();
+                renderYearGrid(data.years);
+            } catch (e) {
+                document.getElementById('yearGrid').innerHTML = '<div class="loading">加载失败</div>';
+            }
         }
-        
-        // Start quiz
-        function startQuiz() {
-            currentIndex = 0;
-            userAnswers = {};
-            correctCount = 0;
-            
-            document.getElementById('homePage').style.display = 'none';
-            document.getElementById('quizPage').style.display = 'block';
-            document.getElementById('resultsPage').style.display = 'none';
-            
-            renderQuestion();
+
+        function renderYearGrid(years) {
+            const grid = document.getElementById('yearGrid');
+            grid.innerHTML = years.map(y => `
+                <div class="year-card" onclick="startQuiz(${y.year})">
+                    <div class="year">${y.year}</div>
+                    <div class="count">${y.totalQuestions} 道题</div>
+                </div>
+            `).join('');
         }
-        
+
+        // Start quiz for a specific year
+        async function startQuiz(year) {
+            try {
+                const resp = await fetch(`data/${year}.json`);
+                const data = await resp.json();
+
+                currentYear = year;
+                questions = data.questions;
+                currentIndex = 0;
+                userAnswers = {};
+                correctCount = 0;
+
+                document.getElementById('homePage').style.display = 'none';
+                document.getElementById('quizPage').style.display = 'block';
+                document.getElementById('resultsPage').style.display = 'none';
+                document.getElementById('quizTitle').textContent = `${year}年真题`;
+
+                renderQuestion();
+            } catch (e) {
+                alert('加载题目失败');
+            }
+        }
+
         // Render current question
         function renderQuestion() {
             const q = questions[currentIndex];
             const answered = userAnswers[q.number] !== undefined;
-            
+
             // Update stats
             document.getElementById('currentQ').textContent = q.number;
             document.getElementById('correctCount').textContent = correctCount;
             const answeredCount = Object.keys(userAnswers).length;
-            document.getElementById('scorePercent').textContent = 
+            document.getElementById('scorePercent').textContent =
                 answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) + '%' : '0%';
-            
+
             // Update progress
             const progress = ((currentIndex + 1) / questions.length) * 100;
             document.getElementById('progressFill').style.width = progress + '%';
-            
+
             // Update question info
             document.getElementById('questionBadge').textContent = `第 ${q.number} 题`;
             document.getElementById('questionPoints').textContent = `${q.points} 分`;
-            
-            // Update image - show the full page for this question
-            document.getElementById('questionImage').src = `images/page-${String(q.page).padStart(2, '0')}.png`;
-            
+
+            // Update image
+            document.getElementById('questionImage').src = `${currentYear}/${q.image}`;
+
             // Render options
-            const options = ['A', 'B', 'C', 'D', 'E'];
+            const optionLetters = ['A', 'B', 'C', 'D', 'E'];
             const optionsContainer = document.getElementById('options');
-            
-            optionsContainer.innerHTML = options.map(opt => {
+
+            optionsContainer.innerHTML = optionLetters.map(opt => {
                 let classes = 'option';
                 let disabled = answered ? 'disabled' : '';
-                
+
                 if (answered) {
                     if (opt === userAnswers[q.number]) {
                         classes += opt === q.answer ? ' correct' : ' wrong';
@@ -517,7 +525,7 @@
                         classes += ' correct';
                     }
                 }
-                
+
                 return `
                     <div class="${classes} ${disabled}" onclick="selectOption('${opt}')">
                         <div class="option-letter">${opt}</div>
@@ -525,12 +533,12 @@
                     </div>
                 `;
             }).join('');
-            
+
             // Show/hide buttons
             document.getElementById('prevBtn').style.visibility = currentIndex > 0 ? 'visible' : 'hidden';
             document.getElementById('submitBtn').style.display = answered ? 'none' : 'inline-block';
             document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? '完成 →' : '下一题 →';
-            
+
             // Show feedback
             const feedback = document.getElementById('feedback');
             if (answered) {
@@ -540,38 +548,42 @@
             } else {
                 feedback.className = 'feedback';
             }
+
+            // Scroll to top
+            window.scrollTo(0, 0);
         }
-        
+
         // Select option
         function selectOption(letter) {
             const q = questions[currentIndex];
             if (userAnswers[q.number] !== undefined) return;
-            
+
             document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
                 const letterEl = opt.querySelector('.option-letter');
                 if (letterEl && letterEl.textContent === letter) {
                     opt.classList.add('selected');
                 }
             });
         }
-        
+
         // Submit answer
         function submitAnswer() {
             const selected = document.querySelector('.option.selected');
             if (!selected) return;
-            
+
             const letter = selected.querySelector('.option-letter').textContent;
             const q = questions[currentIndex];
-            
+
             userAnswers[q.number] = letter;
-            
+
             if (letter === q.answer) {
                 correctCount++;
             }
-            
+
             renderQuestion();
         }
-        
+
         // Navigate
         function prevQuestion() {
             if (currentIndex > 0) {
@@ -579,7 +591,7 @@
                 renderQuestion();
             }
         }
-        
+
         function nextQuestion() {
             if (currentIndex < questions.length - 1) {
                 currentIndex++;
@@ -588,19 +600,19 @@
                 showResults();
             }
         }
-        
+
         // Show results
         function showResults() {
             document.getElementById('quizPage').style.display = 'none';
             document.getElementById('resultsPage').style.display = 'block';
-            
+
             document.getElementById('finalScore').textContent = `${correctCount}/${questions.length}`;
-            document.getElementById('finalDetail').textContent = 
+            document.getElementById('finalDetail').textContent =
                 `正确 ${correctCount} 题，正确率 ${Math.round(correctCount/questions.length*100)}%`;
-            
+
             const percent = correctCount / questions.length;
             const gradeEl = document.getElementById('finalGrade');
-            
+
             if (percent >= 0.9) {
                 gradeEl.textContent = '优秀！🌟';
                 gradeEl.className = 'results-grade grade-a';
@@ -615,17 +627,19 @@
                 gradeEl.className = 'results-grade grade-d';
             }
         }
-        
+
         function restartQuiz() {
-            startQuiz();
+            startQuiz(currentYear);
         }
-        
+
         function goHome() {
-            renderHome();
+            document.getElementById('homePage').style.display = 'block';
+            document.getElementById('quizPage').style.display = 'none';
+            document.getElementById('resultsPage').style.display = 'none';
         }
-        
+
         // Initialize
-        renderHome();
+        init();
     </script>
 </body>
 </html>

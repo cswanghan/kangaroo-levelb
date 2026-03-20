@@ -1,0 +1,52 @@
+{
+  "years": [
+    {
+      "year": 2013,
+      "totalQuestions": 20
+    },
+    {
+      "year": 2014,
+      "totalQuestions": 20
+    },
+    {
+      "year": 2015,
+      "totalQuestions": 20
+    },
+    {
+      "year": 2016,
+      "totalQuestions": 20
+    },
+    {
+      "year": 2017,
+      "totalQuestions": 20
+    },
+    {
+      "year": 2018,
+      "totalQuestions": 20
+    },
+    {
+      "year": 2019,
+      "totalQuestions": 24
+    },
+    {
+      "year": 2020,
+      "totalQuestions": 24
+    },
+    {
+      "year": 2021,
+      "totalQuestions": 24
+    },
+    {
+      "year": 2022,
+      "totalQuestions": 24
+    },
+    {
+      "year": 2023,
+      "totalQuestions": 24
+    },
+    {
+      "year": 2024,
+      "totalQuestions": 24
+    }
+  ]
+}
