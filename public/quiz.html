@@ -498,8 +498,8 @@
             document.getElementById('questionBadge').textContent = `第 ${q.number} 题`;
             document.getElementById('questionPoints').textContent = `${q.points} 分`;
             
-            // Update image - show individual question image
-            document.getElementById('questionImage').src = `questions/q${q.number}.png`;
+            // Update image - show the full page for this question
+            document.getElementById('questionImage').src = `images/page-${String(q.page).padStart(2, '0')}.png`;
             
             // Render options
             const options = ['A', 'B', 'C', 'D', 'E'];
