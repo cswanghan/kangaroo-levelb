@@ -598,7 +598,7 @@
         document.getElementById('confirmTitle').textContent = title;
         document.getElementById('confirmMsg').textContent = msg;
         confirmCallback = onConfirm;
-        document.getElementById('confirmOkBtn').onclick = () => { closeConfirmModal(); if (confirmCallback) confirmCallback(); };
+        document.getElementById('confirmOkBtn').onclick = () => { const cb = confirmCallback; closeConfirmModal(); if (cb) cb(); };
         document.getElementById('confirmModal').classList.add('open');
     }
     function closeConfirmModal() {
