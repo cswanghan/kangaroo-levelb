@@ -66,15 +66,19 @@
             gap: 0;
             margin-bottom: 32px;
             border-bottom: 1px solid var(--rose-light);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .lv-tab {
-            padding: 10px 28px;
+            padding: 10px 18px;
             font-size: 0.9rem;
             color: var(--text-light);
             cursor: pointer;
             border-bottom: 2px solid transparent;
             transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .lv-tab:hover { color: var(--text); }
@@ -173,6 +177,7 @@
             .page-header h1 { font-size: 1.6rem; }
             .papers-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
             .page { padding: 32px 16px; }
+            .lv-tab { padding: 8px 12px; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -189,8 +194,12 @@
         </div>
 
         <div class="level-switch">
+            <div class="lv-tab" data-level="a" onclick="switchLevel('a')">Level A · 1-2年级</div>
             <div class="lv-tab" data-level="b" onclick="switchLevel('b')">Level B · 3-4年级</div>
             <div class="lv-tab" data-level="c" onclick="switchLevel('c')">Level C · 5-6年级</div>
+            <div class="lv-tab" data-level="d" onclick="switchLevel('d')">Level D · 7-8年级</div>
+            <div class="lv-tab" data-level="e" onclick="switchLevel('e')">Level E · 9-10年级</div>
+            <div class="lv-tab" data-level="f" onclick="switchLevel('f')">Level F · 11-12年级</div>
         </div>
 
         <div id="content" class="papers-grid"></div>
@@ -198,6 +207,15 @@
 
     <script>
         let currentLevel = new URLSearchParams(location.search).get('level') || 'b';
+
+        const levelMeta = {
+            a: { label: 'Level A', grade: '1-2年级' },
+            b: { label: 'Level B', grade: '3-4年级' },
+            c: { label: 'Level C', grade: '5-6年级' },
+            d: { label: 'Level D', grade: '7-8年级' },
+            e: { label: 'Level E', grade: '9-10年级' },
+            f: { label: 'Level F', grade: '11-12年级' }
+        };
 
         const papersB = [
             { year: 2025, file: '2025 等级B：3-4年级.pdf' },
@@ -231,19 +249,27 @@
             { year: 2013, file: '2013 等级3：5-6年级.pdf' }
         ];
 
+        // For new levels, papers will be loaded dynamically from their directories
+        // For now we store known paper lists for B and C; others use directory-based loading
+        const staticPapers = { b: papersB, c: papersC };
+
+        function papersDir() {
+            return currentLevel === 'b' ? 'papers' : `level-${currentLevel}/papers`;
+        }
+
         function getConfig() {
-            const isC = currentLevel === 'c';
+            const meta = levelMeta[currentLevel] || levelMeta.b;
             return {
-                papers: isC ? papersC : papersB,
-                dir: isC ? 'level-c/papers' : 'papers',
-                label: isC ? 'Level C' : 'Level B',
-                grade: isC ? '5-6年级' : '3-4年级',
+                papers: staticPapers[currentLevel] || [],
+                dir: papersDir(),
+                label: meta.label,
+                grade: meta.grade,
             };
         }
 
         function switchLevel(level) {
             currentLevel = level;
-            history.replaceState(null, '', level === 'b' ? 'papers.html' : 'papers.html?level=c');
+            history.replaceState(null, '', level === 'b' ? 'papers.html' : `papers.html?level=${level}`);
             document.querySelectorAll('.lv-tab').forEach(t =>
                 t.classList.toggle('active', t.dataset.level === level));
             updateHeader();
@@ -253,9 +279,9 @@
         function updateHeader() {
             const cfg = getConfig();
             document.getElementById('subtitle').textContent =
-                `袋鼠数学 ${cfg.label} · ${cfg.grade} · 2013 — 2025`;
+                `袋鼠数学 ${cfg.label} · ${cfg.grade}`;
             document.getElementById('quizLink').href =
-                currentLevel === 'c' ? 'quiz.html?level=c' : 'quiz.html';
+                currentLevel === 'b' ? 'quiz.html' : `quiz.html?level=${currentLevel}`;
         }
 
         function showPaper(file, year) {
@@ -273,10 +299,29 @@
             window.scrollTo(0, 0);
         }
 
-        function renderList() {
+        async function renderList() {
             const cfg = getConfig();
+            let papers = cfg.papers;
+
+            // For levels without static paper lists, try loading index from papers dir
+            if (!papers.length) {
+                try {
+                    const r = await fetch(`${cfg.dir}/index.json`);
+                    if (r.ok) {
+                        const d = await r.json();
+                        papers = d.papers || [];
+                    }
+                } catch {}
+            }
+
+            if (!papers.length) {
+                document.getElementById('content').className = 'papers-grid';
+                document.getElementById('content').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-light);padding:40px;">暂无 PDF 数据</div>';
+                return;
+            }
+
             document.getElementById('content').className = 'papers-grid';
-            document.getElementById('content').innerHTML = cfg.papers.map(p => `
+            document.getElementById('content').innerHTML = papers.map(p => `
                 <a href="javascript:showPaper('${encodeURIComponent(p.file)}', ${p.year})" class="paper-card">
                     <div class="year">${p.year}</div>
                     <div class="label">查看 / 下载</div>

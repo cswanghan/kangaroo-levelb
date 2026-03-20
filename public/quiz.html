@@ -37,8 +37,8 @@
         }
         .nav-link:hover { color: var(--rose); border-color: var(--blush); }
         .nav-link.active { color: var(--rose); border-color: var(--blush); background: var(--blush-faint); }
-        .level-switch { display: flex; justify-content: center; border-bottom: 1px solid var(--paper-shadow); margin-bottom: 32px; }
-        .lv-tab { padding: 10px 28px; font-size: 0.9rem; color: var(--ink-light); cursor: pointer; border-bottom: 2px solid transparent; }
+        .level-switch { display: flex; justify-content: center; border-bottom: 1px solid var(--paper-shadow); margin-bottom: 32px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .lv-tab { padding: 10px 18px; font-size: 0.9rem; color: var(--ink-light); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; flex-shrink: 0; }
         .lv-tab:hover { color: var(--ink-med); }
         .lv-tab.active { color: var(--rose); border-bottom-color: var(--rose); font-weight: 600; }
         .year-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 14px; }
@@ -356,6 +356,7 @@
             .select-header h1 { font-size: 1.6rem; }
             .year-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
             .quiz-wrapper { padding: 12px; }
+            .lv-tab { padding: 8px 12px; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -374,8 +375,12 @@
         <a href="javascript:showWrongBook()" class="nav-link" id="wrongLink">错题本</a>
     </div>
     <div class="level-switch">
+        <div class="lv-tab" data-level="a" onclick="switchLevel('a')">Level A · 1-2年级</div>
         <div class="lv-tab" data-level="b" onclick="switchLevel('b')">Level B · 3-4年级</div>
         <div class="lv-tab" data-level="c" onclick="switchLevel('c')">Level C · 5-6年级</div>
+        <div class="lv-tab" data-level="d" onclick="switchLevel('d')">Level D · 7-8年级</div>
+        <div class="lv-tab" data-level="e" onclick="switchLevel('e')">Level E · 9-10年级</div>
+        <div class="lv-tab" data-level="f" onclick="switchLevel('f')">Level F · 11-12年级</div>
     </div>
     <div class="year-grid" id="yearGrid"><div class="loading">加载中...</div></div>
 
@@ -515,14 +520,13 @@
     let currentYear = null, questions = [], currentIndex = 0, userAnswers = {};
     let quizStartTime = null, quizSubmitted = false, timerInterval = null;
 
-    const isC = () => currentLevel === 'c';
-    const dataBase = () => isC() ? 'level-c/data' : 'data';
-    const imgBase = () => isC() ? 'level-c' : '';
+    const dataBase = () => currentLevel === 'b' ? 'data' : `level-${currentLevel}/data`;
+    const imgBase = () => currentLevel === 'b' ? '' : `level-${currentLevel}`;
 
     async function init() {
         document.querySelectorAll('.lv-tab').forEach(t =>
             t.classList.toggle('active', t.dataset.level === currentLevel));
-        document.getElementById('pdfLink').href = isC() ? 'papers.html?level=c' : 'papers.html';
+        document.getElementById('pdfLink').href = currentLevel === 'b' ? 'papers.html' : `papers.html?level=${currentLevel}`;
         await loadYears();
     }
 
@@ -536,10 +540,10 @@
 
     function switchLevel(lv) {
         currentLevel = lv;
-        history.replaceState(null, '', lv === 'b' ? 'quiz.html' : 'quiz.html?level=c');
+        history.replaceState(null, '', lv === 'b' ? 'quiz.html' : `quiz.html?level=${lv}`);
         document.querySelectorAll('.lv-tab').forEach(t =>
             t.classList.toggle('active', t.dataset.level === lv));
-        document.getElementById('pdfLink').href = isC() ? 'papers.html?level=c' : 'papers.html';
+        document.getElementById('pdfLink').href = lv === 'b' ? 'papers.html' : `papers.html?level=${lv}`;
         hidePanel();
         loadYears();
     }
@@ -562,8 +566,9 @@
             pendingData = d;
             const lv = currentLevel.toUpperCase();
             const total = d.questions.length;
+            const maxPts = total + d.questions.reduce((s, q) => s + q.points, 0);
             document.getElementById('modalTitle').textContent = `${year} 年 · Level ${lv}`;
-            document.getElementById('modalInfo').textContent = `共 ${total} 题 · 满分 120 分 · 开始后自动计时`;
+            document.getElementById('modalInfo').textContent = `共 ${total} 题 · 满分 ${maxPts} 分 · 开始后自动计时`;
             document.getElementById('startModal').classList.add('open');
         } catch { alert('加载失败'); }
     }
@@ -781,11 +786,14 @@
         submitQuizResult(duration);
     }
 
-    // Issue #4: Official Kangaroo Math scoring
-    // Base: 24 pts, Q1-8: 3pts, Q9-16: 4pts, Q17-24: 5pts
-    // Correct: +points, Wrong: -1, Unanswered: 0, Min: 0, Max: 120
+    // Official Kangaroo Math scoring
+    // 24 questions: base=24, Q1-8=3pts, Q9-16=4pts, Q17-24=5pts, max=120
+    // 30 questions: base=30, Q1-10=3pts, Q11-20=4pts, Q21-30=5pts, max=150
+    // General: base = totalQuestions, max = base + sum(all points)
+    // Correct: +points, Wrong: -1, Unanswered: 0, Min: 0
     function calcScore() {
-        let baseScore = 24;
+        const total = questions.length;
+        let baseScore = total; // 24 for 24q, 30 for 30q
         let earnedPoints = 0;
         let penalty = 0;
         let correct = 0;
@@ -807,7 +815,7 @@
 
         const rawScore = baseScore + earnedPoints - penalty;
         const score = Math.max(0, rawScore);
-        const maxScore = 120; // 24 + 96
+        const maxScore = baseScore + questions.reduce((s, q) => s + q.points, 0);
 
         return { score, maxScore, correct, wrong, unanswered, baseScore, earnedPoints, penalty };
     }
@@ -980,7 +988,7 @@
 
             document.getElementById('wrongList').innerHTML = list.map((w, i) => {
                 const lvLabel = (w.level||'b').toUpperCase();
-                const pre = w.level === 'c' ? `level-c/${w.year}` : `${w.year}`;
+                const pre = w.level === 'b' ? `${w.year}` : `level-${w.level}/${w.year}`;
                 return `<div class="wrong-item" onclick='showWrongDetail(${JSON.stringify(w)})'>
                     <div class="wi-left">
                         <div class="wi-title">Level ${lvLabel} · ${w.year} 年 · 第 ${w.question} 题</div>
@@ -1000,7 +1008,7 @@
 
     function showWrongDetail(w) {
         const lvLabel = (w.level||'b').toUpperCase();
-        const pre = w.level === 'c' ? `level-c/${w.year}` : `${w.year}`;
+        const pre = w.level === 'b' ? `${w.year}` : `level-${w.level}/${w.year}`;
         document.getElementById('wrongDetailTitle').textContent = `Level ${lvLabel} · ${w.year} 年 · 第 ${w.question} 题`;
         document.getElementById('wrongDetailImg').src = `${pre}/q${w.question}.png`;
         document.getElementById('wrongDetailInfo').innerHTML =

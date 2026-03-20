@@ -57,12 +57,14 @@
         .level-tabs {
             display: flex; justify-content: center; gap: 0;
             margin-bottom: 48px; border-bottom: 1px solid var(--rose-light);
+            overflow-x: auto; -webkit-overflow-scrolling: touch;
         }
 
         .level-tab {
-            padding: 12px 32px; font-family: 'Noto Serif SC', serif;
+            padding: 12px 20px; font-family: 'Noto Serif SC', serif;
             font-size: 0.95rem; color: var(--text-light); cursor: pointer;
             border-bottom: 2px solid transparent; transition: all 0.2s; letter-spacing: 1px;
+            white-space: nowrap; flex-shrink: 0;
         }
         .level-tab:hover { color: var(--text); }
         .level-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
@@ -113,6 +115,7 @@
             .entry-grid { grid-template-columns: 1fr; max-width: 360px; }
             .entry-card { padding: 36px 24px; }
             .page { padding: 30px 16px 40px; }
+            .level-tab { padding: 10px 14px; font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -124,8 +127,12 @@
         </div>
 
         <div class="level-tabs">
+            <div class="level-tab" onclick="switchLevel('a')">Level A</div>
             <div class="level-tab active" onclick="switchLevel('b')">Level B</div>
             <div class="level-tab" onclick="switchLevel('c')">Level C</div>
+            <div class="level-tab" onclick="switchLevel('d')">Level D</div>
+            <div class="level-tab" onclick="switchLevel('e')">Level E</div>
+            <div class="level-tab" onclick="switchLevel('f')">Level F</div>
         </div>
 
         <div class="level-info" id="levelInfo">
@@ -176,14 +183,19 @@
     <script>
         let currentLevel = 'b';
         const levelConfig = {
+            a: { label: '等级 A · 历年真题', grade: '适合 1-2 年级', pdf: 'papers.html?level=a', quiz: 'quiz.html?level=a' },
             b: { label: '等级 B · 2013 — 2025 · 共 13 年真题', grade: '适合 3-4 年级', pdf: 'papers.html', quiz: 'quiz.html' },
-            c: { label: '等级 C · 2013 — 2025 · 共 13 年真题', grade: '适合 5-6 年级', pdf: 'papers.html?level=c', quiz: 'quiz.html?level=c' }
+            c: { label: '等级 C · 2013 — 2025 · 共 13 年真题', grade: '适合 5-6 年级', pdf: 'papers.html?level=c', quiz: 'quiz.html?level=c' },
+            d: { label: '等级 D · 历年真题', grade: '适合 7-8 年级', pdf: 'papers.html?level=d', quiz: 'quiz.html?level=d' },
+            e: { label: '等级 E · 历年真题', grade: '适合 9-10 年级', pdf: 'papers.html?level=e', quiz: 'quiz.html?level=e' },
+            f: { label: '等级 F · 历年真题', grade: '适合 11-12 年级', pdf: 'papers.html?level=f', quiz: 'quiz.html?level=f' }
         };
+        const levelOrder = ['a','b','c','d','e','f'];
         function switchLevel(level) {
             currentLevel = level;
             const cfg = levelConfig[level];
-            document.querySelectorAll('.level-tab').forEach(t => t.classList.remove('active'));
-            document.querySelector(`.level-tab:nth-child(${level === 'b' ? 1 : 2})`).classList.add('active');
+            const tabs = document.querySelectorAll('.level-tab');
+            tabs.forEach((t, i) => t.classList.toggle('active', levelOrder[i] === level));
             document.getElementById('levelInfo').innerHTML = `<div>${cfg.label}</div><div class="grade">${cfg.grade}</div>`;
             document.getElementById('pdfEntry').href = cfg.pdf;
             document.getElementById('quizEntry').href = cfg.quiz;
