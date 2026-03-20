@@ -299,8 +299,7 @@
         <button class="back-btn" onclick="goHome()">← 返回</button>
         <span class="quiz-title" id="quizTitle" style="font-family:var(--font-serif);font-weight:500;"></span>
         <div class="stats">
-            <span>正确 <span class="val" id="correctCount">0</span></span>
-            <span><span class="val" id="scorePercent">—</span></span>
+            <span>已答 <span class="val" id="correctCount">0</span> / <span class="val" id="scorePercent">0</span></span>
         </div>
     </div>
     <div class="book-progress"><div class="book-progress-fill" id="progressFill"></div></div>
@@ -378,8 +377,8 @@
     ).join('');
 
     let currentLevel = new URLSearchParams(location.search).get('level') || 'b';
-    let currentYear = null, questions = [], currentIndex = 0, userAnswers = {}, correctCount = 0;
-    let quizStartTime = null;
+    let currentYear = null, questions = [], currentIndex = 0, userAnswers = {};
+    let quizStartTime = null, quizSubmitted = false;
 
     const isC = () => currentLevel === 'c';
     const dataBase = () => isC() ? 'level-c/data' : 'data';
@@ -422,8 +421,8 @@
             const r = await fetch(`${dataBase()}/${year}.json`);
             const d = await r.json();
             currentYear = year; questions = d.questions;
-            currentIndex = 0; userAnswers = {}; correctCount = 0;
-            quizStartTime = Date.now();
+            currentIndex = 0; userAnswers = {};
+            quizStartTime = Date.now(); quizSubmitted = false;
             document.getElementById('homePage').style.display = 'none';
             document.getElementById('quizPage').style.display = 'flex';
             document.getElementById('resultsPage').style.display = 'none';
@@ -432,11 +431,23 @@
         } catch { alert('加载失败'); }
     }
 
+    // Get option text from question data if available, else just letter
+    function getOptionText(q, letter) {
+        if (q.options && q.options.length === 5) {
+            const idx = 'ABCDE'.indexOf(letter);
+            return q.options[idx] || letter;
+        }
+        return letter;
+    }
+
     function renderQuestion() {
-        const q = questions[currentIndex], answered = userAnswers[q.number] !== undefined;
-        document.getElementById('correctCount').textContent = correctCount;
+        const q = questions[currentIndex];
+        const selected = userAnswers[q.number];
         const ac = Object.keys(userAnswers).length;
-        document.getElementById('scorePercent').textContent = ac > 0 ? Math.round(correctCount/ac*100)+'%' : '—';
+
+        // Stats: show answered count / total before submit
+        document.getElementById('correctCount').textContent = ac;
+        document.getElementById('scorePercent').textContent = `${questions.length} 题`;
         document.getElementById('progressFill').style.width = ((currentIndex+1)/questions.length*100)+'%';
 
         document.getElementById('questionBadge').textContent = `第 ${q.number} 题`;
@@ -447,84 +458,135 @@
         const pre = imgBase() ? `${imgBase()}/${currentYear}` : `${currentYear}`;
         document.getElementById('questionImage').src = `${pre}/${q.image}`;
 
+        // Before submit: allow select/change; After submit: show correct/wrong
         document.getElementById('options').innerHTML = ['A','B','C','D','E'].map(o => {
-            let c = 'option', d = answered ? 'disabled' : '';
-            if (answered) {
-                if (o === userAnswers[q.number]) {
-                    c += o === q.answer ? ' correct selected' : ' wrong selected';
-                } else if (o === q.answer) {
-                    c += ' correct';
-                }
+            let c = 'option';
+            const optText = getOptionText(q, o);
+            if (quizSubmitted) {
+                c += ' disabled';
+                if (o === selected) c += o === q.answer ? ' correct selected' : ' wrong selected';
+                else if (o === q.answer) c += ' correct';
+            } else if (o === selected) {
+                c += ' selected';
             }
-            return `<div class="${c} ${d}" onclick="selectOption('${o}')">
+            return `<div class="${c}" onclick="selectOption('${o}')">
                 <div class="opt-check"></div>
-                <div class="opt-label">${o}</div>
+                <div class="opt-label">(${o}) ${optText !== o ? optText : ''}</div>
             </div>`;
         }).join('');
 
         document.getElementById('prevBtn').style.visibility = currentIndex > 0 ? 'visible' : 'hidden';
-        document.getElementById('submitBtn').style.display = answered ? 'none' : 'inline-block';
-        document.getElementById('nextBtn').textContent = currentIndex === questions.length-1 ? '完成 →' : '下一题 →';
 
+        // Submit button: only show on last question when all answered and not yet submitted
+        const allAnswered = Object.keys(userAnswers).length === questions.length;
+        if (quizSubmitted) {
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nextBtn').textContent = currentIndex === questions.length-1 ? '查看结果 →' : '下一题 →';
+        } else {
+            document.getElementById('submitBtn').textContent = selected ? '确认' : '选择后确认';
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').textContent = currentIndex === questions.length-1
+                ? (allAnswered ? '提交试卷 →' : '下一题 →') : '下一题 →';
+        }
+
+        // Feedback: only after quiz submitted
         const fb = document.getElementById('feedback');
-        if (answered) {
-            const ok = userAnswers[q.number] === q.answer;
+        if (quizSubmitted && selected) {
+            const ok = selected === q.answer;
             fb.className = 'feedback show ' + (ok ? 'correct' : 'wrong');
-            fb.textContent = ok ? '回答正确' : `正确答案: ${q.answer}`;
+            fb.textContent = ok ? `✓ 回答正确 (+${q.points}分)` : `✗ 正确答案: ${q.answer}`;
         } else fb.className = 'feedback';
 
         document.getElementById('panelLeft').scrollTop = 0;
     }
 
     function selectOption(l) {
-        if (userAnswers[questions[currentIndex].number] !== undefined) return;
-        document.querySelectorAll('.option').forEach(o =>
-            o.classList.toggle('selected', o.querySelector('.opt-label').textContent === l));
-    }
-
-    function submitAnswer() {
-        const s = document.querySelector('.option.selected');
-        if (!s) return;
-        const l = s.querySelector('.opt-label').textContent, q = questions[currentIndex];
-        userAnswers[q.number] = l;
-        if (l === q.answer) correctCount++;
+        if (quizSubmitted) return;
+        userAnswers[questions[currentIndex].number] = l;
         renderQuestion();
     }
 
-    function prevQuestion() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
-    function nextQuestion() {
-        if (currentIndex < questions.length-1) { currentIndex++; renderQuestion(); }
-        else showResults();
+    function submitAnswer() {
+        // "确认" just moves to next question (answer already saved via selectOption)
+        const q = questions[currentIndex];
+        if (!userAnswers[q.number]) return;
+        if (currentIndex < questions.length - 1) {
+            currentIndex++;
+            renderQuestion();
+        }
     }
 
-    function showResults() {
+    function prevQuestion() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+    function nextQuestion() {
+        if (quizSubmitted) {
+            if (currentIndex < questions.length-1) { currentIndex++; renderQuestion(); }
+            else showResultsPage();
+            return;
+        }
+        // If last question and all answered -> submit quiz
+        const allAnswered = Object.keys(userAnswers).length === questions.length;
+        if (currentIndex === questions.length-1 && allAnswered) {
+            submitQuiz();
+        } else {
+            if (currentIndex < questions.length-1) { currentIndex++; renderQuestion(); }
+        }
+    }
+
+    function submitQuiz() {
+        if (quizSubmitted) return;
+        const unanswered = questions.filter(q => !userAnswers[q.number]);
+        if (unanswered.length > 0) {
+            if (!confirm(`还有 ${unanswered.length} 题未作答，确认提交？`)) return;
+        }
+        quizSubmitted = true;
+        // Go back to first question to review
+        currentIndex = 0;
+        renderQuestion();
+        // Submit to server
+        const duration = Math.round((Date.now() - quizStartTime) / 1000);
+        submitQuizResult(duration);
+    }
+
+    function calcScore() {
+        let score = 0, maxScore = 0, correct = 0;
+        questions.forEach(q => {
+            maxScore += q.points;
+            if (userAnswers[q.number] === q.answer) { score += q.points; correct++; }
+        });
+        return { score, maxScore, correct };
+    }
+
+    function showResultsPage() {
+        const { score, maxScore, correct } = calcScore();
         document.getElementById('quizPage').style.display = 'none';
         document.getElementById('resultsPage').style.display = 'block';
-        document.getElementById('finalScore').textContent = `${correctCount}/${questions.length}`;
+        document.getElementById('finalScore').textContent = `${score} / ${maxScore}`;
         const duration = Math.round((Date.now() - quizStartTime) / 1000);
         const mins = Math.floor(duration / 60), secs = duration % 60;
         document.getElementById('finalDetail').textContent =
-            `正确 ${correctCount} 题，正确率 ${Math.round(correctCount/questions.length*100)}%，用时 ${mins}分${secs}秒`;
-        const p = correctCount/questions.length, g = document.getElementById('finalGrade');
+            `正确 ${correct}/${questions.length} 题，得分 ${score}/${maxScore}，用时 ${mins}分${secs}秒`;
+        const p = score / maxScore, g = document.getElementById('finalGrade');
         if (p >= .9) { g.textContent = '优秀'; g.className = 'results-grade grade-a'; }
         else if (p >= .75) { g.textContent = '良好'; g.className = 'results-grade grade-b'; }
         else if (p >= .6) { g.textContent = '继续努力'; g.className = 'results-grade grade-c'; }
         else { g.textContent = '加油'; g.className = 'results-grade grade-d'; }
-        submitQuizResult(duration);
     }
 
     async function submitQuizResult(duration) {
         const token = localStorage.getItem('token');
         if (!token) return;
+        const { score } = calcScore();
         const answers = questions.map(q => ({
             question: q.number, answer: userAnswers[q.number] || '',
             correct: q.answer, isRight: userAnswers[q.number] === q.answer,
+            points: q.points,
         }));
         try {
             await fetch('/api/quiz/submit', {
                 method: 'POST',
                 headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ level: currentLevel, year: currentYear, answers, duration }),
+                body: JSON.stringify({ level: currentLevel, year: currentYear, answers, duration, score }),
             });
         } catch {}
     }

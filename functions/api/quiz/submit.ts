@@ -3,8 +3,9 @@ interface Env { DB: D1Database; JWT_SECRET: string; }
 interface SubmitBody {
   level: string;
   year: number;
-  answers: { question: number; answer: string; correct: string; isRight: boolean }[];
-  duration: number; // seconds
+  answers: { question: number; answer: string; correct: string; isRight: boolean; points?: number }[];
+  duration: number;
+  score?: number;
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
@@ -17,18 +18,15 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
   const total = body.answers.length;
   const correctCount = body.answers.filter(a => a.isRight).length;
-  const score = body.answers.reduce((s, a) => s + (a.isRight ? 1 : 0), 0); // can be extended with point weights
+  // Use client-provided score (weighted by points) or fallback
+  const score = body.score ?? body.answers.reduce((s, a) => s + (a.isRight ? (a.points || 1) : 0), 0);
 
-  // Insert session
   const session = await context.env.DB.prepare(
     'INSERT INTO quiz_sessions (user_id, level, year, total, correct, score, duration) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id'
   ).bind(user.userId, body.level, body.year, total, correctCount, score, body.duration || 0).first<{ id: number }>();
 
-  if (!session) {
-    return json({ error: '保存失败' }, 500);
-  }
+  if (!session) return json({ error: '保存失败' }, 500);
 
-  // Batch insert answers
   const stmts = body.answers.map(a =>
     context.env.DB.prepare(
       'INSERT INTO quiz_answers (session_id, question, answer, correct, is_right) VALUES (?, ?, ?, ?, ?)'
@@ -37,12 +35,11 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
   await context.env.DB.batch(stmts);
 
-  return json({ sessionId: session.id, correct: correctCount, total });
+  return json({ sessionId: session.id, correct: correctCount, total, score });
 };
 
 function json(data: any, status = 200) {
   return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
+    status, headers: { 'Content-Type': 'application/json' },
   });
 }
