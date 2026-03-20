@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>袋鼠数学 Level B - 做题系统</title>
+    <title>袋鼠数学 - 做题系统</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -379,6 +379,15 @@
 </div>
 
 <script>
+    // Detect level from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const level = urlParams.get('level') || 'b';
+    const isLevelC = level === 'c';
+    const dataBase = isLevelC ? 'level-c/data' : 'data';
+    const imageBase = isLevelC ? 'level-c' : '';
+    const levelLabel = isLevelC ? 'Level C' : 'Level B';
+    const gradeLabel = isLevelC ? '5-6年级' : '3-4年级';
+
     let currentYear = null;
     let questions = [];
     let currentIndex = 0;
@@ -386,8 +395,12 @@
     let correctCount = 0;
 
     async function init() {
+        // Update header to reflect current level
+        document.querySelector('.home-header h1').innerHTML = `🦘 袋鼠数学 ${levelLabel}`;
+        document.querySelector('.home-header p').textContent = `交互式做题系统 | ${gradeLabel}`;
+
         try {
-            const resp = await fetch('data/index.json');
+            const resp = await fetch(`${dataBase}/index.json`);
             const data = await resp.json();
             renderYearGrid(data.years);
         } catch (e) {
@@ -407,7 +420,7 @@
 
     async function startQuiz(year) {
         try {
-            const resp = await fetch(`data/${year}.json`);
+            const resp = await fetch(`${dataBase}/${year}.json`);
             const data = await resp.json();
 
             currentYear = year;
@@ -445,7 +458,8 @@
         // Question info
         document.getElementById('questionBadge').textContent = `第 ${q.number} 题`;
         document.getElementById('questionPoints').textContent = `${q.points} 分`;
-        document.getElementById('questionImage').src = `${currentYear}/${q.image}`;
+        const imgPrefix = imageBase ? `${imageBase}/${currentYear}` : `${currentYear}`;
+        document.getElementById('questionImage').src = `${imgPrefix}/${q.image}`;
 
         // Options
         const letters = ['A', 'B', 'C', 'D', 'E'];
@@ -538,6 +552,11 @@
         document.getElementById('homePage').style.display = 'block';
         document.getElementById('quizPage').style.display = 'none';
         document.getElementById('resultsPage').style.display = 'none';
+    }
+
+    // Back to index preserving level awareness
+    function goIndex() {
+        window.location.href = 'index.html';
     }
 
     init();

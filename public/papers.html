@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>袋鼠数学 Level B - 历年真题 PDF</title>
+    <title>袋鼠数学 - 历年真题 PDF</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -116,7 +116,11 @@
     </div>
 
     <script>
-        const papers = [
+        const urlParams = new URLSearchParams(window.location.search);
+        const level = urlParams.get('level') || 'b';
+        const isLevelC = level === 'c';
+
+        const papersB = [
             { year: 2025, file: '2025 等级B：3-4年级.pdf' },
             { year: 2024, file: '2024 等级B：3-4年级.pdf' },
             { year: 2023, file: '2023 等级B：3-4年级.pdf' },
@@ -132,6 +136,35 @@
             { year: 2013, file: '2013 等级2：3-4年级.pdf' }
         ];
 
+        const papersC = [
+            { year: 2025, file: '2025 等级C：5-6年级.pdf' },
+            { year: 2024, file: '2024 等级C：5-6年级.pdf' },
+            { year: 2023, file: '2023 等级C：5-6年级.pdf' },
+            { year: 2022, file: '2022 等级3：5-6年级.pdf' },
+            { year: 2021, file: '2021 等级3：5-6年级.pdf' },
+            { year: 2020, file: '2020 等级3：5-6年级.pdf' },
+            { year: 2019, file: '2019 等级3：5-6年级.pdf' },
+            { year: 2018, file: '2018 等级3：5-6年级.pdf' },
+            { year: 2017, file: '2017 等级3：5-6年级.pdf' },
+            { year: 2016, file: '2016 等级3：5-6年级.pdf' },
+            { year: 2015, file: '2015 等级3：5-6年级.pdf' },
+            { year: 2014, file: '2014 等级3：5-6年级.pdf' },
+            { year: 2013, file: '2013 等级3：5-6年级.pdf' }
+        ];
+
+        const papers = isLevelC ? papersC : papersB;
+        const papersDir = isLevelC ? 'level-c/papers' : 'papers';
+        const levelLabel = isLevelC ? 'Level C' : 'Level B';
+        const gradeLabel = isLevelC ? '5-6年级' : '3-4年级';
+        const quizLink = isLevelC ? 'quiz.html?level=c' : 'quiz.html';
+
+        // Update header
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('header h1').textContent = `历年真题 PDF`;
+            document.querySelector('.subtitle').textContent = `袋鼠数学 ${levelLabel} · ${gradeLabel} · 2013-2025`;
+            document.querySelector('a[href="quiz.html"]').href = quizLink;
+        });
+
         function showPaper(file, year) {
             document.getElementById('content').innerHTML = `
                 <div style="grid-column: 1 / -1;">
@@ -140,9 +173,9 @@
                 <div class="pdf-viewer" style="grid-column: 1 / -1;">
                     <div class="pdf-header">
                         <span class="pdf-title">${year} 年真题</span>
-                        <a href="papers/${file}" download class="download-btn">⬇ 下载 PDF</a>
+                        <a href="${papersDir}/${file}" download class="download-btn">⬇ 下载 PDF</a>
                     </div>
-                    <iframe src="papers/${file}"></iframe>
+                    <iframe src="${papersDir}/${file}"></iframe>
                 </div>`;
             window.scrollTo(0, 0);
         }
