@@ -5,172 +5,253 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>袋鼠数学 · 在线练习</title>
     <script src="auth-guard.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Raleway:wght@300;400;500;600&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
 
         :root {
-            --cream: #faf8f5;
-            --warm: #f3ede6;
-            --rose: #c4a08a;
-            --rose-light: #e8d5c8;
-            --rose-bg: #fdf5f0;
-            --text: #3d3530;
-            --text-light: #8a7e76;
-            --accent: #b07d62;
-            --success: #6b9a7d;
-            --success-bg: #edf5f0;
-            --error: #c47070;
-            --error-bg: #fdf0f0;
+            --paper: #FDFBF9; --paper-shadow: #E8E4DF; --desk: #EAE6E1;
+            --ink: #171717; --ink-med: #5a5652; --ink-light: #A39E99; --ink-faint: rgba(23,23,23,0.08);
+            --rose: #BA6D73; --blush: #F1BABA; --blush-faint: rgba(241,186,186,0.3);
+            --ring: linear-gradient(90deg, #d5d1cc 0%, #fcfbfa 30%, #b8b3ae 80%, #9e9a95 100%);
+            --font-serif: 'Lora', 'Noto Serif SC', serif;
+            --font-sans: 'Raleway', 'Noto Serif SC', sans-serif;
+            --success: #6b9a7d; --success-bg: #edf5f0; --error: #c47070; --error-bg: #fdf0f0;
         }
 
         body {
-            font-family: 'Noto Serif SC', 'Georgia', serif;
-            background: var(--cream);
+            font-family: var(--font-sans); color: var(--ink);
+            background: var(--desk); background-image: radial-gradient(circle at 50% 0%, #F5F2EF, var(--desk));
             min-height: 100vh;
-            color: var(--text);
         }
 
-        /* ===== Year Select ===== */
+        /* ===== Year Select (same style) ===== */
         .select-page { max-width: 800px; margin: 0 auto; padding: 48px 24px; }
-
         .select-header { text-align: center; margin-bottom: 36px; }
-        .select-header h1 {
-            font-family: 'Playfair Display', 'Noto Serif SC', serif;
-            font-size: 2rem; font-weight: 700; margin-bottom: 6px;
-        }
-        .select-header .sub { color: var(--text-light); font-size: 0.9rem; }
-
+        .select-header h1 { font-family: var(--font-serif); font-size: 2rem; font-weight: 500; margin-bottom: 6px; }
+        .select-header .sub { color: var(--ink-light); font-size: 0.9rem; }
         .nav-row { display: flex; justify-content: center; gap: 14px; margin-bottom: 32px; }
         .nav-link {
-            color: var(--text-light); text-decoration: none; font-size: 0.85rem;
-            padding: 6px 18px; border: 1px solid var(--warm); border-radius: 16px; transition: all 0.2s;
+            color: var(--ink-light); text-decoration: none; font-size: 0.85rem;
+            padding: 6px 18px; border: 1px solid var(--paper-shadow); border-radius: 16px;
         }
-        .nav-link:hover { color: var(--accent); border-color: var(--rose); }
-
-        .level-switch { display: flex; justify-content: center; border-bottom: 1px solid var(--rose-light); margin-bottom: 32px; }
-        .lv-tab {
-            padding: 10px 28px; font-size: 0.9rem; color: var(--text-light);
-            cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s;
-        }
-        .lv-tab:hover { color: var(--text); }
-        .lv-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
-
+        .nav-link:hover { color: var(--rose); border-color: var(--blush); }
+        .level-switch { display: flex; justify-content: center; border-bottom: 1px solid var(--paper-shadow); margin-bottom: 32px; }
+        .lv-tab { padding: 10px 28px; font-size: 0.9rem; color: var(--ink-light); cursor: pointer; border-bottom: 2px solid transparent; }
+        .lv-tab:hover { color: var(--ink-med); }
+        .lv-tab.active { color: var(--rose); border-bottom-color: var(--rose); font-weight: 600; }
         .year-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 14px; }
         .year-card {
-            background: white; border: 1px solid var(--warm); padding: 24px 12px;
+            background: var(--paper); border: 1px solid var(--paper-shadow); padding: 24px 12px;
             border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.2s;
         }
-        .year-card:hover { border-color: var(--rose); box-shadow: 0 4px 16px rgba(180,140,110,0.1); transform: translateY(-2px); }
-        .year-card .yr { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 600; color: var(--accent); }
-        .year-card .cnt { color: var(--text-light); font-size: 0.8rem; margin-top: 4px; }
+        .year-card:hover { border-color: var(--blush); box-shadow: 0 4px 16px rgba(0,0,0,0.05); transform: translateY(-2px); }
+        .year-card .yr { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 500; color: var(--rose); }
+        .year-card .cnt { color: var(--ink-light); font-size: 0.8rem; margin-top: 4px; }
 
-        /* ===== Quiz Layout ===== */
-        .quiz-wrapper { display: none; height: 100vh; flex-direction: column; }
-
-        .top-bar {
-            background: white; padding: 10px 24px; display: flex;
-            justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--warm); flex-shrink: 0;
-        }
-        .top-bar-left { display: flex; align-items: center; gap: 14px; }
-        .back-btn {
-            background: none; border: none; font-size: 1.1rem; cursor: pointer;
-            color: var(--accent); padding: 4px 8px; font-family: inherit;
-        }
-        .quiz-title { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1rem; }
-        .top-bar-right { display: flex; gap: 20px; font-size: 0.8rem; color: var(--text-light); }
-        .top-bar-right .val { font-weight: 600; color: var(--accent); font-size: 1rem; }
-
-        .progress-bar { height: 3px; background: var(--warm); flex-shrink: 0; }
-        .progress-fill { height: 100%; background: var(--accent); transition: width 0.3s; }
-
-        .quiz-body { flex: 1; display: flex; overflow: hidden; }
-
-        .panel-left {
-            flex: 1; overflow-y: auto; padding: 24px;
-            background: var(--cream); border-right: 1px solid var(--warm);
-        }
-        .q-badge {
-            display: inline-block; background: var(--rose-bg); color: var(--accent);
-            padding: 4px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; margin-bottom: 14px;
-        }
-        .q-points { display: inline-block; color: var(--text-light); font-size: 0.8rem; margin-left: 8px; }
-        .question-image { width: 100%; border-radius: 8px; border: 1px solid var(--warm); background: white; }
-
-        .panel-right { width: 300px; display: flex; flex-direction: column; background: white; flex-shrink: 0; }
-        .answer-area { flex: 1; overflow-y: auto; padding: 24px; }
-        .answer-label {
-            font-size: 0.75rem; color: var(--text-light); text-transform: uppercase;
-            letter-spacing: 2px; margin-bottom: 16px;
+        /* ===== Book Quiz Layout ===== */
+        .quiz-wrapper {
+            display: none; min-height: 100vh;
+            justify-content: center; align-items: center; padding: 24px; flex-direction: column; gap: 16px;
         }
 
-        .options { display: grid; gap: 10px; }
+        /* Top info bar above book */
+        .book-topbar {
+            width: 100%; max-width: 1040px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; font-size: 0.8rem; color: var(--ink-light);
+        }
+        .book-topbar .back-btn {
+            background: none; border: none; font-family: inherit; font-size: 0.85rem;
+            color: var(--rose); cursor: pointer; padding: 4px 0;
+        }
+        .book-topbar .stats { display: flex; gap: 18px; }
+        .book-topbar .val { font-weight: 600; color: var(--rose); }
+
+        /* Progress under topbar */
+        .book-progress { width: 100%; max-width: 1040px; height: 2px; background: var(--paper-shadow); border-radius: 1px; }
+        .book-progress-fill { height: 100%; background: var(--rose); transition: width 0.3s; border-radius: 1px; }
+
+        /* The book */
+        .book {
+            position: relative; display: flex; width: 1040px; height: 680px;
+            background: var(--paper); border-radius: 4px 12px 12px 4px;
+            box-shadow: -1px 0 2px rgba(0,0,0,0.02), 1px 0 2px rgba(0,0,0,0.02),
+                0 20px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04),
+                20px 20px 60px rgba(0,0,0,0.05), inset -2px 0 4px rgba(0,0,0,0.02);
+        }
+
+        .book::after {
+            content: ''; position: absolute; top: 4px; right: -6px; bottom: -4px; width: 100%;
+            background: linear-gradient(to right, transparent 98%, #EAE5DF 98%, #F2EFEA 99%, #DCD7D0 100%);
+            border-radius: 4px 12px 12px 4px; z-index: -1; box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Pages */
+        .pg { flex: 1; position: relative; overflow: hidden; background: var(--paper); }
+        .pg.left {
+            border-radius: 4px 0 0 4px; padding: 36px 40px 36px 48px;
+            background: linear-gradient(to right, var(--paper) 85%, #F4F1ED 95%, #EBE7E1 100%);
+            overflow-y: auto;
+        }
+        .pg.right {
+            border-radius: 0 12px 12px 0; padding: 36px 48px 36px 40px;
+            background: linear-gradient(to left, var(--paper) 85%, #F4F1ED 95%, #EBE7E1 100%);
+            display: flex; flex-direction: column;
+        }
+
+        /* Spine rings */
+        .spine {
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 30px; height: 100%; z-index: 5;
+            display: flex; flex-direction: column; justify-content: space-evenly;
+            padding: 40px 0; pointer-events: none;
+        }
+        .ring-group { position: relative; width: 100%; height: 24px; }
+        .ring {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            width: 48px; height: 8px; background: var(--ring); border-radius: 4px;
+            box-shadow: 0 3px 4px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.8); z-index: 2;
+        }
+        .hole {
+            position: absolute; top: 50%; transform: translateY(-50%); width: 14px; height: 14px;
+            background: var(--desk); border-radius: 50%;
+            box-shadow: inset 2px 2px 4px rgba(0,0,0,0.2), inset -1px -1px 2px rgba(255,255,255,0.5); z-index: 1;
+        }
+        .hole.l { left: -18px; }
+        .hole.r { right: -18px; }
+
+        /* Page curl */
+        .page-curl-zone { position: absolute; bottom: 0; right: 0; width: 80px; height: 80px; cursor: pointer; z-index: 10; }
+        .page-curl {
+            position: absolute; bottom: 0; right: 0; width: 0; height: 0;
+            background: linear-gradient(135deg, transparent 45%, #fff 50%, #e0dcd7 55%, transparent 60%);
+            box-shadow: -4px -4px 10px rgba(0,0,0,0.05); transition: all 0.4s cubic-bezier(0.25,1,0.5,1);
+            pointer-events: none; border-top-left-radius: 10px;
+        }
+        .page-curl-zone:hover + .page-curl { width: 50px; height: 50px; }
+
+        /* Corner decoration */
+        .corner-deco { position: absolute; top: 20px; right: 20px; display: flex; gap: 4px; }
+        .corner-dot { width: 4px; height: 4px; background: var(--blush); border-radius: 50%; }
+
+        /* Left page content */
+        .q-meta {
+            font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--rose); margin-bottom: 8px; display: flex; align-items: center; gap: 12px;
+        }
+        .q-meta-line { height: 1px; flex: 1; background: var(--blush-faint); }
+
+        .q-number {
+            font-family: var(--font-serif); font-size: 2.2rem; font-weight: 400;
+            color: var(--ink); line-height: 1.1; margin-bottom: 4px;
+        }
+        .q-sub { font-family: var(--font-serif); font-size: 1rem; color: var(--ink-med); font-style: italic; margin-bottom: 20px; }
+
+        .question-image { width: 100%; border-radius: 6px; border: 1px solid var(--paper-shadow); background: white; }
+
+        /* Right page content */
+        .section-title {
+            font-family: var(--font-serif); font-size: 1.3rem; color: var(--ink);
+            margin-bottom: 20px; position: relative; display: inline-block;
+        }
+        .section-title::after {
+            content: ''; position: absolute; bottom: 4px; left: 0; width: 100%;
+            height: 8px; background: var(--blush-faint); z-index: -1;
+        }
+
+        .options { display: grid; gap: 10px; flex: 0; }
         .option {
-            padding: 14px 16px; border: 1px solid var(--warm); border-radius: 10px;
-            cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 12px; user-select: none;
+            display: flex; align-items: center; gap: 14px; padding: 12px 14px;
+            border-bottom: 1px solid var(--ink-faint); cursor: pointer; transition: all 0.15s; user-select: none;
         }
-        .option:hover:not(.disabled) { border-color: var(--rose); background: var(--rose-bg); }
-        .option.selected { border-color: var(--accent); background: var(--rose-bg); }
-        .option.correct { border-color: var(--success); background: var(--success-bg); }
-        .option.wrong { border-color: var(--error); background: var(--error-bg); }
-        .option.disabled { cursor: default; opacity: 0.65; }
+        .option:last-child { border-bottom: none; }
+        .option:hover:not(.disabled) { background: var(--blush-faint); }
+        .option.selected { background: var(--blush-faint); }
+        .option.correct { background: var(--success-bg); }
+        .option.wrong { background: var(--error-bg); }
+        .option.disabled { cursor: default; opacity: 0.6; }
 
-        .opt-letter {
-            width: 32px; height: 32px; border-radius: 50%; background: var(--warm);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 600; font-size: 0.9rem; flex-shrink: 0;
-            font-family: 'Playfair Display', serif;
+        .opt-check {
+            width: 20px; height: 20px; border: 1.5px solid var(--ink-light); border-radius: 50%;
+            flex-shrink: 0; transition: all 0.2s; position: relative;
         }
-        .option.selected .opt-letter { background: var(--accent); color: white; }
-        .option.correct .opt-letter { background: var(--success); color: white; }
-        .option.wrong .opt-letter { background: var(--error); color: white; }
+        .opt-check:hover { border-color: var(--rose); }
+        .option.selected .opt-check { background: var(--rose); border-color: var(--rose); }
+        .option.selected .opt-check::after {
+            content: ''; position: absolute; top: 4px; left: 6px; width: 4px; height: 8px;
+            border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg);
+        }
+        .option.correct .opt-check { background: var(--success); border-color: var(--success); }
+        .option.correct .opt-check::after {
+            content: ''; position: absolute; top: 4px; left: 6px; width: 4px; height: 8px;
+            border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg);
+        }
+        .option.wrong .opt-check { background: var(--error); border-color: var(--error); }
+        .option.wrong .opt-check::after {
+            content: '✕'; color: white; font-size: 10px; position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%,-50%);
+        }
 
-        .feedback { margin-top: 16px; padding: 10px 14px; border-radius: 8px; display: none; font-size: 0.9rem; }
+        .opt-label { font-size: 0.95rem; color: var(--ink); }
+        .option.disabled.correct .opt-label { color: var(--success); }
+        .option.disabled.wrong .opt-label { text-decoration: line-through; text-decoration-color: var(--blush); color: var(--ink-light); }
+
+        .feedback {
+            margin-top: 16px; padding: 10px 14px; border-radius: 6px; display: none;
+            font-size: 0.85rem; font-family: var(--font-serif); font-style: italic;
+        }
         .feedback.show { display: block; }
         .feedback.correct { background: var(--success-bg); color: #3d6b4f; }
         .feedback.wrong { background: var(--error-bg); color: #8b4444; }
 
-        .action-bar { padding: 14px 20px; border-top: 1px solid var(--warm); display: flex; gap: 10px; flex-shrink: 0; }
-        .btn {
-            flex: 1; padding: 11px 14px; border: none; border-radius: 20px;
-            font-size: 0.9rem; cursor: pointer; font-weight: 500; transition: all 0.15s; font-family: inherit;
+        .right-spacer { flex: 1; }
+
+        /* Action buttons at bottom of right page */
+        .action-bar {
+            display: flex; gap: 10px; padding-top: 16px;
+            border-top: 1px solid var(--ink-faint);
         }
-        .btn-primary { background: var(--accent); color: white; }
-        .btn-primary:hover { background: #9a6b52; }
-        .btn-outline { background: transparent; border: 1px solid var(--rose); color: var(--accent); }
-        .btn-outline:hover { background: var(--rose-bg); }
+        .btn {
+            flex: 1; padding: 10px 14px; border: none; border-radius: 18px;
+            font-size: 0.85rem; cursor: pointer; font-weight: 500; font-family: var(--font-sans); transition: all 0.15s;
+        }
+        .btn-primary { background: var(--rose); color: white; }
+        .btn-primary:hover { background: #a55e64; }
+        .btn-outline { background: transparent; border: 1px solid var(--blush); color: var(--rose); }
+        .btn-outline:hover { background: var(--blush-faint); }
 
         /* ===== Results ===== */
         .results-page { display: none; max-width: 480px; margin: 80px auto; padding: 20px; }
         .results-card {
-            background: white; border: 1px solid var(--warm); border-radius: 20px;
+            background: var(--paper); border: 1px solid var(--paper-shadow); border-radius: 16px;
             padding: 48px 36px; text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
         }
-        .results-card h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 8px; }
-        .results-score {
-            font-family: 'Playfair Display', serif; font-size: 3.2rem; font-weight: 700;
-            color: var(--accent); margin: 16px 0;
-        }
-        .results-detail { color: var(--text-light); margin-bottom: 24px; font-size: 0.9rem; }
+        .results-card h2 { font-family: var(--font-serif); font-size: 1.6rem; font-weight: 400; margin-bottom: 8px; }
+        .results-score { font-family: var(--font-serif); font-size: 3.2rem; font-weight: 500; color: var(--rose); margin: 16px 0; }
+        .results-detail { color: var(--ink-light); margin-bottom: 24px; font-size: 0.9rem; }
         .results-grade { padding: 10px 24px; border-radius: 10px; display: inline-block; margin-bottom: 28px; font-size: 1.1rem; }
         .grade-a { background: var(--success-bg); color: #3d6b4f; }
         .grade-b { background: #eef2fa; color: #4a5e8a; }
-        .grade-c { background: var(--rose-bg); color: #8a6a3d; }
+        .grade-c { background: var(--blush-faint); color: #8a6a3d; }
         .grade-d { background: var(--error-bg); color: #8b4444; }
         .results-actions { display: flex; gap: 12px; justify-content: center; }
 
-        .loading { text-align: center; padding: 40px; color: var(--text-light); }
+        .loading { text-align: center; padding: 40px; color: var(--ink-light); }
 
-        @media (max-width: 860px) {
-            .quiz-body { flex-direction: column; }
-            .panel-left { border-right: none; border-bottom: 1px solid var(--warm); max-height: 50vh; flex: none; }
-            .panel-right { width: 100%; flex: 1; }
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .book { width: 96vw; height: auto; min-height: 500px; flex-direction: column; border-radius: 12px; }
+            .pg.left { border-radius: 12px 12px 0 0; max-height: 50vh; overflow-y: auto; }
+            .pg.right { border-radius: 0 0 12px 12px; }
+            .spine { display: none; }
+            .book::after { display: none; }
         }
         @media (max-width: 600px) {
             .select-header h1 { font-size: 1.6rem; }
             .year-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
-            .select-page { padding: 32px 16px; }
+            .quiz-wrapper { padding: 12px; }
         }
     </style>
 </head>
@@ -180,7 +261,7 @@
 <div class="select-page" id="homePage">
     <div class="select-header">
         <h1>在线练习</h1>
-        <p class="sub" id="headerSub">选择年份开始做题</p>
+        <p class="sub">选择年份开始做题</p>
     </div>
     <div class="nav-row">
         <a href="index.html" class="nav-link">← 首页</a>
@@ -193,39 +274,52 @@
     <div class="year-grid" id="yearGrid"><div class="loading">加载中...</div></div>
 </div>
 
-<!-- ===== Quiz ===== -->
+<!-- ===== Book Quiz ===== -->
 <div class="quiz-wrapper" id="quizPage">
-    <div class="top-bar">
-        <div class="top-bar-left">
-            <button class="back-btn" onclick="goHome()">←</button>
-            <span class="quiz-title" id="quizTitle">2024</span>
-        </div>
-        <div class="top-bar-right">
-            <span>第 <span class="val" id="currentQ">1</span> 题</span>
+    <div class="book-topbar">
+        <button class="back-btn" onclick="goHome()">← 返回</button>
+        <span class="quiz-title" id="quizTitle" style="font-family:var(--font-serif);font-weight:500;"></span>
+        <div class="stats">
             <span>正确 <span class="val" id="correctCount">0</span></span>
             <span><span class="val" id="scorePercent">—</span></span>
         </div>
     </div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="quiz-body">
-        <div class="panel-left" id="panelLeft">
-            <div>
-                <span class="q-badge" id="questionBadge">第 1 题</span>
-                <span class="q-points" id="questionPoints">3 分</span>
+    <div class="book-progress"><div class="book-progress-fill" id="progressFill"></div></div>
+
+    <div class="book">
+        <!-- Left page: question -->
+        <div class="pg left" id="panelLeft">
+            <div class="q-meta">
+                <span id="questionBadge">第 1 题</span>
+                <div class="q-meta-line"></div>
+                <span id="questionPoints">3 分</span>
             </div>
+            <div class="q-number" id="qNumber">Question 1</div>
+            <div class="q-sub" id="qSub"></div>
             <img class="question-image" id="questionImage" alt="题目">
         </div>
-        <div class="panel-right">
-            <div class="answer-area">
-                <div class="answer-label">选择答案</div>
-                <div class="options" id="options"></div>
-                <div class="feedback" id="feedback"></div>
-            </div>
+
+        <!-- Spine -->
+        <div class="spine" id="spineRings"></div>
+
+        <!-- Right page: answers -->
+        <div class="pg right">
+            <div class="corner-deco"><div class="corner-dot"></div><div class="corner-dot" style="opacity:0.5"></div></div>
+
+            <h2 class="section-title">选择答案</h2>
+            <div class="options" id="options"></div>
+            <div class="feedback" id="feedback"></div>
+
+            <div class="right-spacer"></div>
+
             <div class="action-bar">
                 <button class="btn btn-outline" id="prevBtn" onclick="prevQuestion()">← 上一题</button>
-                <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()">提交</button>
+                <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()">提交答案</button>
                 <button class="btn btn-outline" id="nextBtn" onclick="nextQuestion()">下一题 →</button>
             </div>
+
+            <div class="page-curl-zone" onclick="nextQuestion()"></div>
+            <div class="page-curl"></div>
         </div>
     </div>
 </div>
@@ -245,6 +339,11 @@
 </div>
 
 <script>
+    // Render spine rings
+    document.getElementById('spineRings').innerHTML = Array(6).fill('').map(() =>
+        '<div class="ring-group"><div class="hole l"></div><div class="ring"></div><div class="hole r"></div></div>'
+    ).join('');
+
     let currentLevel = new URLSearchParams(location.search).get('level') || 'b';
     let currentYear = null, questions = [], currentIndex = 0, userAnswers = {}, correctCount = 0;
     let quizStartTime = null;
@@ -302,13 +401,16 @@
 
     function renderQuestion() {
         const q = questions[currentIndex], answered = userAnswers[q.number] !== undefined;
-        document.getElementById('currentQ').textContent = q.number;
         document.getElementById('correctCount').textContent = correctCount;
         const ac = Object.keys(userAnswers).length;
         document.getElementById('scorePercent').textContent = ac > 0 ? Math.round(correctCount/ac*100)+'%' : '—';
         document.getElementById('progressFill').style.width = ((currentIndex+1)/questions.length*100)+'%';
+
         document.getElementById('questionBadge').textContent = `第 ${q.number} 题`;
         document.getElementById('questionPoints').textContent = `${q.points} 分`;
+        document.getElementById('qNumber').textContent = `Question ${q.number}`;
+        document.getElementById('qSub').textContent = `${currentYear} · Level ${currentLevel.toUpperCase()} · ${q.points} points`;
+
         const pre = imgBase() ? `${imgBase()}/${currentYear}` : `${currentYear}`;
         document.getElementById('questionImage').src = `${pre}/${q.image}`;
 
@@ -318,7 +420,10 @@
                 if (o === userAnswers[q.number]) c += o === q.answer ? ' correct' : ' wrong';
                 if (o === q.answer) c += ' correct';
             }
-            return `<div class="${c} ${d}" onclick="selectOption('${o}')"><div class="opt-letter">${o}</div></div>`;
+            return `<div class="${c} ${d}" onclick="selectOption('${o}')">
+                <div class="opt-check"></div>
+                <div class="opt-label">${o}</div>
+            </div>`;
         }).join('');
 
         document.getElementById('prevBtn').style.visibility = currentIndex > 0 ? 'visible' : 'hidden';
@@ -329,7 +434,7 @@
         if (answered) {
             const ok = userAnswers[q.number] === q.answer;
             fb.className = 'feedback show ' + (ok ? 'correct' : 'wrong');
-            fb.textContent = ok ? '✓ 回答正确' : `✗ 正确答案: ${q.answer}`;
+            fb.textContent = ok ? '回答正确' : `正确答案: ${q.answer}`;
         } else fb.className = 'feedback';
 
         document.getElementById('panelLeft').scrollTop = 0;
@@ -338,13 +443,13 @@
     function selectOption(l) {
         if (userAnswers[questions[currentIndex].number] !== undefined) return;
         document.querySelectorAll('.option').forEach(o =>
-            o.classList.toggle('selected', o.querySelector('.opt-letter').textContent === l));
+            o.classList.toggle('selected', o.querySelector('.opt-label').textContent === l));
     }
 
     function submitAnswer() {
         const s = document.querySelector('.option.selected');
         if (!s) return;
-        const l = s.querySelector('.opt-letter').textContent, q = questions[currentIndex];
+        const l = s.querySelector('.opt-label').textContent, q = questions[currentIndex];
         userAnswers[q.number] = l;
         if (l === q.answer) correctCount++;
         renderQuestion();
@@ -369,22 +474,16 @@
         else if (p >= .75) { g.textContent = '良好'; g.className = 'results-grade grade-b'; }
         else if (p >= .6) { g.textContent = '继续努力'; g.className = 'results-grade grade-c'; }
         else { g.textContent = '加油'; g.className = 'results-grade grade-d'; }
-
-        // Submit to server
         submitQuizResult(duration);
     }
 
     async function submitQuizResult(duration) {
         const token = localStorage.getItem('token');
         if (!token) return;
-
         const answers = questions.map(q => ({
-            question: q.number,
-            answer: userAnswers[q.number] || '',
-            correct: q.answer,
-            isRight: userAnswers[q.number] === q.answer,
+            question: q.number, answer: userAnswers[q.number] || '',
+            correct: q.answer, isRight: userAnswers[q.number] === q.answer,
         }));
-
         try {
             await fetch('/api/quiz/submit', {
                 method: 'POST',
