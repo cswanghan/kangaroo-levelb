@@ -247,6 +247,7 @@
 <script>
     let currentLevel = new URLSearchParams(location.search).get('level') || 'b';
     let currentYear = null, questions = [], currentIndex = 0, userAnswers = {}, correctCount = 0;
+    let quizStartTime = null;
 
     const isC = () => currentLevel === 'c';
     const dataBase = () => isC() ? 'level-c/data' : 'data';
@@ -290,6 +291,7 @@
             const d = await r.json();
             currentYear = year; questions = d.questions;
             currentIndex = 0; userAnswers = {}; correctCount = 0;
+            quizStartTime = Date.now();
             document.getElementById('homePage').style.display = 'none';
             document.getElementById('quizPage').style.display = 'flex';
             document.getElementById('resultsPage').style.display = 'none';
@@ -358,12 +360,38 @@
         document.getElementById('quizPage').style.display = 'none';
         document.getElementById('resultsPage').style.display = 'block';
         document.getElementById('finalScore').textContent = `${correctCount}/${questions.length}`;
-        document.getElementById('finalDetail').textContent = `正确 ${correctCount} 题，正确率 ${Math.round(correctCount/questions.length*100)}%`;
+        const duration = Math.round((Date.now() - quizStartTime) / 1000);
+        const mins = Math.floor(duration / 60), secs = duration % 60;
+        document.getElementById('finalDetail').textContent =
+            `正确 ${correctCount} 题，正确率 ${Math.round(correctCount/questions.length*100)}%，用时 ${mins}分${secs}秒`;
         const p = correctCount/questions.length, g = document.getElementById('finalGrade');
         if (p >= .9) { g.textContent = '优秀'; g.className = 'results-grade grade-a'; }
         else if (p >= .75) { g.textContent = '良好'; g.className = 'results-grade grade-b'; }
         else if (p >= .6) { g.textContent = '继续努力'; g.className = 'results-grade grade-c'; }
         else { g.textContent = '加油'; g.className = 'results-grade grade-d'; }
+
+        // Submit to server
+        submitQuizResult(duration);
+    }
+
+    async function submitQuizResult(duration) {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const answers = questions.map(q => ({
+            question: q.number,
+            answer: userAnswers[q.number] || '',
+            correct: q.answer,
+            isRight: userAnswers[q.number] === q.answer,
+        }));
+
+        try {
+            await fetch('/api/quiz/submit', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ level: currentLevel, year: currentYear, answers, duration }),
+            });
+        } catch {}
     }
 
     function restartQuiz() { startQuiz(currentYear); }
