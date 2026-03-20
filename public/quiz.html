@@ -30,12 +30,13 @@
         .select-header { text-align: center; margin-bottom: 36px; }
         .select-header h1 { font-family: var(--font-serif); font-size: 2rem; font-weight: 500; margin-bottom: 6px; }
         .select-header .sub { color: var(--ink-light); font-size: 0.9rem; }
-        .nav-row { display: flex; justify-content: center; gap: 14px; margin-bottom: 32px; }
+        .nav-row { display: flex; justify-content: center; gap: 14px; margin-bottom: 32px; flex-wrap: wrap; }
         .nav-link {
             color: var(--ink-light); text-decoration: none; font-size: 0.85rem;
             padding: 6px 18px; border: 1px solid var(--paper-shadow); border-radius: 16px;
         }
         .nav-link:hover { color: var(--rose); border-color: var(--blush); }
+        .nav-link.active { color: var(--rose); border-color: var(--blush); background: var(--blush-faint); }
         .level-switch { display: flex; justify-content: center; border-bottom: 1px solid var(--paper-shadow); margin-bottom: 32px; }
         .lv-tab { padding: 10px 28px; font-size: 0.9rem; color: var(--ink-light); cursor: pointer; border-bottom: 2px solid transparent; }
         .lv-tab:hover { color: var(--ink-med); }
@@ -148,7 +149,18 @@
         }
         .q-sub { font-family: var(--font-serif); font-size: 1rem; color: var(--ink-med); font-style: italic; margin-bottom: 20px; }
 
-        .question-image { width: 100%; border-radius: 6px; border: 1px solid var(--paper-shadow); background: white; cursor: zoom-in; }
+        /* Issue #5: larger default image */
+        .question-image {
+            width: 100%; max-width: 100%; border-radius: 6px; border: 1px solid var(--paper-shadow);
+            background: white; cursor: zoom-in;
+            min-height: 200px; object-fit: contain;
+        }
+        .question-image.loading {
+            background: linear-gradient(90deg, #f0ece8 25%, #e8e4df 50%, #f0ece8 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer { to { background-position: -200% 0; } }
 
         /* Lightbox overlay */
         .lightbox {
@@ -208,7 +220,7 @@
         }
         .option.wrong .opt-check { background: var(--error); border-color: var(--error); }
         .option.wrong .opt-check::after {
-            content: '✕'; color: white; font-size: 10px; position: absolute;
+            content: '\2715'; color: white; font-size: 10px; position: absolute;
             top: 50%; left: 50%; transform: translate(-50%,-50%);
         }
 
@@ -226,7 +238,7 @@
 
         .right-spacer { flex: 1; }
 
-        /* Action buttons at bottom of right page */
+        /* Issue #6: Action buttons - single primary action */
         .action-bar {
             display: flex; gap: 10px; padding-top: 16px;
             border-top: 1px solid var(--ink-faint);
@@ -239,6 +251,9 @@
         .btn-primary:hover { background: #a55e64; }
         .btn-outline { background: transparent; border: 1px solid var(--blush); color: var(--rose); }
         .btn-outline:hover { background: var(--blush-faint); }
+        .btn-ghost { background: transparent; border: 1px solid transparent; color: var(--ink-light); }
+        .btn-ghost:hover { color: var(--ink-med); }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
         /* ===== Results ===== */
         .results-page { display: none; max-width: 480px; margin: 80px auto; padding: 20px; }
@@ -249,7 +264,12 @@
         }
         .results-card h2 { font-family: var(--font-serif); font-size: 1.6rem; font-weight: 400; margin-bottom: 8px; }
         .results-score { font-family: var(--font-serif); font-size: 3.2rem; font-weight: 500; color: var(--rose); margin: 16px 0; }
-        .results-detail { color: var(--ink-light); margin-bottom: 24px; font-size: 0.9rem; }
+        .results-detail { color: var(--ink-light); margin-bottom: 16px; font-size: 0.9rem; line-height: 1.8; }
+        .results-breakdown {
+            text-align: left; background: var(--blush-faint); border-radius: 10px;
+            padding: 14px 18px; margin-bottom: 20px; font-size: 0.82rem; color: var(--ink-med); line-height: 1.8;
+        }
+        .results-breakdown .label { display: inline-block; min-width: 100px; }
         .results-grade { padding: 10px 24px; border-radius: 10px; display: inline-block; margin-bottom: 28px; font-size: 1.1rem; }
         .grade-a { background: var(--success-bg); color: #3d6b4f; }
         .grade-b { background: #eef2fa; color: #4a5e8a; }
@@ -269,6 +289,35 @@
         .history-item .hi-meta { font-size: 0.75rem; color: var(--ink-light); margin-top: 2px; }
         .history-item .hi-score { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 500; color: var(--rose); }
         .history-empty { text-align: center; color: var(--ink-light); padding: 24px; font-size: 0.9rem; }
+
+        /* Issue #3: Wrong questions book */
+        .wrong-item {
+            background: var(--paper); border: 1px solid var(--paper-shadow); border-radius: 10px;
+            padding: 14px 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .wrong-item:hover { border-color: var(--blush); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .wrong-item .wi-left { flex: 1; }
+        .wrong-item .wi-title { font-family: var(--font-serif); font-weight: 500; font-size: 0.95rem; }
+        .wrong-item .wi-meta { font-size: 0.75rem; color: var(--ink-light); margin-top: 2px; }
+        .wrong-item .wi-answers { display: flex; gap: 12px; align-items: center; font-size: 0.85rem; }
+        .wrong-item .wi-wrong { color: var(--error); text-decoration: line-through; }
+        .wrong-item .wi-correct { color: var(--success); font-weight: 600; }
+        .wrong-detail-overlay {
+            display: none; position: fixed; inset: 0; z-index: 900;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(3px);
+            justify-content: center; align-items: center; padding: 20px;
+        }
+        .wrong-detail-overlay.open { display: flex; }
+        .wrong-detail-box {
+            background: var(--paper); border-radius: 16px; padding: 28px; max-width: 600px; width: 95%;
+            max-height: 85vh; overflow-y: auto;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+        }
+        .wrong-detail-box h3 { font-family: var(--font-serif); font-size: 1.2rem; margin-bottom: 16px; }
+        .wrong-detail-box img { width: 100%; border-radius: 6px; border: 1px solid var(--paper-shadow); margin-bottom: 16px; cursor: zoom-in; }
+        .wrong-detail-box .wd-info { font-size: 0.85rem; color: var(--ink-med); line-height: 1.8; margin-bottom: 16px; }
+        .wrong-detail-box .wd-actions { display: flex; gap: 10px; justify-content: flex-end; }
 
         /* Confirm modal */
         .modal-overlay {
@@ -322,6 +371,7 @@
         <a href="index.html" class="nav-link">← 首页</a>
         <a href="papers.html" class="nav-link" id="pdfLink">PDF 真题</a>
         <a href="javascript:showHistory()" class="nav-link" id="historyLink">历史成绩</a>
+        <a href="javascript:showWrongBook()" class="nav-link" id="wrongLink">错题本</a>
     </div>
     <div class="level-switch">
         <div class="lv-tab" data-level="b" onclick="switchLevel('b')">Level B · 3-4年级</div>
@@ -333,9 +383,18 @@
     <div id="historyPanel" style="display:none; margin-top:24px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
             <h2 style="font-family:var(--font-serif); font-size:1.3rem; font-weight:500;">历史成绩</h2>
-            <a href="javascript:hideHistory()" class="nav-link" style="font-size:0.8rem;">关闭</a>
+            <a href="javascript:hidePanel()" class="nav-link" style="font-size:0.8rem;">关闭</a>
         </div>
         <div id="historyList"><div class="loading">加载中...</div></div>
+    </div>
+
+    <!-- Issue #3: Wrong questions book panel -->
+    <div id="wrongPanel" style="display:none; margin-top:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h2 style="font-family:var(--font-serif); font-size:1.3rem; font-weight:500;">错题本</h2>
+            <a href="javascript:hidePanel()" class="nav-link" style="font-size:0.8rem;">关闭</a>
+        </div>
+        <div id="wrongList"><div class="loading">加载中...</div></div>
     </div>
 </div>
 
@@ -377,11 +436,8 @@
 
             <div class="right-spacer"></div>
 
-            <div class="action-bar">
-                <button class="btn btn-outline" id="prevBtn" onclick="prevQuestion()">← 上一题</button>
-                <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()">提交答案</button>
-                <button class="btn btn-outline" id="nextBtn" onclick="nextQuestion()">下一题 →</button>
-            </div>
+            <!-- Issue #6: Redesigned action bar -->
+            <div class="action-bar" id="actionBar"></div>
 
             <div class="page-curl-zone" onclick="nextQuestion()"></div>
             <div class="page-curl"></div>
@@ -393,7 +449,8 @@
 <div class="results-page" id="resultsPage">
     <div class="results-card">
         <h2>完成</h2>
-        <div class="results-score" id="finalScore">0/24</div>
+        <div class="results-score" id="finalScore">0</div>
+        <div class="results-breakdown" id="finalBreakdown"></div>
         <div class="results-detail" id="finalDetail"></div>
         <div class="results-grade" id="finalGrade"></div>
         <div class="results-actions">
@@ -423,14 +480,31 @@
     <div class="lightbox-hint">点击任意位置关闭</div>
 </div>
 
+<!-- Issue #3: Wrong question detail overlay -->
+<div class="wrong-detail-overlay" id="wrongDetailOverlay" onclick="closeWrongDetail(event)">
+    <div class="wrong-detail-box" onclick="event.stopPropagation()">
+        <h3 id="wrongDetailTitle"></h3>
+        <img id="wrongDetailImg" alt="题目" onclick="openLightboxSrc(this.src)">
+        <div class="wd-info" id="wrongDetailInfo"></div>
+        <div class="wd-actions">
+            <button class="btn btn-outline" onclick="closeWrongDetail()">关闭</button>
+            <button class="btn btn-primary" id="wrongRetryBtn" onclick="">重做此年</button>
+        </div>
+    </div>
+</div>
+
 <script>
     function openLightbox() {
         const lb = document.getElementById('lightbox');
         document.getElementById('lightboxImg').src = document.getElementById('questionImage').src;
         lb.classList.add('open');
     }
+    function openLightboxSrc(src) {
+        document.getElementById('lightboxImg').src = src;
+        document.getElementById('lightbox').classList.add('open');
+    }
     function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeWrongDetail(); } });
 
     // Render spine rings
     document.getElementById('spineRings').innerHTML = Array(6).fill('').map(() =>
@@ -466,6 +540,7 @@
         document.querySelectorAll('.lv-tab').forEach(t =>
             t.classList.toggle('active', t.dataset.level === lv));
         document.getElementById('pdfLink').href = isC() ? 'papers.html?level=c' : 'papers.html';
+        hidePanel();
         loadYears();
     }
 
@@ -485,12 +560,10 @@
             const d = await r.json();
             pendingYear = year;
             pendingData = d;
-            // Show confirm modal
             const lv = currentLevel.toUpperCase();
             const total = d.questions.length;
-            const maxScore = d.questions.reduce((s, q) => s + q.points, 0);
             document.getElementById('modalTitle').textContent = `${year} 年 · Level ${lv}`;
-            document.getElementById('modalInfo').textContent = `共 ${total} 题 · 满分 ${maxScore} 分 · 开始后自动计时`;
+            document.getElementById('modalInfo').textContent = `共 ${total} 题 · 满分 120 分 · 开始后自动计时`;
             document.getElementById('startModal').classList.add('open');
         } catch { alert('加载失败'); }
     }
@@ -511,8 +584,19 @@
         document.getElementById('quizPage').style.display = 'flex';
         document.getElementById('resultsPage').style.display = 'none';
         document.getElementById('quizTitle').textContent = `${currentYear} · Level ${currentLevel.toUpperCase()}`;
+        // Issue #5: preload first few images
+        preloadImages(0);
         renderQuestion();
         pendingYear = null; pendingData = null;
+    }
+
+    // Issue #5: Preload images ahead
+    function preloadImages(fromIndex) {
+        for (let i = fromIndex; i < Math.min(fromIndex + 3, questions.length); i++) {
+            const img = new Image();
+            const pre = imgBase() ? `${imgBase()}/${currentYear}` : `${currentYear}`;
+            img.src = `${pre}/${questions[i].image}`;
+        }
     }
 
     // Get option text from question data if available, else just letter
@@ -529,7 +613,6 @@
         const selected = userAnswers[q.number];
         const ac = Object.keys(userAnswers).length;
 
-        // Stats: show answered count / total before submit
         document.getElementById('correctCount').textContent = ac;
         document.getElementById('scorePercent').textContent = `${questions.length} 题`;
         document.getElementById('progressFill').style.width = ((currentIndex+1)/questions.length*100)+'%';
@@ -539,10 +622,18 @@
         document.getElementById('qNumber').textContent = `Question ${q.number}`;
         document.getElementById('qSub').textContent = `${currentYear} · Level ${currentLevel.toUpperCase()} · ${q.points} points`;
 
+        // Issue #5: image loading state
+        const imgEl = document.getElementById('questionImage');
+        imgEl.classList.add('loading');
         const pre = imgBase() ? `${imgBase()}/${currentYear}` : `${currentYear}`;
-        document.getElementById('questionImage').src = `${pre}/${q.image}`;
+        imgEl.src = `${pre}/${q.image}`;
+        imgEl.onload = () => imgEl.classList.remove('loading');
+        imgEl.onerror = () => imgEl.classList.remove('loading');
 
-        // Before submit: allow select/change; After submit: show correct/wrong
+        // Preload upcoming images
+        preloadImages(currentIndex + 1);
+
+        // Options
         document.getElementById('options').innerHTML = ['A','B','C','D','E'].map(o => {
             let c = 'option';
             const optText = getOptionText(q, o);
@@ -559,29 +650,71 @@
             </div>`;
         }).join('');
 
-        document.getElementById('prevBtn').style.visibility = currentIndex > 0 ? 'visible' : 'hidden';
-
-        // Submit button: only show on last question when all answered and not yet submitted
-        const allAnswered = Object.keys(userAnswers).length === questions.length;
-        if (quizSubmitted) {
-            document.getElementById('submitBtn').style.display = 'none';
-            document.getElementById('nextBtn').textContent = currentIndex === questions.length-1 ? '查看结果 →' : '下一题 →';
-        } else {
-            document.getElementById('submitBtn').textContent = selected ? '确认' : '选择后确认';
-            document.getElementById('submitBtn').style.display = 'inline-block';
-            document.getElementById('nextBtn').textContent = currentIndex === questions.length-1
-                ? (allAnswered ? '提交试卷 →' : '下一题 →') : '下一题 →';
-        }
+        // Issue #6: Render action bar based on state
+        renderActionBar(q, selected);
 
         // Feedback: only after quiz submitted
         const fb = document.getElementById('feedback');
         if (quizSubmitted && selected) {
             const ok = selected === q.answer;
             fb.className = 'feedback show ' + (ok ? 'correct' : 'wrong');
-            fb.textContent = ok ? `✓ 回答正确 (+${q.points}分)` : `✗ 正确答案: ${q.answer}`;
-        } else fb.className = 'feedback';
+            fb.textContent = ok ? `✓ 回答正确 (+${q.points}分)` : `✗ 正确答案: ${q.answer} (${selected ? '-1分' : '0分'})`;
+        } else if (quizSubmitted && !selected) {
+            fb.className = 'feedback show';
+            fb.style.background = '#f5f3f0'; fb.style.color = 'var(--ink-light)';
+            fb.textContent = `未作答 · 正确答案: ${q.answer} (0分)`;
+        } else {
+            fb.className = 'feedback';
+            fb.style.background = ''; fb.style.color = '';
+        }
 
         document.getElementById('panelLeft').scrollTop = 0;
+    }
+
+    // Issue #6: Single primary action button pattern
+    function renderActionBar(q, selected) {
+        const isFirst = currentIndex === 0;
+        const isLast = currentIndex === questions.length - 1;
+        const allAnswered = Object.keys(userAnswers).length === questions.length;
+        const bar = document.getElementById('actionBar');
+
+        if (quizSubmitted) {
+            // After submit: just prev/next navigation, "查看结果" on last
+            const prevBtn = isFirst ? '' : `<button class="btn btn-ghost" onclick="prevQuestion()">← 上一题</button>`;
+            const nextText = isLast ? '查看结果 →' : '下一题 →';
+            bar.innerHTML = `${prevBtn}<button class="btn btn-primary" onclick="nextQuestion()">${nextText}</button>`;
+            return;
+        }
+
+        // Before submit
+        let html = '';
+
+        // Prev button
+        if (!isFirst) {
+            html += `<button class="btn btn-ghost" onclick="prevQuestion()">← 上一题</button>`;
+        }
+
+        if (!selected) {
+            // No answer selected: "跳过" as primary, or "提交试卷" if last & all answered
+            if (isLast && allAnswered) {
+                html += `<button class="btn btn-primary" onclick="submitQuiz()">提交试卷</button>`;
+            } else {
+                html += `<button class="btn btn-outline" onclick="skipQuestion()">跳过</button>`;
+            }
+        } else {
+            // Answer selected: "确认" as primary action
+            if (isLast) {
+                if (allAnswered) {
+                    html += `<button class="btn btn-outline" onclick="nextQuestion()">确认并提交试卷 →</button>`;
+                } else {
+                    html += `<button class="btn btn-primary" onclick="confirmAndNext()">确认</button>`;
+                }
+            } else {
+                html += `<button class="btn btn-primary" onclick="confirmAndNext()">确认，下一题 →</button>`;
+            }
+        }
+
+        bar.innerHTML = html;
     }
 
     function selectOption(l) {
@@ -590,8 +723,25 @@
         renderQuestion();
     }
 
+    // Issue #6: Combined confirm + next
+    function confirmAndNext() {
+        const q = questions[currentIndex];
+        if (!userAnswers[q.number]) return;
+        if (currentIndex < questions.length - 1) {
+            currentIndex++;
+            renderQuestion();
+        }
+    }
+
+    // Issue #6: Skip (move to next without answering)
+    function skipQuestion() {
+        if (currentIndex < questions.length - 1) {
+            currentIndex++;
+            renderQuestion();
+        }
+    }
+
     function submitAnswer() {
-        // "确认" just moves to next question (answer already saved via selectOption)
         const q = questions[currentIndex];
         if (!userAnswers[q.number]) return;
         if (currentIndex < questions.length - 1) {
@@ -621,7 +771,7 @@
         if (quizSubmitted) return;
         const unanswered = questions.filter(q => !userAnswers[q.number]);
         if (unanswered.length > 0) {
-            if (!confirm(`还有 ${unanswered.length} 题未作答，确认提交？`)) return;
+            if (!confirm(`还有 ${unanswered.length} 题未作答（未答题不加不扣分），确认提交？`)) return;
         }
         quizSubmitted = true;
         stopTimer();
@@ -631,24 +781,56 @@
         submitQuizResult(duration);
     }
 
+    // Issue #4: Official Kangaroo Math scoring
+    // Base: 24 pts, Q1-8: 3pts, Q9-16: 4pts, Q17-24: 5pts
+    // Correct: +points, Wrong: -1, Unanswered: 0, Min: 0, Max: 120
     function calcScore() {
-        let score = 0, maxScore = 0, correct = 0;
+        let baseScore = 24;
+        let earnedPoints = 0;
+        let penalty = 0;
+        let correct = 0;
+        let wrong = 0;
+        let unanswered = 0;
+
         questions.forEach(q => {
-            maxScore += q.points;
-            if (userAnswers[q.number] === q.answer) { score += q.points; correct++; }
+            const ua = userAnswers[q.number];
+            if (!ua) {
+                unanswered++;
+            } else if (ua === q.answer) {
+                earnedPoints += q.points;
+                correct++;
+            } else {
+                penalty += 1;
+                wrong++;
+            }
         });
-        return { score, maxScore, correct };
+
+        const rawScore = baseScore + earnedPoints - penalty;
+        const score = Math.max(0, rawScore);
+        const maxScore = 120; // 24 + 96
+
+        return { score, maxScore, correct, wrong, unanswered, baseScore, earnedPoints, penalty };
     }
 
     function showResultsPage() {
-        const { score, maxScore, correct } = calcScore();
+        const { score, maxScore, correct, wrong, unanswered, baseScore, earnedPoints, penalty } = calcScore();
         document.getElementById('quizPage').style.display = 'none';
         document.getElementById('resultsPage').style.display = 'block';
-        document.getElementById('finalScore').textContent = `${score} / ${maxScore}`;
+        document.getElementById('finalScore').textContent = `${score} 分`;
+
+        // Breakdown
+        document.getElementById('finalBreakdown').innerHTML =
+            `<div><span class="label">起始分：</span>${baseScore} 分</div>` +
+            `<div><span class="label">答对加分：</span>+${earnedPoints} 分（${correct} 题）</div>` +
+            `<div><span class="label">答错扣分：</span>-${penalty} 分（${wrong} 题）</div>` +
+            `<div><span class="label">未作答：</span>${unanswered} 题（不加不扣）</div>` +
+            `<div style="margin-top:6px;border-top:1px solid var(--paper-shadow);padding-top:6px;font-weight:600;">` +
+            `<span class="label">最终得分：</span>${baseScore} + ${earnedPoints} - ${penalty} = ${score} 分 / ${maxScore} 分</div>`;
+
         const duration = Math.round((Date.now() - quizStartTime) / 1000);
         const mins = Math.floor(duration / 60), secs = duration % 60;
-        document.getElementById('finalDetail').textContent =
-            `正确 ${correct}/${questions.length} 题，得分 ${score}/${maxScore}，用时 ${mins}分${secs}秒`;
+        document.getElementById('finalDetail').textContent = `用时 ${mins}分${secs}秒`;
+
         const p = score / maxScore, g = document.getElementById('finalGrade');
         if (p >= .9) { g.textContent = '优秀'; g.className = 'results-grade grade-a'; }
         else if (p >= .75) { g.textContent = '良好'; g.className = 'results-grade grade-b'; }
@@ -659,7 +841,7 @@
     async function submitQuizResult(duration) {
         const token = localStorage.getItem('token');
         if (!token) return;
-        const { score } = calcScore();
+        const { score, correct } = calcScore();
         const answers = questions.map(q => ({
             question: q.number, answer: userAnswers[q.number] || '',
             correct: q.answer, isRight: userAnswers[q.number] === q.answer,
@@ -680,8 +862,7 @@
         document.getElementById('homePage').style.display = 'block';
         document.getElementById('quizPage').style.display = 'none';
         document.getElementById('resultsPage').style.display = 'none';
-        document.getElementById('historyPanel').style.display = 'none';
-        document.getElementById('yearGrid').style.display = '';
+        hidePanel();
     }
 
     // Timer
@@ -699,24 +880,39 @@
             `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
     }
 
-    // History
+    // Issue #2: Fix history panel - unified panel management
+    function hidePanel() {
+        document.getElementById('historyPanel').style.display = 'none';
+        document.getElementById('wrongPanel').style.display = 'none';
+        document.getElementById('yearGrid').style.display = '';
+        // Remove active state from nav links
+        document.querySelectorAll('.nav-row .nav-link').forEach(l => l.classList.remove('active'));
+    }
+
+    // Issue #2: History - fixed
     async function showHistory() {
+        hidePanel();
         document.getElementById('yearGrid').style.display = 'none';
         document.getElementById('historyPanel').style.display = 'block';
+        document.getElementById('historyLink').classList.add('active');
         document.getElementById('historyList').innerHTML = '<div class="loading">加载中...</div>';
 
         const token = localStorage.getItem('token');
-        if (!token) { document.getElementById('historyList').innerHTML = '<div class="history-empty">请先登录</div>'; return; }
+        if (!token) {
+            document.getElementById('historyList').innerHTML = '<div class="history-empty">请先登录查看历史成绩</div>';
+            return;
+        }
 
         try {
             const r = await fetch(`/api/quiz/history?level=${currentLevel}`, {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
+            if (!r.ok) throw new Error('API error');
             const d = await r.json();
             const list = d.sessions || [];
 
             if (!list.length) {
-                document.getElementById('historyList').innerHTML = '<div class="history-empty">暂无做题记录</div>';
+                document.getElementById('historyList').innerHTML = '<div class="history-empty">暂无做题记录，完成一套题目后这里会显示成绩</div>';
                 return;
             }
 
@@ -733,14 +929,76 @@
                 </div>`;
             }).join('');
         } catch {
-            document.getElementById('historyList').innerHTML = '<div class="history-empty">加载失败</div>';
+            document.getElementById('historyList').innerHTML = '<div class="history-empty">加载失败，请稍后再试</div>';
         }
     }
 
-    function hideHistory() {
-        document.getElementById('historyPanel').style.display = 'none';
-        document.getElementById('yearGrid').style.display = '';
+    // Issue #3: Wrong questions book
+    async function showWrongBook() {
+        hidePanel();
+        document.getElementById('yearGrid').style.display = 'none';
+        document.getElementById('wrongPanel').style.display = 'block';
+        document.getElementById('wrongLink').classList.add('active');
+        document.getElementById('wrongList').innerHTML = '<div class="loading">加载中...</div>';
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+            document.getElementById('wrongList').innerHTML = '<div class="history-empty">请先登录查看错题本</div>';
+            return;
+        }
+
+        try {
+            const r = await fetch(`/api/quiz/wrong?level=${currentLevel}`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!r.ok) throw new Error('API error');
+            const d = await r.json();
+            const list = d.wrong || [];
+
+            if (!list.length) {
+                document.getElementById('wrongList').innerHTML = '<div class="history-empty">暂无错题记录，全部答对！</div>';
+                return;
+            }
+
+            document.getElementById('wrongList').innerHTML = list.map((w, i) => {
+                const lvLabel = (w.level||'b').toUpperCase();
+                const pre = w.level === 'c' ? `level-c/${w.year}` : `${w.year}`;
+                return `<div class="wrong-item" onclick='showWrongDetail(${JSON.stringify(w)})'>
+                    <div class="wi-left">
+                        <div class="wi-title">Level ${lvLabel} · ${w.year} 年 · 第 ${w.question} 题</div>
+                        <div class="wi-meta">${w.created_at ? w.created_at.replace('T',' ').slice(0,16) : ''}</div>
+                    </div>
+                    <div class="wi-answers">
+                        <span class="wi-wrong">${w.user_answer}</span>
+                        <span>→</span>
+                        <span class="wi-correct">${w.correct_answer}</span>
+                    </div>
+                </div>`;
+            }).join('');
+        } catch {
+            document.getElementById('wrongList').innerHTML = '<div class="history-empty">加载失败，请稍后再试</div>';
+        }
     }
+
+    function showWrongDetail(w) {
+        const lvLabel = (w.level||'b').toUpperCase();
+        const pre = w.level === 'c' ? `level-c/${w.year}` : `${w.year}`;
+        document.getElementById('wrongDetailTitle').textContent = `Level ${lvLabel} · ${w.year} 年 · 第 ${w.question} 题`;
+        document.getElementById('wrongDetailImg').src = `${pre}/q${w.question}.png`;
+        document.getElementById('wrongDetailInfo').innerHTML =
+            `<div>你的答案：<span style="color:var(--error);text-decoration:line-through;">${w.user_answer}</span></div>` +
+            `<div>正确答案：<span style="color:var(--success);font-weight:600;">${w.correct_answer}</span></div>`;
+        document.getElementById('wrongRetryBtn').onclick = () => { closeWrongDetail(); startQuiz(w.year); };
+        document.getElementById('wrongDetailOverlay').classList.add('open');
+    }
+
+    function closeWrongDetail(e) {
+        if (e && e.target !== document.getElementById('wrongDetailOverlay')) return;
+        document.getElementById('wrongDetailOverlay').classList.remove('open');
+    }
+
+    // Legacy compat
+    function hideHistory() { hidePanel(); }
 
     init();
 </script>
