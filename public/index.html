@@ -30,16 +30,36 @@
         .page {
             max-width: 960px;
             margin: 0 auto;
-            padding: 60px 24px;
+            padding: 40px 24px 60px;
         }
 
-        /* Header */
+        /* Header with 3D animation */
         .site-header {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 48px;
+            position: relative;
         }
 
-        .site-header .icon { font-size: 3.2rem; margin-bottom: 12px; }
+        .hero-canvas-wrap {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 30px rgba(176,125,98,0.15);
+            border: 2px solid var(--rose-light);
+        }
+
+        /* Fallback for mobile / no-WebGL */
+        .hero-fallback {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 4rem;
+            background: linear-gradient(135deg, var(--rose-bg), var(--warm));
+        }
+
+        .hero-canvas-wrap canvas { display: block; }
 
         .site-header h1 {
             font-family: 'Playfair Display', 'Noto Serif SC', serif;
@@ -57,159 +77,74 @@
 
         /* Level selector */
         .level-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 0;
-            margin-bottom: 48px;
-            border-bottom: 1px solid var(--rose-light);
+            display: flex; justify-content: center; gap: 0;
+            margin-bottom: 48px; border-bottom: 1px solid var(--rose-light);
         }
 
         .level-tab {
-            padding: 12px 32px;
-            font-family: 'Noto Serif SC', serif;
-            font-size: 0.95rem;
-            color: var(--text-light);
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
-            letter-spacing: 1px;
+            padding: 12px 32px; font-family: 'Noto Serif SC', serif;
+            font-size: 0.95rem; color: var(--text-light); cursor: pointer;
+            border-bottom: 2px solid transparent; transition: all 0.2s; letter-spacing: 1px;
         }
-
         .level-tab:hover { color: var(--text); }
+        .level-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
 
-        .level-tab.active {
-            color: var(--accent);
-            border-bottom-color: var(--accent);
-            font-weight: 600;
-        }
-
-        /* Level info */
         .level-info {
-            text-align: center;
-            margin-bottom: 48px;
-            color: var(--text-light);
-            font-size: 0.9rem;
+            text-align: center; margin-bottom: 48px; color: var(--text-light); font-size: 0.9rem;
         }
-
         .level-info .grade {
-            display: inline-block;
-            background: var(--rose-bg);
-            color: var(--accent);
-            padding: 4px 16px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            margin-top: 6px;
+            display: inline-block; background: var(--rose-bg); color: var(--accent);
+            padding: 4px 16px; border-radius: 12px; font-size: 0.8rem; margin-top: 6px;
         }
 
         /* Entry cards */
         .entry-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 28px;
-            max-width: 640px;
-            margin: 0 auto;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 28px; max-width: 640px; margin: 0 auto;
         }
 
         .entry-card {
-            background: white;
-            border: 1px solid var(--warm);
-            border-radius: 16px;
-            padding: 44px 28px;
-            text-decoration: none;
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            transition: all 0.25s;
-            position: relative;
-            overflow: hidden;
+            background: white; border: 1px solid var(--warm); border-radius: 16px;
+            padding: 44px 28px; text-decoration: none; color: var(--text);
+            display: flex; flex-direction: column; align-items: center; gap: 16px;
+            transition: all 0.25s; position: relative; overflow: hidden;
         }
-
         .entry-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--rose-light);
-            transition: background 0.25s;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: var(--rose-light); transition: background 0.25s;
         }
-
-        .entry-card:hover {
-            border-color: var(--rose);
-            box-shadow: 0 8px 30px rgba(180,140,110,0.1);
-            transform: translateY(-2px);
-        }
-
+        .entry-card:hover { border-color: var(--rose); box-shadow: 0 8px 30px rgba(180,140,110,0.1); transform: translateY(-2px); }
         .entry-card:hover::before { background: var(--accent); }
 
         .entry-icon { font-size: 2.2rem; }
+        .entry-title { font-family: 'Playfair Display', 'Noto Serif SC', serif; font-size: 1.3rem; font-weight: 600; }
+        .entry-desc { color: var(--text-light); font-size: 0.85rem; line-height: 1.7; text-align: center; }
+        .entry-action { font-size: 0.8rem; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
 
-        .entry-title {
-            font-family: 'Playfair Display', 'Noto Serif SC', serif;
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-
-        .entry-desc {
-            color: var(--text-light);
-            font-size: 0.85rem;
-            line-height: 1.7;
-            text-align: center;
-        }
-
-        .entry-action {
-            font-size: 0.8rem;
-            color: var(--accent);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-top: 4px;
-        }
-
-        /* Login link */
-        .login-link {
-            text-align: center;
-            margin-top: 48px;
-        }
-
+        .login-link { text-align: center; margin-top: 48px; }
         .login-link a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-size: 0.85rem;
-            padding: 8px 20px;
-            border: 1px solid var(--warm);
-            border-radius: 20px;
-            transition: all 0.2s;
+            color: var(--text-light); text-decoration: none; font-size: 0.85rem;
+            padding: 8px 20px; border: 1px solid var(--warm); border-radius: 20px; transition: all 0.2s;
         }
+        .login-link a:hover { color: var(--accent); border-color: var(--rose); }
 
-        .login-link a:hover {
-            color: var(--accent);
-            border-color: var(--rose);
-        }
-
-        /* Footer */
-        .site-footer {
-            text-align: center;
-            margin-top: 60px;
-            color: var(--text-light);
-            font-size: 0.8rem;
-            opacity: 0.7;
-        }
+        .site-footer { text-align: center; margin-top: 60px; color: var(--text-light); font-size: 0.8rem; opacity: 0.7; }
 
         @media (max-width: 600px) {
             .site-header h1 { font-size: 2rem; }
             .entry-grid { grid-template-columns: 1fr; max-width: 360px; }
             .entry-card { padding: 36px 24px; }
-            .page { padding: 40px 16px; }
+            .page { padding: 30px 16px 40px; }
+            .hero-canvas-wrap { width: 140px; height: 140px; }
         }
     </style>
 </head>
 <body>
     <div class="page">
         <div class="site-header">
-            <div class="icon">🦘</div>
+            <div class="hero-canvas-wrap" id="heroWrap">
+                <div class="hero-fallback" id="heroFallback">🦘</div>
+            </div>
             <h1>Kangaroo Math</h1>
             <p class="tagline">国际袋鼠数学竞赛 · 历年真题与练习</p>
         </div>
@@ -235,7 +170,7 @@
             <a id="quizEntry" href="quiz.html" class="entry-card">
                 <div class="entry-icon">✏️</div>
                 <div class="entry-title">在线练习</div>
-                <div class="entry-desc">逐题作答 · 即时判分<br>按年份选择套卷</div>
+                <div class="entry-desc">逐题作答 · 提交判分<br>按年份选择套卷</div>
                 <div class="entry-action">Start →</div>
             </a>
         </div>
@@ -249,8 +184,8 @@
         </div>
     </div>
 
+    <!-- User status -->
     <script>
-        // Show user status if logged in
         (function() {
             const user = JSON.parse(localStorage.getItem('user') || 'null');
             if (user) {
@@ -263,35 +198,133 @@
         })();
     </script>
 
+    <!-- Level switch -->
     <script>
         let currentLevel = 'b';
-
         const levelConfig = {
-            b: {
-                label: '等级 B · 2013 — 2025 · 共 13 年真题',
-                grade: '适合 3-4 年级',
-                pdf: 'papers.html',
-                quiz: 'quiz.html'
-            },
-            c: {
-                label: '等级 C · 2013 — 2025 · 共 13 年真题',
-                grade: '适合 5-6 年级',
-                pdf: 'papers.html?level=c',
-                quiz: 'quiz.html?level=c'
-            }
+            b: { label: '等级 B · 2013 — 2025 · 共 13 年真题', grade: '适合 3-4 年级', pdf: 'papers.html', quiz: 'quiz.html' },
+            c: { label: '等级 C · 2013 — 2025 · 共 13 年真题', grade: '适合 5-6 年级', pdf: 'papers.html?level=c', quiz: 'quiz.html?level=c' }
         };
-
         function switchLevel(level) {
             currentLevel = level;
             const cfg = levelConfig[level];
-
             document.querySelectorAll('.level-tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`.level-tab:nth-child(${level === 'b' ? 1 : 2})`).classList.add('active');
-
-            document.getElementById('levelInfo').innerHTML =
-                `<div>${cfg.label}</div><div class="grade">${cfg.grade}</div>`;
+            document.getElementById('levelInfo').innerHTML = `<div>${cfg.label}</div><div class="grade">${cfg.grade}</div>`;
             document.getElementById('pdfEntry').href = cfg.pdf;
             document.getElementById('quizEntry').href = cfg.quiz;
+        }
+    </script>
+
+    <!-- 3D Animated Icon (Three.js) - desktop only -->
+    <script type="importmap">
+        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+
+        // Skip on mobile / low-power
+        if (window.innerWidth < 700) return;
+
+        const wrap = document.getElementById('heroWrap');
+        const fallback = document.getElementById('heroFallback');
+        const size = wrap.clientWidth;
+
+        try {
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xFDF5F0); // rose-bg warm tone
+            scene.fog = new THREE.Fog(0xFDF5F0, 6, 18);
+
+            const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+            camera.position.set(0, 0, 10);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(size, size);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.0;
+
+            // Environment map for reflections - warm tones
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024; canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFF8F2'; ctx.fillRect(0, 0, 1024, 512);
+            ctx.fillStyle = '#C4A08A';
+            ctx.fillRect(100, 0, 120, 512);
+            ctx.fillRect(400, 0, 60, 512);
+            ctx.fillRect(700, 0, 160, 512);
+            ctx.fillStyle = '#8B6B52';
+            ctx.fillRect(0, 120, 1024, 30);
+            ctx.fillRect(0, 380, 1024, 40);
+            const envMap = new THREE.CanvasTexture(canvas);
+            envMap.mapping = THREE.EquirectangularReflectionMapping;
+            envMap.colorSpace = THREE.SRGBColorSpace;
+            scene.environment = envMap;
+
+            scene.add(new THREE.AmbientLight(0xfff5ee, 0.6));
+            const d1 = new THREE.DirectionalLight(0xfff0e0, 2.5);
+            d1.position.set(5, 5, 5); scene.add(d1);
+            const d2 = new THREE.DirectionalLight(0xffe8d5, 1.5);
+            d2.position.set(-5, 0, 5); scene.add(d2);
+
+            // Rose-gold material
+            const material = new THREE.MeshPhysicalMaterial({
+                color: 0xD4A574,
+                metalness: 0.95,
+                roughness: 0.08,
+                envMap: envMap,
+                envMapIntensity: 1.8,
+                clearcoat: 1.0,
+                clearcoatRoughness: 0.0
+            });
+
+            const numPoints = 200, tubeSeg = 200, radSeg = 24, baseR = 0.35;
+
+            function getPath(time, morph) {
+                const pts = [];
+                for (let i = 0; i <= numPoints; i++) {
+                    const t = i / numPoints, a = t * Math.PI * 2;
+                    const wx = Math.sin(a * 2 + time) * 2.5;
+                    const wy = Math.cos(a * 3 + time) * 1.8;
+                    const wz = Math.sin(a - time) * 1.2;
+                    const ks = 1.3;
+                    const kx = (Math.sin(a) + 2 * Math.sin(2 * a)) * ks;
+                    const ky = (Math.cos(a) - 2 * Math.cos(2 * a)) * ks;
+                    const kz = (-Math.sin(3 * a)) * ks;
+                    const e = morph < 0.5 ? 4*morph*morph*morph : 1 - Math.pow(-2*morph+2, 3)/2;
+                    const b = 1 + Math.sin(time * 2 + a * 5) * 0.04;
+                    pts.push(new THREE.Vector3(
+                        THREE.MathUtils.lerp(wx, kx, e) * b,
+                        THREE.MathUtils.lerp(wy, ky, e) * b,
+                        THREE.MathUtils.lerp(wz, kz, e) * b
+                    ));
+                }
+                return pts;
+            }
+
+            const initCurve = new THREE.CatmullRomCurve3(getPath(0, 0), true, 'centripetal');
+            const mesh = new THREE.Mesh(new THREE.TubeGeometry(initCurve, tubeSeg, baseR, radSeg, true), material);
+            scene.add(mesh);
+
+            // Hide fallback, show canvas
+            fallback.style.display = 'none';
+            wrap.appendChild(renderer.domElement);
+
+            const clock = new THREE.Clock();
+            function animate() {
+                requestAnimationFrame(animate);
+                const t = clock.getElapsedTime();
+                const morph = (Math.sin((t % 10) / 10 * Math.PI * 2 - Math.PI / 2) + 1) / 2;
+                const curve = new THREE.CatmullRomCurve3(getPath(t * 0.5, morph), true, 'centripetal');
+                mesh.geometry.dispose();
+                mesh.geometry = new THREE.TubeGeometry(curve, tubeSeg, baseR, radSeg, true);
+                mesh.rotation.y = t * 0.15;
+                mesh.rotation.x = Math.sin(t * 0.08) * 0.2;
+                renderer.render(scene, camera);
+            }
+            animate();
+        } catch (e) {
+            // WebGL not supported, keep fallback emoji
         }
     </script>
 </body>
