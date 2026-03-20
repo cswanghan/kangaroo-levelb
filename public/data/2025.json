@@ -7,168 +7,168 @@
       "points": 3,
       "answer": "D",
       "page": 1,
-      "image": "page-01.png"
+      "image": "q1.png"
     },
     {
       "number": 2,
       "points": 3,
       "answer": "C",
       "page": 1,
-      "image": "page-01.png"
+      "image": "q2.png"
     },
     {
       "number": 3,
       "points": 3,
       "answer": "E",
       "page": 1,
-      "image": "page-01.png"
+      "image": "q3.png"
     },
     {
       "number": 4,
       "points": 3,
       "answer": "B",
       "page": 2,
-      "image": "page-02.png"
+      "image": "q4.png"
     },
     {
       "number": 5,
       "points": 3,
       "answer": "A",
       "page": 2,
-      "image": "page-02.png"
+      "image": "q5.png"
     },
     {
       "number": 6,
       "points": 3,
       "answer": "D",
       "page": 2,
-      "image": "page-02.png"
+      "image": "q6.png"
     },
     {
       "number": 7,
       "points": 3,
       "answer": "C",
       "page": 3,
-      "image": "page-03.png"
+      "image": "q7.png"
     },
     {
       "number": 8,
       "points": 3,
       "answer": "A",
       "page": 3,
-      "image": "page-03.png"
+      "image": "q8.png"
     },
     {
       "number": 9,
       "points": 4,
       "answer": "E",
       "page": 4,
-      "image": "page-04.png"
+      "image": "q9.png"
     },
     {
       "number": 10,
       "points": 4,
       "answer": "B",
       "page": 4,
-      "image": "page-04.png"
+      "image": "q10.png"
     },
     {
       "number": 11,
       "points": 4,
       "answer": "C",
       "page": 5,
-      "image": "page-05.png"
+      "image": "q11.png"
     },
     {
       "number": 12,
       "points": 4,
       "answer": "A",
       "page": 5,
-      "image": "page-05.png"
+      "image": "q12.png"
     },
     {
       "number": 13,
       "points": 4,
       "answer": "C",
       "page": 5,
-      "image": "page-05.png"
+      "image": "q13.png"
     },
     {
       "number": 14,
       "points": 4,
       "answer": "D",
       "page": 6,
-      "image": "page-06.png"
+      "image": "q14.png"
     },
     {
       "number": 15,
       "points": 4,
       "answer": "E",
       "page": 6,
-      "image": "page-06.png"
+      "image": "q15.png"
     },
     {
       "number": 16,
       "points": 4,
       "answer": "E",
       "page": 7,
-      "image": "page-07.png"
+      "image": "q16.png"
     },
     {
       "number": 17,
       "points": 5,
       "answer": "D",
       "page": 7,
-      "image": "page-07.png"
+      "image": "q17.png"
     },
     {
       "number": 18,
       "points": 5,
       "answer": "E",
       "page": 8,
-      "image": "page-08.png"
+      "image": "q18.png"
     },
     {
       "number": 19,
       "points": 5,
       "answer": "D",
       "page": 8,
-      "image": "page-08.png"
+      "image": "q19.png"
     },
     {
       "number": 20,
       "points": 5,
       "answer": "B",
       "page": 9,
-      "image": "page-09.png"
+      "image": "q20.png"
     },
     {
       "number": 21,
       "points": 5,
       "answer": "C",
       "page": 9,
-      "image": "page-09.png"
+      "image": "q21.png"
     },
     {
       "number": 22,
       "points": 5,
       "answer": "D",
       "page": 10,
-      "image": "page-10.png"
+      "image": "q22.png"
     },
     {
       "number": 23,
       "points": 5,
       "answer": "D",
       "page": 10,
-      "image": "page-10.png"
+      "image": "q23.png"
     },
     {
       "number": 24,
       "points": 5,
       "answer": "C",
       "page": 11,
-      "image": "page-11.png"
+      "image": "q24.png"
     }
   ]
 }
