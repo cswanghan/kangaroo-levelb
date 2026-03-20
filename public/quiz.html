@@ -5,32 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>袋鼠数学 Level B - 做题系统</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --primary: #667eea;
             --success: #10b981;
             --error: #ef4444;
             --bg: #f5f7fa;
+            --card: white;
+            --border: #e5e7eb;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg);
             min-height: 100vh;
-            padding: 15px;
         }
 
-        .container {
-            max-width: 700px;
+        /* ===== Home Page ===== */
+        .home-container {
+            max-width: 800px;
             margin: 0 auto;
+            padding: 20px;
         }
 
-        /* Home Page */
         .home-header {
             text-align: center;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -40,86 +38,77 @@
             margin-bottom: 30px;
         }
 
-        .home-header h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
+        .home-header h1 { font-size: 2rem; margin-bottom: 8px; }
 
         .year-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 15px;
         }
 
         .year-card {
-            background: white;
-            padding: 30px 20px;
+            background: var(--card);
+            padding: 28px 16px;
             border-radius: 16px;
             text-align: center;
-            text-decoration: none;
             color: #333;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             cursor: pointer;
+            transition: transform 0.2s;
         }
 
-        .year-card:hover {
-            transform: translateY(-5px);
+        .year-card:hover { transform: translateY(-4px); }
+        .year-card .year { font-size: 1.8rem; font-weight: bold; color: var(--primary); }
+        .year-card .count { color: #888; margin-top: 4px; font-size: 0.9rem; }
+
+        /* ===== Quiz Layout ===== */
+        .quiz-wrapper {
+            display: none;
+            height: 100vh;
+            flex-direction: column;
         }
 
-        .year-card .year {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .year-card .count {
-            color: #666;
-            margin-top: 5px;
-        }
-
-        /* Quiz Header */
-        .quiz-header {
-            background: white;
-            padding: 15px 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-bottom: 15px;
+        /* Top bar */
+        .top-bar {
+            background: var(--card);
+            padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
         }
 
-        .quiz-title {
-            font-size: 1.2rem;
-            color: #333;
-        }
-
-        .quiz-stats {
+        .top-bar-left {
             display: flex;
-            gap: 15px;
+            align-items: center;
+            gap: 12px;
         }
 
-        .stat-value {
-            font-size: 1.3rem;
-            font-weight: bold;
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
             color: var(--primary);
+            padding: 4px 8px;
         }
 
-        .stat-label {
-            font-size: 0.7rem;
+        .quiz-title { font-weight: 600; color: #333; }
+
+        .top-bar-right {
+            display: flex;
+            gap: 20px;
+            font-size: 0.85rem;
             color: #666;
         }
 
-        /* Progress */
+        .top-bar-right .val { font-weight: 700; color: var(--primary); font-size: 1.1rem; }
+
         .progress-bar {
-            height: 6px;
+            height: 4px;
             background: #e5e7eb;
-            border-radius: 3px;
-            margin-bottom: 15px;
-            overflow: hidden;
+            flex-shrink: 0;
         }
 
         .progress-fill {
@@ -128,208 +117,170 @@
             transition: width 0.3s;
         }
 
-        /* Question Card */
-        .question-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-bottom: 15px;
+        /* Main content: left-right split */
+        .quiz-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
         }
 
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
+        /* Left panel: question content */
+        .panel-left {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            border-right: 1px solid var(--border);
+            background: #fafbfc;
         }
 
         .question-badge {
+            display: inline-block;
             background: var(--primary);
             color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 1.1rem;
+            padding: 4px 14px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
         }
 
         .question-points {
-            color: #666;
-            font-size: 0.9rem;
+            display: inline-block;
+            color: #888;
+            font-size: 0.85rem;
+            margin-left: 8px;
         }
 
         .question-image {
             width: 100%;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 2px solid #eee;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            background: white;
         }
 
-        /* Options */
-        .options {
-            display: grid;
-            gap: 12px;
+        /* Right panel: answer area */
+        .panel-right {
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            background: var(--card);
+            flex-shrink: 0;
         }
+
+        .answer-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .answer-title {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .options { display: grid; gap: 10px; }
 
         .option {
-            padding: 15px 20px;
-            border: 2px solid #e5e7eb;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            user-select: none;
         }
 
-        .option:hover:not(.disabled) {
-            border-color: var(--primary);
-            background: #f0f4ff;
-        }
-
-        .option.selected {
-            border-color: var(--primary);
-            background: #e0e7ff;
-        }
-
-        .option.correct {
-            border-color: var(--success);
-            background: #d1fae5;
-        }
-
-        .option.wrong {
-            border-color: var(--error);
-            background: #fee2e2;
-        }
-
-        .option.disabled {
-            cursor: default;
-            opacity: 0.7;
-        }
+        .option:hover:not(.disabled) { border-color: var(--primary); background: #f0f4ff; }
+        .option.selected { border-color: var(--primary); background: #e0e7ff; }
+        .option.correct { border-color: var(--success); background: #d1fae5; }
+        .option.wrong { border-color: var(--error); background: #fee2e2; }
+        .option.disabled { cursor: default; opacity: 0.7; }
 
         .option-letter {
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             background: #e5e7eb;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1rem;
             flex-shrink: 0;
         }
 
-        .option.selected .option-letter {
-            background: var(--primary);
-            color: white;
-        }
+        .option.selected .option-letter { background: var(--primary); color: white; }
+        .option.correct .option-letter { background: var(--success); color: white; }
+        .option.wrong .option-letter { background: var(--error); color: white; }
 
-        .option.correct .option-letter {
-            background: var(--success);
-            color: white;
-        }
-
-        .option.wrong .option-letter {
-            background: var(--error);
-            color: white;
-        }
-
-        .option-text {
-            font-size: 1rem;
-        }
-
-        /* Feedback */
         .feedback {
-            margin-top: 15px;
-            padding: 12px 20px;
-            border-radius: 12px;
+            margin-top: 14px;
+            padding: 10px 16px;
+            border-radius: 10px;
             display: none;
             font-weight: 500;
+            font-size: 0.95rem;
         }
 
-        .feedback.show {
-            display: block;
-        }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #d1fae5; color: #065f46; }
+        .feedback.wrong { background: #fee2e2; color: #991b1b; }
 
-        .feedback.correct {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .feedback.wrong {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        /* Buttons */
-        .nav-buttons {
+        /* Bottom action bar */
+        .action-bar {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border);
             display: flex;
-            gap: 15px;
+            gap: 10px;
+            flex-shrink: 0;
         }
 
         .btn {
             flex: 1;
-            padding: 14px 20px;
+            padding: 12px 16px;
             border: none;
-            border-radius: 25px;
-            font-size: 1rem;
+            border-radius: 22px;
+            font-size: 0.95rem;
             cursor: pointer;
             font-weight: 500;
-            transition: all 0.2s;
+            transition: all 0.15s;
         }
 
-        .btn-primary {
-            background: var(--primary);
-            color: white;
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: var(--primary); color: white; }
+
+        /* ===== Results ===== */
+        .results-container {
+            display: none;
+            max-width: 500px;
+            margin: 60px auto;
+            padding: 20px;
         }
 
-        .btn-primary:hover {
-            background: #5568d3;
-        }
-
-        .btn-primary:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Results */
         .results-card {
-            background: white;
-            border-radius: 16px;
+            background: var(--card);
+            border-radius: 20px;
             padding: 40px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
-        .results-score {
-            font-size: 4rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .results-detail {
-            color: #666;
-            margin: 15px 0 30px;
-        }
+        .results-score { font-size: 3.5rem; font-weight: bold; color: var(--primary); }
+        .results-detail { color: #666; margin: 15px 0 25px; }
 
         .results-grade {
-            padding: 15px 30px;
+            padding: 12px 28px;
             border-radius: 12px;
             display: inline-block;
-            margin-bottom: 30px;
-            font-size: 1.3rem;
+            margin-bottom: 25px;
+            font-size: 1.2rem;
         }
 
         .grade-a { background: #d1fae5; color: #065f46; }
@@ -337,309 +288,259 @@
         .grade-c { background: #fef3c7; color: #92400e; }
         .grade-d { background: #fee2e2; color: #991b1b; }
 
-        .results-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
+        .results-actions { display: flex; gap: 12px; justify-content: center; }
 
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
+        /* ===== Responsive: mobile falls back to vertical ===== */
+        @media (max-width: 860px) {
+            .quiz-body { flex-direction: column; }
 
-        /* Responsive */
-        @media (max-width: 600px) {
-            .quiz-header {
-                flex-direction: column;
-                text-align: center;
+            .panel-left {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                max-height: 50vh;
+                flex: none;
             }
 
-            .nav-buttons {
-                flex-direction: column;
+            .panel-right {
+                width: 100%;
+                flex: 1;
             }
         }
+
+        .loading { text-align: center; padding: 40px; color: #666; }
     </style>
 </head>
 <body>
-    <div class="container" id="app">
-        <!-- Home Page -->
-        <div id="homePage">
-            <div class="home-header">
-                <h1>🦘 袋鼠数学 Level B</h1>
-                <p>交互式做题系统</p>
+
+<!-- ===== Home Page ===== -->
+<div class="home-container" id="homePage">
+    <div class="home-header">
+        <h1>🦘 袋鼠数学 Level B</h1>
+        <p>交互式做题系统 | 3-4年级</p>
+    </div>
+    <div class="year-grid" id="yearGrid">
+        <div class="loading">加载中...</div>
+    </div>
+</div>
+
+<!-- ===== Quiz Page ===== -->
+<div class="quiz-wrapper" id="quizPage">
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <button class="back-btn" onclick="goHome()" title="返回首页">&#8592;</button>
+            <span class="quiz-title" id="quizTitle">真题</span>
+        </div>
+        <div class="top-bar-right">
+            <span>第 <span class="val" id="currentQ">1</span> 题</span>
+            <span>正确 <span class="val" id="correctCount">0</span></span>
+            <span>正确率 <span class="val" id="scorePercent">0%</span></span>
+        </div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+    <div class="quiz-body">
+        <!-- Left: question image -->
+        <div class="panel-left" id="panelLeft">
+            <div>
+                <span class="question-badge" id="questionBadge">第 1 题</span>
+                <span class="question-points" id="questionPoints">3 分</span>
             </div>
-            <div class="year-grid" id="yearGrid">
-                <div class="loading">加载中...</div>
-            </div>
+            <img class="question-image" id="questionImage" alt="题目">
         </div>
 
-        <!-- Quiz Page -->
-        <div id="quizPage" style="display: none;">
-            <div class="quiz-header">
-                <div class="quiz-title" id="quizTitle">真题</div>
-                <div class="quiz-stats">
-                    <div>
-                        <div class="stat-value" id="currentQ">1</div>
-                        <div class="stat-label">当前题号</div>
-                    </div>
-                    <div>
-                        <div class="stat-value" id="correctCount">0</div>
-                        <div class="stat-label">正确</div>
-                    </div>
-                    <div>
-                        <div class="stat-value" id="scorePercent">0%</div>
-                        <div class="stat-label">正确率</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-
-            <div class="question-card">
-                <div class="question-header">
-                    <div class="question-badge" id="questionBadge">第 1 题</div>
-                    <div class="question-points" id="questionPoints">3 分</div>
-                </div>
-
-                <img class="question-image" id="questionImage" alt="题目图片">
-
+        <!-- Right: answer options -->
+        <div class="panel-right">
+            <div class="answer-area">
+                <div class="answer-title">选择答案</div>
                 <div class="options" id="options"></div>
-
                 <div class="feedback" id="feedback"></div>
-
-                <div class="nav-buttons" style="margin-top: 20px;">
-                    <button class="btn btn-outline" id="prevBtn" onclick="prevQuestion()">← 上一题</button>
-                    <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()">提交答案</button>
-                    <button class="btn btn-outline" id="nextBtn" onclick="nextQuestion()">下一题 →</button>
-                </div>
             </div>
-        </div>
-
-        <!-- Results Page -->
-        <div id="resultsPage" style="display: none;">
-            <div class="results-card">
-                <h2>🎉 完成！</h2>
-                <div class="results-score" id="finalScore">0/24</div>
-                <div class="results-detail" id="finalDetail"></div>
-                <div class="results-grade" id="finalGrade"></div>
-                <div class="results-actions">
-                    <button class="btn btn-primary" onclick="restartQuiz()">重新做题</button>
-                    <button class="btn btn-outline" onclick="goHome()">返回首页</button>
-                </div>
+            <div class="action-bar">
+                <button class="btn btn-outline" id="prevBtn" onclick="prevQuestion()">← 上一题</button>
+                <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()">提交</button>
+                <button class="btn btn-outline" id="nextBtn" onclick="nextQuestion()">下一题 →</button>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        let currentYear = null;
-        let questions = [];
-        let currentIndex = 0;
-        let userAnswers = {};
-        let correctCount = 0;
+<!-- ===== Results Page ===== -->
+<div class="results-container" id="resultsPage">
+    <div class="results-card">
+        <h2>🎉 完成！</h2>
+        <div class="results-score" id="finalScore">0/24</div>
+        <div class="results-detail" id="finalDetail"></div>
+        <div class="results-grade" id="finalGrade"></div>
+        <div class="results-actions">
+            <button class="btn btn-primary" onclick="restartQuiz()">重新做题</button>
+            <button class="btn btn-outline" onclick="goHome()">返回首页</button>
+        </div>
+    </div>
+</div>
 
-        // Load year index and render home page
-        async function init() {
-            try {
-                const resp = await fetch('data/index.json');
-                const data = await resp.json();
-                renderYearGrid(data.years);
-            } catch (e) {
-                document.getElementById('yearGrid').innerHTML = '<div class="loading">加载失败</div>';
-            }
+<script>
+    let currentYear = null;
+    let questions = [];
+    let currentIndex = 0;
+    let userAnswers = {};
+    let correctCount = 0;
+
+    async function init() {
+        try {
+            const resp = await fetch('data/index.json');
+            const data = await resp.json();
+            renderYearGrid(data.years);
+        } catch (e) {
+            document.getElementById('yearGrid').innerHTML = '<div class="loading">加载失败</div>';
         }
+    }
 
-        function renderYearGrid(years) {
-            const grid = document.getElementById('yearGrid');
-            grid.innerHTML = years.map(y => `
-                <div class="year-card" onclick="startQuiz(${y.year})">
-                    <div class="year">${y.year}</div>
-                    <div class="count">${y.totalQuestions} 道题</div>
-                </div>
-            `).join('');
-        }
+    function renderYearGrid(years) {
+        const grid = document.getElementById('yearGrid');
+        grid.innerHTML = years.map(y => `
+            <div class="year-card" onclick="startQuiz(${y.year})">
+                <div class="year">${y.year}</div>
+                <div class="count">${y.totalQuestions} 道题</div>
+            </div>
+        `).join('');
+    }
 
-        // Start quiz for a specific year
-        async function startQuiz(year) {
-            try {
-                const resp = await fetch(`data/${year}.json`);
-                const data = await resp.json();
+    async function startQuiz(year) {
+        try {
+            const resp = await fetch(`data/${year}.json`);
+            const data = await resp.json();
 
-                currentYear = year;
-                questions = data.questions;
-                currentIndex = 0;
-                userAnswers = {};
-                correctCount = 0;
+            currentYear = year;
+            questions = data.questions;
+            currentIndex = 0;
+            userAnswers = {};
+            correctCount = 0;
 
-                document.getElementById('homePage').style.display = 'none';
-                document.getElementById('quizPage').style.display = 'block';
-                document.getElementById('resultsPage').style.display = 'none';
-                document.getElementById('quizTitle').textContent = `${year}年真题`;
-
-                renderQuestion();
-            } catch (e) {
-                alert('加载题目失败');
-            }
-        }
-
-        // Render current question
-        function renderQuestion() {
-            const q = questions[currentIndex];
-            const answered = userAnswers[q.number] !== undefined;
-
-            // Update stats
-            document.getElementById('currentQ').textContent = q.number;
-            document.getElementById('correctCount').textContent = correctCount;
-            const answeredCount = Object.keys(userAnswers).length;
-            document.getElementById('scorePercent').textContent =
-                answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) + '%' : '0%';
-
-            // Update progress
-            const progress = ((currentIndex + 1) / questions.length) * 100;
-            document.getElementById('progressFill').style.width = progress + '%';
-
-            // Update question info
-            document.getElementById('questionBadge').textContent = `第 ${q.number} 题`;
-            document.getElementById('questionPoints').textContent = `${q.points} 分`;
-
-            // Update image
-            document.getElementById('questionImage').src = `${currentYear}/${q.image}`;
-
-            // Render options
-            const optionLetters = ['A', 'B', 'C', 'D', 'E'];
-            const optionsContainer = document.getElementById('options');
-
-            optionsContainer.innerHTML = optionLetters.map(opt => {
-                let classes = 'option';
-                let disabled = answered ? 'disabled' : '';
-
-                if (answered) {
-                    if (opt === userAnswers[q.number]) {
-                        classes += opt === q.answer ? ' correct' : ' wrong';
-                    }
-                    if (opt === q.answer) {
-                        classes += ' correct';
-                    }
-                }
-
-                return `
-                    <div class="${classes} ${disabled}" onclick="selectOption('${opt}')">
-                        <div class="option-letter">${opt}</div>
-                        <div class="option-text">${opt}</div>
-                    </div>
-                `;
-            }).join('');
-
-            // Show/hide buttons
-            document.getElementById('prevBtn').style.visibility = currentIndex > 0 ? 'visible' : 'hidden';
-            document.getElementById('submitBtn').style.display = answered ? 'none' : 'inline-block';
-            document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? '完成 →' : '下一题 →';
-
-            // Show feedback
-            const feedback = document.getElementById('feedback');
-            if (answered) {
-                const isCorrect = userAnswers[q.number] === q.answer;
-                feedback.className = 'feedback show ' + (isCorrect ? 'correct' : 'wrong');
-                feedback.textContent = isCorrect ? '✅ 回答正确！' : `❌ 正确答案: ${q.answer}`;
-            } else {
-                feedback.className = 'feedback';
-            }
-
-            // Scroll to top
-            window.scrollTo(0, 0);
-        }
-
-        // Select option
-        function selectOption(letter) {
-            const q = questions[currentIndex];
-            if (userAnswers[q.number] !== undefined) return;
-
-            document.querySelectorAll('.option').forEach(opt => {
-                opt.classList.remove('selected');
-                const letterEl = opt.querySelector('.option-letter');
-                if (letterEl && letterEl.textContent === letter) {
-                    opt.classList.add('selected');
-                }
-            });
-        }
-
-        // Submit answer
-        function submitAnswer() {
-            const selected = document.querySelector('.option.selected');
-            if (!selected) return;
-
-            const letter = selected.querySelector('.option-letter').textContent;
-            const q = questions[currentIndex];
-
-            userAnswers[q.number] = letter;
-
-            if (letter === q.answer) {
-                correctCount++;
-            }
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('quizPage').style.display = 'flex';
+            document.getElementById('resultsPage').style.display = 'none';
+            document.getElementById('quizTitle').textContent = `${year} 年真题`;
 
             renderQuestion();
+        } catch (e) {
+            alert('加载题目失败');
         }
+    }
 
-        // Navigate
-        function prevQuestion() {
-            if (currentIndex > 0) {
-                currentIndex--;
-                renderQuestion();
+    function renderQuestion() {
+        const q = questions[currentIndex];
+        const answered = userAnswers[q.number] !== undefined;
+
+        // Stats
+        document.getElementById('currentQ').textContent = q.number;
+        document.getElementById('correctCount').textContent = correctCount;
+        const answeredCount = Object.keys(userAnswers).length;
+        document.getElementById('scorePercent').textContent =
+            answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) + '%' : '0%';
+
+        // Progress
+        document.getElementById('progressFill').style.width =
+            ((currentIndex + 1) / questions.length * 100) + '%';
+
+        // Question info
+        document.getElementById('questionBadge').textContent = `第 ${q.number} 题`;
+        document.getElementById('questionPoints').textContent = `${q.points} 分`;
+        document.getElementById('questionImage').src = `${currentYear}/${q.image}`;
+
+        // Options
+        const letters = ['A', 'B', 'C', 'D', 'E'];
+        document.getElementById('options').innerHTML = letters.map(opt => {
+            let cls = 'option';
+            let dis = answered ? 'disabled' : '';
+
+            if (answered) {
+                if (opt === userAnswers[q.number]) cls += opt === q.answer ? ' correct' : ' wrong';
+                if (opt === q.answer) cls += ' correct';
             }
+
+            return `
+                <div class="${cls} ${dis}" onclick="selectOption('${opt}')">
+                    <div class="option-letter">${opt}</div>
+                </div>`;
+        }).join('');
+
+        // Nav buttons
+        document.getElementById('prevBtn').style.visibility = currentIndex > 0 ? 'visible' : 'hidden';
+        document.getElementById('submitBtn').style.display = answered ? 'none' : 'inline-block';
+        document.getElementById('nextBtn').textContent =
+            currentIndex === questions.length - 1 ? '完成 →' : '下一题 →';
+
+        // Feedback
+        const fb = document.getElementById('feedback');
+        if (answered) {
+            const ok = userAnswers[q.number] === q.answer;
+            fb.className = 'feedback show ' + (ok ? 'correct' : 'wrong');
+            fb.textContent = ok ? '✅ 回答正确！' : `❌ 正确答案: ${q.answer}`;
+        } else {
+            fb.className = 'feedback';
         }
 
-        function nextQuestion() {
-            if (currentIndex < questions.length - 1) {
-                currentIndex++;
-                renderQuestion();
-            } else {
-                showResults();
+        // Scroll left panel to top
+        document.getElementById('panelLeft').scrollTop = 0;
+    }
+
+    function selectOption(letter) {
+        const q = questions[currentIndex];
+        if (userAnswers[q.number] !== undefined) return;
+
+        document.querySelectorAll('.option').forEach(opt => {
+            opt.classList.remove('selected');
+            if (opt.querySelector('.option-letter').textContent === letter) {
+                opt.classList.add('selected');
             }
-        }
+        });
+    }
 
-        // Show results
-        function showResults() {
-            document.getElementById('quizPage').style.display = 'none';
-            document.getElementById('resultsPage').style.display = 'block';
+    function submitAnswer() {
+        const selected = document.querySelector('.option.selected');
+        if (!selected) return;
 
-            document.getElementById('finalScore').textContent = `${correctCount}/${questions.length}`;
-            document.getElementById('finalDetail').textContent =
-                `正确 ${correctCount} 题，正确率 ${Math.round(correctCount/questions.length*100)}%`;
+        const letter = selected.querySelector('.option-letter').textContent;
+        const q = questions[currentIndex];
+        userAnswers[q.number] = letter;
+        if (letter === q.answer) correctCount++;
+        renderQuestion();
+    }
 
-            const percent = correctCount / questions.length;
-            const gradeEl = document.getElementById('finalGrade');
+    function prevQuestion() {
+        if (currentIndex > 0) { currentIndex--; renderQuestion(); }
+    }
 
-            if (percent >= 0.9) {
-                gradeEl.textContent = '优秀！🌟';
-                gradeEl.className = 'results-grade grade-a';
-            } else if (percent >= 0.75) {
-                gradeEl.textContent = '良好！👍';
-                gradeEl.className = 'results-grade grade-b';
-            } else if (percent >= 0.6) {
-                gradeEl.textContent = '继续努力💪';
-                gradeEl.className = 'results-grade grade-c';
-            } else {
-                gradeEl.textContent = '加油！📚';
-                gradeEl.className = 'results-grade grade-d';
-            }
-        }
+    function nextQuestion() {
+        if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); }
+        else showResults();
+    }
 
-        function restartQuiz() {
-            startQuiz(currentYear);
-        }
+    function showResults() {
+        document.getElementById('quizPage').style.display = 'none';
+        document.getElementById('resultsPage').style.display = 'block';
 
-        function goHome() {
-            document.getElementById('homePage').style.display = 'block';
-            document.getElementById('quizPage').style.display = 'none';
-            document.getElementById('resultsPage').style.display = 'none';
-        }
+        document.getElementById('finalScore').textContent = `${correctCount}/${questions.length}`;
+        document.getElementById('finalDetail').textContent =
+            `正确 ${correctCount} 题，正确率 ${Math.round(correctCount / questions.length * 100)}%`;
 
-        // Initialize
-        init();
-    </script>
+        const pct = correctCount / questions.length;
+        const g = document.getElementById('finalGrade');
+        if (pct >= 0.9) { g.textContent = '优秀！🌟'; g.className = 'results-grade grade-a'; }
+        else if (pct >= 0.75) { g.textContent = '良好！👍'; g.className = 'results-grade grade-b'; }
+        else if (pct >= 0.6) { g.textContent = '继续努力💪'; g.className = 'results-grade grade-c'; }
+        else { g.textContent = '加油！📚'; g.className = 'results-grade grade-d'; }
+    }
+
+    function restartQuiz() { startQuiz(currentYear); }
+
+    function goHome() {
+        document.getElementById('homePage').style.display = 'block';
+        document.getElementById('quizPage').style.display = 'none';
+        document.getElementById('resultsPage').style.display = 'none';
+    }
+
+    init();
+</script>
 </body>
 </html>
