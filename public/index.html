@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>袋鼠数学 Level B 历年真题 (2013-2025)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .papers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .paper-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .paper-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        
+        .year {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .grade {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .pdf-viewer {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .pdf-header {
+            padding: 20px;
+            background: #f5f5f5;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .pdf-title {
+            font-size: 1.2rem;
+            color: #333;
+        }
+        
+        .download-btn {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+        
+        .download-btn:hover {
+            background: #5568d3;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 80vh;
+            border: none;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .papers-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🦘 袋鼠数学 Level B</h1>
+            <p class="subtitle">历年真题 (2013-2025) · 3-4年级</p>
+        </header>
+        
+        <div id="papersList" class="papers-grid">
+            <!-- Papers will be inserted here -->
+        </div>
+        
+        <footer>
+            <p>适合 3-4 年级学生练习</p>
+            <p style="margin-top: 15px;">
+                <a href="quiz.html" style="color: white; background: rgba(255,255,255,0.2); padding: 12px 24px; border-radius: 25px; text-decoration: none;">🎯 开始做题 →</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        const papers = [
+            { year: 2025, file: '2025 等级B：3-4年级.pdf' },
+            { year: 2024, file: '2024 等级B：3-4年级.pdf' },
+            { year: 2023, file: '2023 等级B：3-4年级.pdf' },
+            { year: 2022, file: '2022 等级2：3-4年级.pdf' },
+            { year: 2021, file: '2021 等级2：3-4年级.pdf' },
+            { year: 2020, file: '2020 等级2：3-4年级.pdf' },
+            { year: 2019, file: '2019 等级2：3-4年级.pdf' },
+            { year: 2018, file: '2018 等级2：3-4年级.pdf' },
+            { year: 2017, file: '2017 等级2：3-4年级.pdf' },
+            { year: 2016, file: '2016 等级2：3-4年级.pdf' },
+            { year: 2015, file: '2015 等级2：3-4年级.pdf' },
+            { year: 2014, file: '2014 等级2：3-4年级.pdf' },
+            { year: 2013, file: '2013 等级2：3-4年级.pdf' }
+        ];
+        
+        function showPaper(file, year) {
+            const container = document.getElementById('papersList');
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1;">
+                    <a href="index.html" class="back-btn">← 返回列表</a>
+                </div>
+                <div class="pdf-viewer" style="grid-column: 1 / -1;">
+                    <div class="pdf-header">
+                        <span class="pdf-title">${year} 年真题</span>
+                        <a href="papers/${file}" download class="download-btn">⬇️ 下载 PDF</a>
+                    </div>
+                    <iframe src="papers/${file}" allow="autoplay"></iframe>
+                </div>
+            `;
+            window.scrollTo(0, 0);
+        }
+        
+        function renderList() {
+            const container = document.getElementById('papersList');
+            container.innerHTML = papers.map(p => `
+                <a href="javascript:showPaper('${p.file}', ${p.year})" class="paper-card">
+                    <div class="year">${p.year}</div>
+                    <div class="grade">点击查看</div>
+                </a>
+            `).join('');
+        }
+        
+        // Check if viewing a specific paper
+        const params = new URLSearchParams(window.location.search);
+        const paper = params.get('paper');
+        const year = params.get('year');
+        
+        if (paper && year) {
+            showPaper(paper, year);
+        } else {
+            renderList();
+        }
+    </script>
+</body>
+</html>
