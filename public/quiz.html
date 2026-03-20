@@ -148,7 +148,26 @@
         }
         .q-sub { font-family: var(--font-serif); font-size: 1rem; color: var(--ink-med); font-style: italic; margin-bottom: 20px; }
 
-        .question-image { width: 100%; border-radius: 6px; border: 1px solid var(--paper-shadow); background: white; }
+        .question-image { width: 100%; border-radius: 6px; border: 1px solid var(--paper-shadow); background: white; cursor: zoom-in; }
+
+        /* Lightbox overlay */
+        .lightbox {
+            display: none; position: fixed; inset: 0; z-index: 1000;
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+            justify-content: center; align-items: center; padding: 20px;
+            cursor: zoom-out;
+        }
+        .lightbox.open { display: flex; }
+        .lightbox img {
+            max-width: 95vw; max-height: 92vh; object-fit: contain;
+            border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            transform: scale(0.95); transition: transform 0.25s ease;
+        }
+        .lightbox.open img { transform: scale(1); }
+        .lightbox-hint {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            color: rgba(255,255,255,0.6); font-size: 0.8rem; pointer-events: none;
+        }
 
         /* Right page content */
         .section-title {
@@ -296,7 +315,7 @@
             </div>
             <div class="q-number" id="qNumber">Question 1</div>
             <div class="q-sub" id="qSub"></div>
-            <img class="question-image" id="questionImage" alt="题目">
+            <img class="question-image" id="questionImage" alt="题目" onclick="openLightbox()">
         </div>
 
         <!-- Spine -->
@@ -338,7 +357,21 @@
     </div>
 </div>
 
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <img id="lightboxImg" alt="题目大图">
+    <div class="lightbox-hint">点击任意位置关闭</div>
+</div>
+
 <script>
+    function openLightbox() {
+        const lb = document.getElementById('lightbox');
+        document.getElementById('lightboxImg').src = document.getElementById('questionImage').src;
+        lb.classList.add('open');
+    }
+    function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
     // Render spine rings
     document.getElementById('spineRings').innerHTML = Array(6).fill('').map(() =>
         '<div class="ring-group"><div class="hole l"></div><div class="ring"></div><div class="hole r"></div></div>'
