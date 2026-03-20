@@ -270,6 +270,31 @@
         .history-item .hi-score { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 500; color: var(--rose); }
         .history-empty { text-align: center; color: var(--ink-light); padding: 24px; font-size: 0.9rem; }
 
+        /* Confirm modal */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; z-index: 900;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(3px);
+            justify-content: center; align-items: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: var(--paper); border: 1px solid var(--paper-shadow);
+            border-radius: 16px; padding: 36px 32px; max-width: 380px; width: 90%;
+            text-align: center;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+        }
+        .modal-box .modal-icon { font-size: 2.4rem; margin-bottom: 12px; }
+        .modal-box h3 {
+            font-family: var(--font-serif); font-size: 1.3rem; font-weight: 500; margin-bottom: 8px;
+        }
+        .modal-box p { color: var(--ink-med); font-size: 0.85rem; line-height: 1.6; margin-bottom: 24px; }
+        .modal-box .modal-info {
+            background: var(--blush-faint); border-radius: 8px; padding: 10px 14px;
+            font-size: 0.8rem; color: var(--ink-med); margin-bottom: 20px;
+        }
+        .modal-actions { display: flex; gap: 10px; }
+        .modal-actions .btn { flex: 1; }
+
         /* Responsive */
         @media (max-width: 1100px) {
             .book { width: 96vw; height: auto; min-height: 500px; flex-direction: column; border-radius: 12px; }
@@ -378,6 +403,20 @@
     </div>
 </div>
 
+<!-- Confirm start modal -->
+<div class="modal-overlay" id="startModal">
+    <div class="modal-box">
+        <div class="modal-icon">📝</div>
+        <h3 id="modalTitle">开始做题</h3>
+        <p>点击开始后将自动计时，请确保准备好后再开始。</p>
+        <div class="modal-info" id="modalInfo">—</div>
+        <div class="modal-actions">
+            <button class="btn btn-outline" onclick="closeStartModal()">取消</button>
+            <button class="btn btn-primary" onclick="confirmStart()">开始</button>
+        </div>
+    </div>
+</div>
+
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
     <img id="lightboxImg" alt="题目大图">
@@ -438,20 +477,42 @@
             </div>`).join('');
     }
 
+    let pendingYear = null, pendingData = null;
+
     async function startQuiz(year) {
         try {
             const r = await fetch(`${dataBase()}/${year}.json`);
             const d = await r.json();
-            currentYear = year; questions = d.questions;
-            currentIndex = 0; userAnswers = {};
-            quizStartTime = Date.now(); quizSubmitted = false;
-            startTimer();
-            document.getElementById('homePage').style.display = 'none';
-            document.getElementById('quizPage').style.display = 'flex';
-            document.getElementById('resultsPage').style.display = 'none';
-            document.getElementById('quizTitle').textContent = `${year} · Level ${currentLevel.toUpperCase()}`;
-            renderQuestion();
+            pendingYear = year;
+            pendingData = d;
+            // Show confirm modal
+            const lv = currentLevel.toUpperCase();
+            const total = d.questions.length;
+            const maxScore = d.questions.reduce((s, q) => s + q.points, 0);
+            document.getElementById('modalTitle').textContent = `${year} 年 · Level ${lv}`;
+            document.getElementById('modalInfo').textContent = `共 ${total} 题 · 满分 ${maxScore} 分 · 开始后自动计时`;
+            document.getElementById('startModal').classList.add('open');
         } catch { alert('加载失败'); }
+    }
+
+    function closeStartModal() {
+        document.getElementById('startModal').classList.remove('open');
+        pendingYear = null; pendingData = null;
+    }
+
+    function confirmStart() {
+        document.getElementById('startModal').classList.remove('open');
+        if (!pendingYear || !pendingData) return;
+        currentYear = pendingYear; questions = pendingData.questions;
+        currentIndex = 0; userAnswers = {};
+        quizStartTime = Date.now(); quizSubmitted = false;
+        startTimer();
+        document.getElementById('homePage').style.display = 'none';
+        document.getElementById('quizPage').style.display = 'flex';
+        document.getElementById('resultsPage').style.display = 'none';
+        document.getElementById('quizTitle').textContent = `${currentYear} · Level ${currentLevel.toUpperCase()}`;
+        renderQuestion();
+        pendingYear = null; pendingData = null;
     }
 
     // Get option text from question data if available, else just letter
