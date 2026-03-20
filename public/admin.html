@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>袋鼠数学 · 管理</title>
+    <script src="auth-guard.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -112,8 +113,6 @@
 <script>
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-
-    if (!token) { window.location.href = 'login.html'; }
 
     document.getElementById('welcomeText').textContent = `${user.username || ''} · ${user.role === 'admin' ? '管理员' : '用户'}`;
 
