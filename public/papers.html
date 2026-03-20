@@ -3,122 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>袋鼠数学 - 历年真题 PDF</title>
+    <title>袋鼠数学 · 历年真题 PDF</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+        :root {
+            --cream: #faf8f5;
+            --warm: #f3ede6;
+            --rose: #c4a08a;
+            --rose-light: #e8d5c8;
+            --rose-bg: #fdf5f0;
+            --text: #3d3530;
+            --text-light: #8a7e76;
+            --accent: #b07d62;
         }
 
-        .container { max-width: 800px; margin: 0 auto; }
+        body {
+            font-family: 'Noto Serif SC', 'Georgia', serif;
+            background: var(--cream);
+            min-height: 100vh;
+            color: var(--text);
+        }
 
-        header { text-align: center; color: white; margin-bottom: 24px; }
-        h1 { font-size: 2rem; margin-bottom: 6px; text-shadow: 0 2px 4px rgba(0,0,0,0.15); }
-        .subtitle { opacity: 0.85; font-size: 0.95rem; }
+        .page { max-width: 860px; margin: 0 auto; padding: 48px 24px; }
 
-        .top-actions {
+        .page-header { text-align: center; margin-bottom: 36px; }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', 'Noto Serif SC', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .page-header .sub { color: var(--text-light); font-size: 0.9rem; }
+
+        .nav-row {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 24px;
+            gap: 14px;
+            margin-bottom: 32px;
         }
 
-        .top-btn {
-            color: white;
+        .nav-link {
+            color: var(--text-light);
             text-decoration: none;
-            padding: 8px 20px;
-            background: rgba(255,255,255,0.18);
-            border-radius: 20px;
-            font-size: 0.9rem;
-            transition: background 0.2s;
+            font-size: 0.85rem;
+            padding: 6px 18px;
+            border: 1px solid var(--warm);
+            border-radius: 16px;
+            transition: all 0.2s;
         }
 
-        .top-btn:hover { background: rgba(255,255,255,0.3); }
+        .nav-link:hover { color: var(--accent); border-color: var(--rose); }
 
+        /* Level tabs */
+        .level-switch {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 32px;
+            border-bottom: 1px solid var(--rose-light);
+        }
+
+        .lv-tab {
+            padding: 10px 28px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .lv-tab:hover { color: var(--text); }
+        .lv-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+        /* Paper cards */
         .papers-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 14px;
         }
 
         .paper-card {
             background: white;
-            border-radius: 16px;
-            padding: 28px 20px;
+            border: 1px solid var(--warm);
+            border-radius: 12px;
+            padding: 24px 12px;
             text-align: center;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
             cursor: pointer;
             text-decoration: none;
             color: inherit;
             display: block;
-            transition: transform 0.2s;
+            transition: all 0.2s;
         }
 
-        .paper-card:hover { transform: translateY(-4px); }
-        .year { font-size: 1.8rem; font-weight: bold; color: #667eea; margin-bottom: 6px; }
-        .grade { color: #888; font-size: 0.85rem; }
+        .paper-card:hover {
+            border-color: var(--rose);
+            box-shadow: 0 4px 16px rgba(180,140,110,0.1);
+            transform: translateY(-2px);
+        }
 
+        .paper-card .year {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .paper-card .label { color: var(--text-light); font-size: 0.8rem; }
+
+        /* PDF viewer */
         .pdf-viewer {
             background: white;
-            border-radius: 16px;
+            border: 1px solid var(--warm);
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
         .pdf-header {
-            padding: 16px 20px;
-            background: #f8f8f8;
-            border-bottom: 1px solid #eee;
+            padding: 14px 20px;
+            background: var(--cream);
+            border-bottom: 1px solid var(--warm);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .pdf-title { font-size: 1.1rem; color: #333; font-weight: 600; }
+        .pdf-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
 
         .download-btn {
-            background: #667eea;
+            background: var(--accent);
             color: white;
-            padding: 8px 18px;
-            border-radius: 18px;
+            padding: 7px 18px;
+            border-radius: 16px;
             text-decoration: none;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             transition: background 0.2s;
         }
 
-        .download-btn:hover { background: #5568d3; }
+        .download-btn:hover { background: #9a6b52; }
+
+        .back-list-btn {
+            display: inline-block;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 6px 16px;
+            border: 1px solid var(--rose-light);
+            border-radius: 14px;
+            background: white;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+
+        .back-list-btn:hover { border-color: var(--accent); }
 
         iframe { width: 100%; height: 80vh; border: none; }
 
         @media (max-width: 600px) {
-            h1 { font-size: 1.6rem; }
-            .papers-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+            .page-header h1 { font-size: 1.6rem; }
+            .papers-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+            .page { padding: 32px 16px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>📄 历年真题 PDF</h1>
-            <p class="subtitle">袋鼠数学 Level B · 2013-2025</p>
-        </header>
+    <div class="page">
+        <div class="page-header">
+            <h1>历年真题</h1>
+            <p class="sub" id="subtitle">袋鼠数学 · 2013 — 2025</p>
+        </div>
 
-        <div class="top-actions">
-            <a href="index.html" class="top-btn">← 返回首页</a>
-            <a href="quiz.html" class="top-btn">🎯 在线练习</a>
+        <div class="nav-row">
+            <a href="index.html" class="nav-link">← 首页</a>
+            <a href="quiz.html" class="nav-link" id="quizLink">在线练习</a>
+        </div>
+
+        <div class="level-switch">
+            <div class="lv-tab" data-level="b" onclick="switchLevel('b')">Level B · 3-4年级</div>
+            <div class="lv-tab" data-level="c" onclick="switchLevel('c')">Level C · 5-6年级</div>
         </div>
 
         <div id="content" class="papers-grid"></div>
     </div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const level = urlParams.get('level') || 'b';
-        const isLevelC = level === 'c';
+        let currentLevel = new URLSearchParams(location.search).get('level') || 'b';
 
         const papersB = [
             { year: 2025, file: '2025 等级B：3-4年级.pdf' },
@@ -152,44 +230,63 @@
             { year: 2013, file: '2013 等级3：5-6年级.pdf' }
         ];
 
-        const papers = isLevelC ? papersC : papersB;
-        const papersDir = isLevelC ? 'level-c/papers' : 'papers';
-        const levelLabel = isLevelC ? 'Level C' : 'Level B';
-        const gradeLabel = isLevelC ? '5-6年级' : '3-4年级';
-        const quizLink = isLevelC ? 'quiz.html?level=c' : 'quiz.html';
+        function getConfig() {
+            const isC = currentLevel === 'c';
+            return {
+                papers: isC ? papersC : papersB,
+                dir: isC ? 'level-c/papers' : 'papers',
+                label: isC ? 'Level C' : 'Level B',
+                grade: isC ? '5-6年级' : '3-4年级',
+            };
+        }
 
-        // Update header
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelector('header h1').textContent = `历年真题 PDF`;
-            document.querySelector('.subtitle').textContent = `袋鼠数学 ${levelLabel} · ${gradeLabel} · 2013-2025`;
-            document.querySelector('a[href="quiz.html"]').href = quizLink;
-        });
+        function switchLevel(level) {
+            currentLevel = level;
+            history.replaceState(null, '', level === 'b' ? 'papers.html' : 'papers.html?level=c');
+            document.querySelectorAll('.lv-tab').forEach(t =>
+                t.classList.toggle('active', t.dataset.level === level));
+            updateHeader();
+            renderList();
+        }
+
+        function updateHeader() {
+            const cfg = getConfig();
+            document.getElementById('subtitle').textContent =
+                `袋鼠数学 ${cfg.label} · ${cfg.grade} · 2013 — 2025`;
+            document.getElementById('quizLink').href =
+                currentLevel === 'c' ? 'quiz.html?level=c' : 'quiz.html';
+        }
 
         function showPaper(file, year) {
+            const cfg = getConfig();
+            document.getElementById('content').className = '';
             document.getElementById('content').innerHTML = `
-                <div style="grid-column: 1 / -1;">
-                    <a href="javascript:renderList()" class="top-btn" style="color:#667eea;background:white;">← 返回列表</a>
-                </div>
-                <div class="pdf-viewer" style="grid-column: 1 / -1;">
+                <a href="javascript:renderList()" class="back-list-btn">← 返回列表</a>
+                <div class="pdf-viewer">
                     <div class="pdf-header">
                         <span class="pdf-title">${year} 年真题</span>
-                        <a href="${papersDir}/${file}" download class="download-btn">⬇ 下载 PDF</a>
+                        <a href="${cfg.dir}/${file}" download class="download-btn">下载 PDF</a>
                     </div>
-                    <iframe src="${papersDir}/${file}"></iframe>
+                    <iframe src="${cfg.dir}/${file}"></iframe>
                 </div>`;
             window.scrollTo(0, 0);
         }
 
         function renderList() {
+            const cfg = getConfig();
             document.getElementById('content').className = 'papers-grid';
-            document.getElementById('content').innerHTML = papers.map(p => `
+            document.getElementById('content').innerHTML = cfg.papers.map(p => `
                 <a href="javascript:showPaper('${encodeURIComponent(p.file)}', ${p.year})" class="paper-card">
                     <div class="year">${p.year}</div>
-                    <div class="grade">查看 / 下载</div>
+                    <div class="label">查看 / 下载</div>
                 </a>
             `).join('');
         }
 
+        // Init
+        document.querySelectorAll('.lv-tab').forEach(t =>
+            t.classList.toggle('active', t.dataset.level === currentLevel));
+        updateHeader();
         renderList();
     </script>
 </body>

@@ -3,355 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>袋鼠数学 - 做题系统</title>
+    <title>袋鼠数学 · 在线练习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --primary: #667eea;
-            --success: #10b981;
-            --error: #ef4444;
-            --bg: #f5f7fa;
-            --card: white;
-            --border: #e5e7eb;
+            --cream: #faf8f5;
+            --warm: #f3ede6;
+            --rose: #c4a08a;
+            --rose-light: #e8d5c8;
+            --rose-bg: #fdf5f0;
+            --text: #3d3530;
+            --text-light: #8a7e76;
+            --accent: #b07d62;
+            --success: #6b9a7d;
+            --success-bg: #edf5f0;
+            --error: #c47070;
+            --error-bg: #fdf0f0;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
+            font-family: 'Noto Serif SC', 'Georgia', serif;
+            background: var(--cream);
             min-height: 100vh;
+            color: var(--text);
         }
 
-        /* ===== Home Page ===== */
-        .home-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        /* ===== Year Select ===== */
+        .select-page { max-width: 800px; margin: 0 auto; padding: 48px 24px; }
+
+        .select-header { text-align: center; margin-bottom: 36px; }
+        .select-header h1 {
+            font-family: 'Playfair Display', 'Noto Serif SC', serif;
+            font-size: 2rem; font-weight: 700; margin-bottom: 6px;
         }
+        .select-header .sub { color: var(--text-light); font-size: 0.9rem; }
 
-        .home-header {
-            text-align: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 20px;
-            border-radius: 20px;
-            margin-bottom: 30px;
+        .nav-row { display: flex; justify-content: center; gap: 14px; margin-bottom: 32px; }
+        .nav-link {
+            color: var(--text-light); text-decoration: none; font-size: 0.85rem;
+            padding: 6px 18px; border: 1px solid var(--warm); border-radius: 16px; transition: all 0.2s;
         }
+        .nav-link:hover { color: var(--accent); border-color: var(--rose); }
 
-        .home-header h1 { font-size: 2rem; margin-bottom: 8px; }
-
-        .year-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 15px;
+        .level-switch { display: flex; justify-content: center; border-bottom: 1px solid var(--rose-light); margin-bottom: 32px; }
+        .lv-tab {
+            padding: 10px 28px; font-size: 0.9rem; color: var(--text-light);
+            cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s;
         }
+        .lv-tab:hover { color: var(--text); }
+        .lv-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
 
+        .year-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 14px; }
         .year-card {
-            background: var(--card);
-            padding: 28px 16px;
-            border-radius: 16px;
-            text-align: center;
-            color: #333;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            cursor: pointer;
-            transition: transform 0.2s;
+            background: white; border: 1px solid var(--warm); padding: 24px 12px;
+            border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.2s;
         }
-
-        .year-card:hover { transform: translateY(-4px); }
-        .year-card .year { font-size: 1.8rem; font-weight: bold; color: var(--primary); }
-        .year-card .count { color: #888; margin-top: 4px; font-size: 0.9rem; }
+        .year-card:hover { border-color: var(--rose); box-shadow: 0 4px 16px rgba(180,140,110,0.1); transform: translateY(-2px); }
+        .year-card .yr { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 600; color: var(--accent); }
+        .year-card .cnt { color: var(--text-light); font-size: 0.8rem; margin-top: 4px; }
 
         /* ===== Quiz Layout ===== */
-        .quiz-wrapper {
-            display: none;
-            height: 100vh;
-            flex-direction: column;
-        }
+        .quiz-wrapper { display: none; height: 100vh; flex-direction: column; }
 
-        /* Top bar */
         .top-bar {
-            background: var(--card);
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            flex-shrink: 0;
+            background: white; padding: 10px 24px; display: flex;
+            justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--warm); flex-shrink: 0;
         }
-
-        .top-bar-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
+        .top-bar-left { display: flex; align-items: center; gap: 14px; }
         .back-btn {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            color: var(--primary);
-            padding: 4px 8px;
+            background: none; border: none; font-size: 1.1rem; cursor: pointer;
+            color: var(--accent); padding: 4px 8px; font-family: inherit;
         }
+        .quiz-title { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1rem; }
+        .top-bar-right { display: flex; gap: 20px; font-size: 0.8rem; color: var(--text-light); }
+        .top-bar-right .val { font-weight: 600; color: var(--accent); font-size: 1rem; }
 
-        .quiz-title { font-weight: 600; color: #333; }
+        .progress-bar { height: 3px; background: var(--warm); flex-shrink: 0; }
+        .progress-fill { height: 100%; background: var(--accent); transition: width 0.3s; }
 
-        .top-bar-right {
-            display: flex;
-            gap: 20px;
-            font-size: 0.85rem;
-            color: #666;
-        }
+        .quiz-body { flex: 1; display: flex; overflow: hidden; }
 
-        .top-bar-right .val { font-weight: 700; color: var(--primary); font-size: 1.1rem; }
-
-        .progress-bar {
-            height: 4px;
-            background: #e5e7eb;
-            flex-shrink: 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            transition: width 0.3s;
-        }
-
-        /* Main content: left-right split */
-        .quiz-body {
-            flex: 1;
-            display: flex;
-            overflow: hidden;
-        }
-
-        /* Left panel: question content */
         .panel-left {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            border-right: 1px solid var(--border);
-            background: #fafbfc;
+            flex: 1; overflow-y: auto; padding: 24px;
+            background: var(--cream); border-right: 1px solid var(--warm);
         }
-
-        .question-badge {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            padding: 4px 14px;
-            border-radius: 14px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 12px;
+        .q-badge {
+            display: inline-block; background: var(--rose-bg); color: var(--accent);
+            padding: 4px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; margin-bottom: 14px;
         }
+        .q-points { display: inline-block; color: var(--text-light); font-size: 0.8rem; margin-left: 8px; }
+        .question-image { width: 100%; border-radius: 8px; border: 1px solid var(--warm); background: white; }
 
-        .question-points {
-            display: inline-block;
-            color: #888;
-            font-size: 0.85rem;
-            margin-left: 8px;
-        }
-
-        .question-image {
-            width: 100%;
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
-            background: white;
-        }
-
-        /* Right panel: answer area */
-        .panel-right {
-            width: 320px;
-            display: flex;
-            flex-direction: column;
-            background: var(--card);
-            flex-shrink: 0;
-        }
-
-        .answer-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-        }
-
-        .answer-title {
-            font-size: 0.85rem;
-            color: #888;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .panel-right { width: 300px; display: flex; flex-direction: column; background: white; flex-shrink: 0; }
+        .answer-area { flex: 1; overflow-y: auto; padding: 24px; }
+        .answer-label {
+            font-size: 0.75rem; color: var(--text-light); text-transform: uppercase;
+            letter-spacing: 2px; margin-bottom: 16px;
         }
 
         .options { display: grid; gap: 10px; }
-
         .option {
-            padding: 14px 16px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.15s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            user-select: none;
+            padding: 14px 16px; border: 1px solid var(--warm); border-radius: 10px;
+            cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 12px; user-select: none;
         }
+        .option:hover:not(.disabled) { border-color: var(--rose); background: var(--rose-bg); }
+        .option.selected { border-color: var(--accent); background: var(--rose-bg); }
+        .option.correct { border-color: var(--success); background: var(--success-bg); }
+        .option.wrong { border-color: var(--error); background: var(--error-bg); }
+        .option.disabled { cursor: default; opacity: 0.65; }
 
-        .option:hover:not(.disabled) { border-color: var(--primary); background: #f0f4ff; }
-        .option.selected { border-color: var(--primary); background: #e0e7ff; }
-        .option.correct { border-color: var(--success); background: #d1fae5; }
-        .option.wrong { border-color: var(--error); background: #fee2e2; }
-        .option.disabled { cursor: default; opacity: 0.7; }
-
-        .option-letter {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1rem;
-            flex-shrink: 0;
+        .opt-letter {
+            width: 32px; height: 32px; border-radius: 50%; background: var(--warm);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 0.9rem; flex-shrink: 0;
+            font-family: 'Playfair Display', serif;
         }
+        .option.selected .opt-letter { background: var(--accent); color: white; }
+        .option.correct .opt-letter { background: var(--success); color: white; }
+        .option.wrong .opt-letter { background: var(--error); color: white; }
 
-        .option.selected .option-letter { background: var(--primary); color: white; }
-        .option.correct .option-letter { background: var(--success); color: white; }
-        .option.wrong .option-letter { background: var(--error); color: white; }
-
-        .feedback {
-            margin-top: 14px;
-            padding: 10px 16px;
-            border-radius: 10px;
-            display: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-        }
-
+        .feedback { margin-top: 16px; padding: 10px 14px; border-radius: 8px; display: none; font-size: 0.9rem; }
         .feedback.show { display: block; }
-        .feedback.correct { background: #d1fae5; color: #065f46; }
-        .feedback.wrong { background: #fee2e2; color: #991b1b; }
+        .feedback.correct { background: var(--success-bg); color: #3d6b4f; }
+        .feedback.wrong { background: var(--error-bg); color: #8b4444; }
 
-        /* Bottom action bar */
-        .action-bar {
-            padding: 14px 20px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            gap: 10px;
-            flex-shrink: 0;
-        }
-
+        .action-bar { padding: 14px 20px; border-top: 1px solid var(--warm); display: flex; gap: 10px; flex-shrink: 0; }
         .btn {
-            flex: 1;
-            padding: 12px 16px;
-            border: none;
-            border-radius: 22px;
-            font-size: 0.95rem;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.15s;
+            flex: 1; padding: 11px 14px; border: none; border-radius: 20px;
+            font-size: 0.9rem; cursor: pointer; font-weight: 500; transition: all 0.15s; font-family: inherit;
         }
-
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: #5568d3; }
-        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-        .btn-outline:hover { background: var(--primary); color: white; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: #9a6b52; }
+        .btn-outline { background: transparent; border: 1px solid var(--rose); color: var(--accent); }
+        .btn-outline:hover { background: var(--rose-bg); }
 
         /* ===== Results ===== */
-        .results-container {
-            display: none;
-            max-width: 500px;
-            margin: 60px auto;
-            padding: 20px;
-        }
-
+        .results-page { display: none; max-width: 480px; margin: 80px auto; padding: 20px; }
         .results-card {
-            background: var(--card);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            background: white; border: 1px solid var(--warm); border-radius: 20px;
+            padding: 48px 36px; text-align: center;
         }
-
-        .results-score { font-size: 3.5rem; font-weight: bold; color: var(--primary); }
-        .results-detail { color: #666; margin: 15px 0 25px; }
-
-        .results-grade {
-            padding: 12px 28px;
-            border-radius: 12px;
-            display: inline-block;
-            margin-bottom: 25px;
-            font-size: 1.2rem;
+        .results-card h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 8px; }
+        .results-score {
+            font-family: 'Playfair Display', serif; font-size: 3.2rem; font-weight: 700;
+            color: var(--accent); margin: 16px 0;
         }
-
-        .grade-a { background: #d1fae5; color: #065f46; }
-        .grade-b { background: #dbeafe; color: #1e40af; }
-        .grade-c { background: #fef3c7; color: #92400e; }
-        .grade-d { background: #fee2e2; color: #991b1b; }
-
+        .results-detail { color: var(--text-light); margin-bottom: 24px; font-size: 0.9rem; }
+        .results-grade { padding: 10px 24px; border-radius: 10px; display: inline-block; margin-bottom: 28px; font-size: 1.1rem; }
+        .grade-a { background: var(--success-bg); color: #3d6b4f; }
+        .grade-b { background: #eef2fa; color: #4a5e8a; }
+        .grade-c { background: var(--rose-bg); color: #8a6a3d; }
+        .grade-d { background: var(--error-bg); color: #8b4444; }
         .results-actions { display: flex; gap: 12px; justify-content: center; }
 
-        /* ===== Responsive: mobile falls back to vertical ===== */
+        .loading { text-align: center; padding: 40px; color: var(--text-light); }
+
         @media (max-width: 860px) {
             .quiz-body { flex-direction: column; }
-
-            .panel-left {
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-                max-height: 50vh;
-                flex: none;
-            }
-
-            .panel-right {
-                width: 100%;
-                flex: 1;
-            }
+            .panel-left { border-right: none; border-bottom: 1px solid var(--warm); max-height: 50vh; flex: none; }
+            .panel-right { width: 100%; flex: 1; }
         }
-
-        .loading { text-align: center; padding: 40px; color: #666; }
+        @media (max-width: 600px) {
+            .select-header h1 { font-size: 1.6rem; }
+            .year-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+            .select-page { padding: 32px 16px; }
+        }
     </style>
 </head>
 <body>
 
-<!-- ===== Home Page ===== -->
-<div class="home-container" id="homePage">
-    <div class="home-header">
-        <h1>🦘 袋鼠数学 Level B</h1>
-        <p>交互式做题系统 | 3-4年级</p>
+<!-- ===== Year Select ===== -->
+<div class="select-page" id="homePage">
+    <div class="select-header">
+        <h1>在线练习</h1>
+        <p class="sub" id="headerSub">选择年份开始做题</p>
     </div>
-    <div class="year-grid" id="yearGrid">
-        <div class="loading">加载中...</div>
+    <div class="nav-row">
+        <a href="index.html" class="nav-link">← 首页</a>
+        <a href="papers.html" class="nav-link" id="pdfLink">PDF 真题</a>
     </div>
+    <div class="level-switch">
+        <div class="lv-tab" data-level="b" onclick="switchLevel('b')">Level B · 3-4年级</div>
+        <div class="lv-tab" data-level="c" onclick="switchLevel('c')">Level C · 5-6年级</div>
+    </div>
+    <div class="year-grid" id="yearGrid"><div class="loading">加载中...</div></div>
 </div>
 
-<!-- ===== Quiz Page ===== -->
+<!-- ===== Quiz ===== -->
 <div class="quiz-wrapper" id="quizPage">
     <div class="top-bar">
         <div class="top-bar-left">
-            <button class="back-btn" onclick="goHome()" title="返回首页">&#8592;</button>
-            <span class="quiz-title" id="quizTitle">真题</span>
+            <button class="back-btn" onclick="goHome()">←</button>
+            <span class="quiz-title" id="quizTitle">2024</span>
         </div>
         <div class="top-bar-right">
             <span>第 <span class="val" id="currentQ">1</span> 题</span>
             <span>正确 <span class="val" id="correctCount">0</span></span>
-            <span>正确率 <span class="val" id="scorePercent">0%</span></span>
+            <span><span class="val" id="scorePercent">—</span></span>
         </div>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-
     <div class="quiz-body">
-        <!-- Left: question image -->
         <div class="panel-left" id="panelLeft">
             <div>
-                <span class="question-badge" id="questionBadge">第 1 题</span>
-                <span class="question-points" id="questionPoints">3 分</span>
+                <span class="q-badge" id="questionBadge">第 1 题</span>
+                <span class="q-points" id="questionPoints">3 分</span>
             </div>
             <img class="question-image" id="questionImage" alt="题目">
         </div>
-
-        <!-- Right: answer options -->
         <div class="panel-right">
             <div class="answer-area">
-                <div class="answer-title">选择答案</div>
+                <div class="answer-label">选择答案</div>
                 <div class="options" id="options"></div>
                 <div class="feedback" id="feedback"></div>
             </div>
@@ -364,199 +229,147 @@
     </div>
 </div>
 
-<!-- ===== Results Page ===== -->
-<div class="results-container" id="resultsPage">
+<!-- ===== Results ===== -->
+<div class="results-page" id="resultsPage">
     <div class="results-card">
-        <h2>🎉 完成！</h2>
+        <h2>完成</h2>
         <div class="results-score" id="finalScore">0/24</div>
         <div class="results-detail" id="finalDetail"></div>
         <div class="results-grade" id="finalGrade"></div>
         <div class="results-actions">
             <button class="btn btn-primary" onclick="restartQuiz()">重新做题</button>
-            <button class="btn btn-outline" onclick="goHome()">返回首页</button>
+            <button class="btn btn-outline" onclick="goHome()">返回</button>
         </div>
     </div>
 </div>
 
 <script>
-    // Detect level from URL parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const level = urlParams.get('level') || 'b';
-    const isLevelC = level === 'c';
-    const dataBase = isLevelC ? 'level-c/data' : 'data';
-    const imageBase = isLevelC ? 'level-c' : '';
-    const levelLabel = isLevelC ? 'Level C' : 'Level B';
-    const gradeLabel = isLevelC ? '5-6年级' : '3-4年级';
+    let currentLevel = new URLSearchParams(location.search).get('level') || 'b';
+    let currentYear = null, questions = [], currentIndex = 0, userAnswers = {}, correctCount = 0;
 
-    let currentYear = null;
-    let questions = [];
-    let currentIndex = 0;
-    let userAnswers = {};
-    let correctCount = 0;
+    const isC = () => currentLevel === 'c';
+    const dataBase = () => isC() ? 'level-c/data' : 'data';
+    const imgBase = () => isC() ? 'level-c' : '';
 
     async function init() {
-        // Update header to reflect current level
-        document.querySelector('.home-header h1').innerHTML = `🦘 袋鼠数学 ${levelLabel}`;
-        document.querySelector('.home-header p').textContent = `交互式做题系统 | ${gradeLabel}`;
+        document.querySelectorAll('.lv-tab').forEach(t =>
+            t.classList.toggle('active', t.dataset.level === currentLevel));
+        document.getElementById('pdfLink').href = isC() ? 'papers.html?level=c' : 'papers.html';
+        await loadYears();
+    }
 
+    async function loadYears() {
         try {
-            const resp = await fetch(`${dataBase}/index.json`);
-            const data = await resp.json();
-            renderYearGrid(data.years);
-        } catch (e) {
-            document.getElementById('yearGrid').innerHTML = '<div class="loading">加载失败</div>';
-        }
+            const r = await fetch(`${dataBase()}/index.json`);
+            const d = await r.json();
+            renderYearGrid(d.years);
+        } catch { document.getElementById('yearGrid').innerHTML = '<div class="loading">暂无数据</div>'; }
+    }
+
+    function switchLevel(lv) {
+        currentLevel = lv;
+        history.replaceState(null, '', lv === 'b' ? 'quiz.html' : 'quiz.html?level=c');
+        document.querySelectorAll('.lv-tab').forEach(t =>
+            t.classList.toggle('active', t.dataset.level === lv));
+        document.getElementById('pdfLink').href = isC() ? 'papers.html?level=c' : 'papers.html';
+        loadYears();
     }
 
     function renderYearGrid(years) {
-        const grid = document.getElementById('yearGrid');
-        grid.innerHTML = years.map(y => `
+        document.getElementById('yearGrid').innerHTML = years.map(y => `
             <div class="year-card" onclick="startQuiz(${y.year})">
-                <div class="year">${y.year}</div>
-                <div class="count">${y.totalQuestions} 道题</div>
-            </div>
-        `).join('');
+                <div class="yr">${y.year}</div>
+                <div class="cnt">${y.totalQuestions} 题</div>
+            </div>`).join('');
     }
 
     async function startQuiz(year) {
         try {
-            const resp = await fetch(`${dataBase}/${year}.json`);
-            const data = await resp.json();
-
-            currentYear = year;
-            questions = data.questions;
-            currentIndex = 0;
-            userAnswers = {};
-            correctCount = 0;
-
+            const r = await fetch(`${dataBase()}/${year}.json`);
+            const d = await r.json();
+            currentYear = year; questions = d.questions;
+            currentIndex = 0; userAnswers = {}; correctCount = 0;
             document.getElementById('homePage').style.display = 'none';
             document.getElementById('quizPage').style.display = 'flex';
             document.getElementById('resultsPage').style.display = 'none';
-            document.getElementById('quizTitle').textContent = `${year} 年真题`;
-
+            document.getElementById('quizTitle').textContent = `${year} · Level ${currentLevel.toUpperCase()}`;
             renderQuestion();
-        } catch (e) {
-            alert('加载题目失败');
-        }
+        } catch { alert('加载失败'); }
     }
 
     function renderQuestion() {
-        const q = questions[currentIndex];
-        const answered = userAnswers[q.number] !== undefined;
-
-        // Stats
+        const q = questions[currentIndex], answered = userAnswers[q.number] !== undefined;
         document.getElementById('currentQ').textContent = q.number;
         document.getElementById('correctCount').textContent = correctCount;
-        const answeredCount = Object.keys(userAnswers).length;
-        document.getElementById('scorePercent').textContent =
-            answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) + '%' : '0%';
-
-        // Progress
-        document.getElementById('progressFill').style.width =
-            ((currentIndex + 1) / questions.length * 100) + '%';
-
-        // Question info
+        const ac = Object.keys(userAnswers).length;
+        document.getElementById('scorePercent').textContent = ac > 0 ? Math.round(correctCount/ac*100)+'%' : '—';
+        document.getElementById('progressFill').style.width = ((currentIndex+1)/questions.length*100)+'%';
         document.getElementById('questionBadge').textContent = `第 ${q.number} 题`;
         document.getElementById('questionPoints').textContent = `${q.points} 分`;
-        const imgPrefix = imageBase ? `${imageBase}/${currentYear}` : `${currentYear}`;
-        document.getElementById('questionImage').src = `${imgPrefix}/${q.image}`;
+        const pre = imgBase() ? `${imgBase()}/${currentYear}` : `${currentYear}`;
+        document.getElementById('questionImage').src = `${pre}/${q.image}`;
 
-        // Options
-        const letters = ['A', 'B', 'C', 'D', 'E'];
-        document.getElementById('options').innerHTML = letters.map(opt => {
-            let cls = 'option';
-            let dis = answered ? 'disabled' : '';
-
+        document.getElementById('options').innerHTML = ['A','B','C','D','E'].map(o => {
+            let c = 'option', d = answered ? 'disabled' : '';
             if (answered) {
-                if (opt === userAnswers[q.number]) cls += opt === q.answer ? ' correct' : ' wrong';
-                if (opt === q.answer) cls += ' correct';
+                if (o === userAnswers[q.number]) c += o === q.answer ? ' correct' : ' wrong';
+                if (o === q.answer) c += ' correct';
             }
-
-            return `
-                <div class="${cls} ${dis}" onclick="selectOption('${opt}')">
-                    <div class="option-letter">${opt}</div>
-                </div>`;
+            return `<div class="${c} ${d}" onclick="selectOption('${o}')"><div class="opt-letter">${o}</div></div>`;
         }).join('');
 
-        // Nav buttons
         document.getElementById('prevBtn').style.visibility = currentIndex > 0 ? 'visible' : 'hidden';
         document.getElementById('submitBtn').style.display = answered ? 'none' : 'inline-block';
-        document.getElementById('nextBtn').textContent =
-            currentIndex === questions.length - 1 ? '完成 →' : '下一题 →';
+        document.getElementById('nextBtn').textContent = currentIndex === questions.length-1 ? '完成 →' : '下一题 →';
 
-        // Feedback
         const fb = document.getElementById('feedback');
         if (answered) {
             const ok = userAnswers[q.number] === q.answer;
             fb.className = 'feedback show ' + (ok ? 'correct' : 'wrong');
-            fb.textContent = ok ? '✅ 回答正确！' : `❌ 正确答案: ${q.answer}`;
-        } else {
-            fb.className = 'feedback';
-        }
+            fb.textContent = ok ? '✓ 回答正确' : `✗ 正确答案: ${q.answer}`;
+        } else fb.className = 'feedback';
 
-        // Scroll left panel to top
         document.getElementById('panelLeft').scrollTop = 0;
     }
 
-    function selectOption(letter) {
-        const q = questions[currentIndex];
-        if (userAnswers[q.number] !== undefined) return;
-
-        document.querySelectorAll('.option').forEach(opt => {
-            opt.classList.remove('selected');
-            if (opt.querySelector('.option-letter').textContent === letter) {
-                opt.classList.add('selected');
-            }
-        });
+    function selectOption(l) {
+        if (userAnswers[questions[currentIndex].number] !== undefined) return;
+        document.querySelectorAll('.option').forEach(o =>
+            o.classList.toggle('selected', o.querySelector('.opt-letter').textContent === l));
     }
 
     function submitAnswer() {
-        const selected = document.querySelector('.option.selected');
-        if (!selected) return;
-
-        const letter = selected.querySelector('.option-letter').textContent;
-        const q = questions[currentIndex];
-        userAnswers[q.number] = letter;
-        if (letter === q.answer) correctCount++;
+        const s = document.querySelector('.option.selected');
+        if (!s) return;
+        const l = s.querySelector('.opt-letter').textContent, q = questions[currentIndex];
+        userAnswers[q.number] = l;
+        if (l === q.answer) correctCount++;
         renderQuestion();
     }
 
-    function prevQuestion() {
-        if (currentIndex > 0) { currentIndex--; renderQuestion(); }
-    }
-
+    function prevQuestion() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
     function nextQuestion() {
-        if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); }
+        if (currentIndex < questions.length-1) { currentIndex++; renderQuestion(); }
         else showResults();
     }
 
     function showResults() {
         document.getElementById('quizPage').style.display = 'none';
         document.getElementById('resultsPage').style.display = 'block';
-
         document.getElementById('finalScore').textContent = `${correctCount}/${questions.length}`;
-        document.getElementById('finalDetail').textContent =
-            `正确 ${correctCount} 题，正确率 ${Math.round(correctCount / questions.length * 100)}%`;
-
-        const pct = correctCount / questions.length;
-        const g = document.getElementById('finalGrade');
-        if (pct >= 0.9) { g.textContent = '优秀！🌟'; g.className = 'results-grade grade-a'; }
-        else if (pct >= 0.75) { g.textContent = '良好！👍'; g.className = 'results-grade grade-b'; }
-        else if (pct >= 0.6) { g.textContent = '继续努力💪'; g.className = 'results-grade grade-c'; }
-        else { g.textContent = '加油！📚'; g.className = 'results-grade grade-d'; }
+        document.getElementById('finalDetail').textContent = `正确 ${correctCount} 题，正确率 ${Math.round(correctCount/questions.length*100)}%`;
+        const p = correctCount/questions.length, g = document.getElementById('finalGrade');
+        if (p >= .9) { g.textContent = '优秀'; g.className = 'results-grade grade-a'; }
+        else if (p >= .75) { g.textContent = '良好'; g.className = 'results-grade grade-b'; }
+        else if (p >= .6) { g.textContent = '继续努力'; g.className = 'results-grade grade-c'; }
+        else { g.textContent = '加油'; g.className = 'results-grade grade-d'; }
     }
 
     function restartQuiz() { startQuiz(currentYear); }
-
     function goHome() {
         document.getElementById('homePage').style.display = 'block';
         document.getElementById('quizPage').style.display = 'none';
         document.getElementById('resultsPage').style.display = 'none';
-    }
-
-    // Back to index preserving level awareness
-    function goIndex() {
-        window.location.href = 'index.html';
     }
 
     init();
