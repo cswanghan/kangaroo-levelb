@@ -239,7 +239,7 @@
             </a>
         </div>
 
-        <div class="login-link">
+        <div class="login-link" id="authArea">
             <a href="login.html">登录 / 注册</a>
         </div>
 
@@ -247,6 +247,20 @@
             Math Kangaroo Practice System
         </div>
     </div>
+
+    <script>
+        // Show user status if logged in
+        (function() {
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
+            if (user) {
+                const area = document.getElementById('authArea');
+                const adminLink = user.role === 'admin' ? ' <a href="admin.html">管理后台</a>' : '';
+                area.innerHTML = `<span style="color:var(--text-light);font-size:0.85rem;">${user.username}</span> ` +
+                    `<a href="admin.html">个人中心</a>` + adminLink +
+                    ` <a href="javascript:void(0)" onclick="localStorage.clear();location.reload()">退出</a>`;
+            }
+        })();
+    </script>
 
     <script>
         let currentLevel = 'b';
