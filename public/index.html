@@ -3,230 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>袋鼠数学 Level B 历年真题 (2013-2025)</title>
+    <title>袋鼠数学 Level B - 3-4年级</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-        
-        .back-btn {
-            display: inline-block;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 20px;
-            margin-bottom: 20px;
-            transition: background 0.3s;
-        }
-        
-        .back-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        
-        .papers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        
-        .paper-card {
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-        
-        .paper-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-        }
-        
-        .year {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-        
-        .grade {
-            color: #666;
-            font-size: 0.9rem;
-        }
-        
-        .pdf-viewer {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-        
-        .pdf-header {
-            padding: 20px;
-            background: #f5f5f5;
-            border-bottom: 1px solid #eee;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
-        
-        .pdf-title {
-            font-size: 1.2rem;
-            color: #333;
-        }
-        
-        .download-btn {
-            background: #667eea;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: background 0.3s;
-        }
-        
-        .download-btn:hover {
-            background: #5568d3;
-        }
-        
-        iframe {
-            width: 100%;
-            height: 80vh;
-            border: none;
-        }
-        
-        footer {
+
+        .landing {
             text-align: center;
-            color: white;
-            margin-top: 30px;
-            opacity: 0.8;
+            max-width: 720px;
+            width: 100%;
         }
-        
+
+        .logo { font-size: 4rem; margin-bottom: 12px; }
+
+        h1 {
+            color: white;
+            font-size: 2.4rem;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.85);
+            font-size: 1.1rem;
+            margin-bottom: 50px;
+        }
+
+        .entry-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .entry-card {
+            background: white;
+            border-radius: 24px;
+            padding: 48px 32px;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            transition: transform 0.25s, box-shadow 0.25s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .entry-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 50px rgba(0,0,0,0.22);
+        }
+
+        .entry-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .icon-pdf { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+        .icon-quiz { background: linear-gradient(135deg, #667eea, #764ba2); }
+
+        .entry-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .entry-desc {
+            color: #888;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .entry-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-pdf { background: #fff0f0; color: #ee5a24; }
+        .badge-quiz { background: #f0f0ff; color: #667eea; }
+
+        footer {
+            color: rgba(255,255,255,0.6);
+            margin-top: 40px;
+            font-size: 0.85rem;
+        }
+
         @media (max-width: 600px) {
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .papers-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            }
-            
-            body {
-                padding: 15px;
-            }
+            h1 { font-size: 1.8rem; }
+            .entry-grid { grid-template-columns: 1fr; gap: 16px; }
+            .entry-card { padding: 36px 24px; }
+            .logo { font-size: 3rem; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🦘 袋鼠数学 Level B</h1>
-            <p class="subtitle">历年真题 (2013-2025) · 3-4年级</p>
-        </header>
-        
-        <div id="papersList" class="papers-grid">
-            <!-- Papers will be inserted here -->
-        </div>
-        
-        <footer>
-            <p>适合 3-4 年级学生练习</p>
-            <p style="margin-top: 15px;">
-                <a href="quiz.html" style="color: white; background: rgba(255,255,255,0.2); padding: 12px 24px; border-radius: 25px; text-decoration: none;">🎯 开始做题 →</a>
-            </p>
-        </footer>
-    </div>
+    <div class="landing">
+        <div class="logo">🦘</div>
+        <h1>袋鼠数学 Level B</h1>
+        <p class="subtitle">国际袋鼠数学竞赛 · 3-4年级 · 2013-2025</p>
 
-    <script>
-        const papers = [
-            { year: 2025, file: '2025 等级B：3-4年级.pdf' },
-            { year: 2024, file: '2024 等级B：3-4年级.pdf' },
-            { year: 2023, file: '2023 等级B：3-4年级.pdf' },
-            { year: 2022, file: '2022 等级2：3-4年级.pdf' },
-            { year: 2021, file: '2021 等级2：3-4年级.pdf' },
-            { year: 2020, file: '2020 等级2：3-4年级.pdf' },
-            { year: 2019, file: '2019 等级2：3-4年级.pdf' },
-            { year: 2018, file: '2018 等级2：3-4年级.pdf' },
-            { year: 2017, file: '2017 等级2：3-4年级.pdf' },
-            { year: 2016, file: '2016 等级2：3-4年级.pdf' },
-            { year: 2015, file: '2015 等级2：3-4年级.pdf' },
-            { year: 2014, file: '2014 等级2：3-4年级.pdf' },
-            { year: 2013, file: '2013 等级2：3-4年级.pdf' }
-        ];
-        
-        function showPaper(file, year) {
-            const container = document.getElementById('papersList');
-            container.innerHTML = `
-                <div style="grid-column: 1 / -1;">
-                    <a href="index.html" class="back-btn">← 返回列表</a>
-                </div>
-                <div class="pdf-viewer" style="grid-column: 1 / -1;">
-                    <div class="pdf-header">
-                        <span class="pdf-title">${year} 年真题</span>
-                        <a href="papers/${file}" download class="download-btn">⬇️ 下载 PDF</a>
-                    </div>
-                    <iframe src="papers/${file}" allow="autoplay"></iframe>
-                </div>
-            `;
-            window.scrollTo(0, 0);
-        }
-        
-        function renderList() {
-            const container = document.getElementById('papersList');
-            container.innerHTML = papers.map(p => `
-                <a href="javascript:showPaper('${p.file}', ${p.year})" class="paper-card">
-                    <div class="year">${p.year}</div>
-                    <div class="grade">点击查看</div>
-                </a>
-            `).join('');
-        }
-        
-        // Check if viewing a specific paper
-        const params = new URLSearchParams(window.location.search);
-        const paper = params.get('paper');
-        const year = params.get('year');
-        
-        if (paper && year) {
-            showPaper(paper, year);
-        } else {
-            renderList();
-        }
-    </script>
+        <div class="entry-grid">
+            <a href="papers.html" class="entry-card">
+                <div class="entry-icon icon-pdf">📄</div>
+                <div class="entry-title">历年真题 PDF</div>
+                <div class="entry-desc">2013-2025 共 13 年<br>含题目与解析</div>
+                <span class="entry-badge badge-pdf">查看 / 下载</span>
+            </a>
+
+            <a href="quiz.html" class="entry-card">
+                <div class="entry-icon icon-quiz">🎯</div>
+                <div class="entry-title">在线练习</div>
+                <div class="entry-desc">逐题做、即时判对错<br>13 年真题全覆盖</div>
+                <span class="entry-badge badge-quiz">开始做题</span>
+            </a>
+        </div>
+
+        <footer>适合 3-4 年级学生备赛练习</footer>
+    </div>
 </body>
 </html>

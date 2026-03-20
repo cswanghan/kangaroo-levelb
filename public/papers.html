@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>袋鼠数学 Level B - 历年真题 PDF</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; }
+
+        header { text-align: center; color: white; margin-bottom: 24px; }
+        h1 { font-size: 2rem; margin-bottom: 6px; text-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+        .subtitle { opacity: 0.85; font-size: 0.95rem; }
+
+        .top-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .top-btn {
+            color: white;
+            text-decoration: none;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.18);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .top-btn:hover { background: rgba(255,255,255,0.3); }
+
+        .papers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .paper-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: transform 0.2s;
+        }
+
+        .paper-card:hover { transform: translateY(-4px); }
+        .year { font-size: 1.8rem; font-weight: bold; color: #667eea; margin-bottom: 6px; }
+        .grade { color: #888; font-size: 0.85rem; }
+
+        .pdf-viewer {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .pdf-header {
+            padding: 16px 20px;
+            background: #f8f8f8;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pdf-title { font-size: 1.1rem; color: #333; font-weight: 600; }
+
+        .download-btn {
+            background: #667eea;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 18px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .download-btn:hover { background: #5568d3; }
+
+        iframe { width: 100%; height: 80vh; border: none; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.6rem; }
+            .papers-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📄 历年真题 PDF</h1>
+            <p class="subtitle">袋鼠数学 Level B · 2013-2025</p>
+        </header>
+
+        <div class="top-actions">
+            <a href="index.html" class="top-btn">← 返回首页</a>
+            <a href="quiz.html" class="top-btn">🎯 在线练习</a>
+        </div>
+
+        <div id="content" class="papers-grid"></div>
+    </div>
+
+    <script>
+        const papers = [
+            { year: 2025, file: '2025 等级B：3-4年级.pdf' },
+            { year: 2024, file: '2024 等级B：3-4年级.pdf' },
+            { year: 2023, file: '2023 等级B：3-4年级.pdf' },
+            { year: 2022, file: '2022 等级2：3-4年级.pdf' },
+            { year: 2021, file: '2021 等级2：3-4年级.pdf' },
+            { year: 2020, file: '2020 等级2：3-4年级.pdf' },
+            { year: 2019, file: '2019 等级2：3-4年级.pdf' },
+            { year: 2018, file: '2018 等级2：3-4年级.pdf' },
+            { year: 2017, file: '2017 等级2：3-4年级.pdf' },
+            { year: 2016, file: '2016 等级2：3-4年级.pdf' },
+            { year: 2015, file: '2015 等级2：3-4年级.pdf' },
+            { year: 2014, file: '2014 等级2：3-4年级.pdf' },
+            { year: 2013, file: '2013 等级2：3-4年级.pdf' }
+        ];
+
+        function showPaper(file, year) {
+            document.getElementById('content').innerHTML = `
+                <div style="grid-column: 1 / -1;">
+                    <a href="javascript:renderList()" class="top-btn" style="color:#667eea;background:white;">← 返回列表</a>
+                </div>
+                <div class="pdf-viewer" style="grid-column: 1 / -1;">
+                    <div class="pdf-header">
+                        <span class="pdf-title">${year} 年真题</span>
+                        <a href="papers/${file}" download class="download-btn">⬇ 下载 PDF</a>
+                    </div>
+                    <iframe src="papers/${file}"></iframe>
+                </div>`;
+            window.scrollTo(0, 0);
+        }
+
+        function renderList() {
+            document.getElementById('content').className = 'papers-grid';
+            document.getElementById('content').innerHTML = papers.map(p => `
+                <a href="javascript:showPaper('${encodeURIComponent(p.file)}', ${p.year})" class="paper-card">
+                    <div class="year">${p.year}</div>
+                    <div class="grade">查看 / 下载</div>
+                </a>
+            `).join('');
+        }
+
+        renderList();
+    </script>
+</body>
+</html>
