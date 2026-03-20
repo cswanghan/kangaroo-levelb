@@ -259,6 +259,17 @@
 
         .loading { text-align: center; padding: 40px; color: var(--ink-light); }
 
+        /* History */
+        .history-item {
+            background: var(--paper); border: 1px solid var(--paper-shadow); border-radius: 10px;
+            padding: 14px 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .history-item .hi-left { }
+        .history-item .hi-title { font-family: var(--font-serif); font-weight: 500; font-size: 0.95rem; }
+        .history-item .hi-meta { font-size: 0.75rem; color: var(--ink-light); margin-top: 2px; }
+        .history-item .hi-score { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 500; color: var(--rose); }
+        .history-empty { text-align: center; color: var(--ink-light); padding: 24px; font-size: 0.9rem; }
+
         /* Responsive */
         @media (max-width: 1100px) {
             .book { width: 96vw; height: auto; min-height: 500px; flex-direction: column; border-radius: 12px; }
@@ -285,12 +296,22 @@
     <div class="nav-row">
         <a href="index.html" class="nav-link">← 首页</a>
         <a href="papers.html" class="nav-link" id="pdfLink">PDF 真题</a>
+        <a href="javascript:showHistory()" class="nav-link" id="historyLink">历史成绩</a>
     </div>
     <div class="level-switch">
         <div class="lv-tab" data-level="b" onclick="switchLevel('b')">Level B · 3-4年级</div>
         <div class="lv-tab" data-level="c" onclick="switchLevel('c')">Level C · 5-6年级</div>
     </div>
     <div class="year-grid" id="yearGrid"><div class="loading">加载中...</div></div>
+
+    <!-- History panel (hidden by default) -->
+    <div id="historyPanel" style="display:none; margin-top:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h2 style="font-family:var(--font-serif); font-size:1.3rem; font-weight:500;">历史成绩</h2>
+            <a href="javascript:hideHistory()" class="nav-link" style="font-size:0.8rem;">关闭</a>
+        </div>
+        <div id="historyList"><div class="loading">加载中...</div></div>
+    </div>
 </div>
 
 <!-- ===== Book Quiz ===== -->
@@ -299,6 +320,7 @@
         <button class="back-btn" onclick="goHome()">← 返回</button>
         <span class="quiz-title" id="quizTitle" style="font-family:var(--font-serif);font-weight:500;"></span>
         <div class="stats">
+            <span id="timerDisplay" class="val" style="font-family:var(--font-sans);letter-spacing:1px;">00:00</span>
             <span>已答 <span class="val" id="correctCount">0</span> / <span class="val" id="scorePercent">0</span></span>
         </div>
     </div>
@@ -378,7 +400,7 @@
 
     let currentLevel = new URLSearchParams(location.search).get('level') || 'b';
     let currentYear = null, questions = [], currentIndex = 0, userAnswers = {};
-    let quizStartTime = null, quizSubmitted = false;
+    let quizStartTime = null, quizSubmitted = false, timerInterval = null;
 
     const isC = () => currentLevel === 'c';
     const dataBase = () => isC() ? 'level-c/data' : 'data';
@@ -423,6 +445,7 @@
             currentYear = year; questions = d.questions;
             currentIndex = 0; userAnswers = {};
             quizStartTime = Date.now(); quizSubmitted = false;
+            startTimer();
             document.getElementById('homePage').style.display = 'none';
             document.getElementById('quizPage').style.display = 'flex';
             document.getElementById('resultsPage').style.display = 'none';
@@ -540,10 +563,9 @@
             if (!confirm(`还有 ${unanswered.length} 题未作答，确认提交？`)) return;
         }
         quizSubmitted = true;
-        // Go back to first question to review
+        stopTimer();
         currentIndex = 0;
         renderQuestion();
-        // Submit to server
         const duration = Math.round((Date.now() - quizStartTime) / 1000);
         submitQuizResult(duration);
     }
@@ -593,9 +615,70 @@
 
     function restartQuiz() { startQuiz(currentYear); }
     function goHome() {
+        stopTimer();
         document.getElementById('homePage').style.display = 'block';
         document.getElementById('quizPage').style.display = 'none';
         document.getElementById('resultsPage').style.display = 'none';
+        document.getElementById('historyPanel').style.display = 'none';
+        document.getElementById('yearGrid').style.display = '';
+    }
+
+    // Timer
+    function startTimer() {
+        stopTimer();
+        updateTimerDisplay();
+        timerInterval = setInterval(updateTimerDisplay, 1000);
+    }
+    function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
+    function updateTimerDisplay() {
+        if (!quizStartTime) return;
+        const s = Math.round((Date.now() - quizStartTime) / 1000);
+        const m = Math.floor(s / 60), sec = s % 60;
+        document.getElementById('timerDisplay').textContent =
+            `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    }
+
+    // History
+    async function showHistory() {
+        document.getElementById('yearGrid').style.display = 'none';
+        document.getElementById('historyPanel').style.display = 'block';
+        document.getElementById('historyList').innerHTML = '<div class="loading">加载中...</div>';
+
+        const token = localStorage.getItem('token');
+        if (!token) { document.getElementById('historyList').innerHTML = '<div class="history-empty">请先登录</div>'; return; }
+
+        try {
+            const r = await fetch(`/api/quiz/history?level=${currentLevel}`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const list = d.sessions || [];
+
+            if (!list.length) {
+                document.getElementById('historyList').innerHTML = '<div class="history-empty">暂无做题记录</div>';
+                return;
+            }
+
+            document.getElementById('historyList').innerHTML = list.map(s => {
+                const dt = s.created_at ? s.created_at.replace('T',' ').slice(0,16) : '';
+                const mins = Math.floor((s.duration||0)/60), secs = (s.duration||0)%60;
+                const lvLabel = (s.level||'b').toUpperCase();
+                return `<div class="history-item">
+                    <div class="hi-left">
+                        <div class="hi-title">Level ${lvLabel} · ${s.year} 年</div>
+                        <div class="hi-meta">${dt} · 正确 ${s.correct}/${s.total} · 用时 ${mins}分${secs}秒</div>
+                    </div>
+                    <div class="hi-score">${s.score} 分</div>
+                </div>`;
+            }).join('');
+        } catch {
+            document.getElementById('historyList').innerHTML = '<div class="history-empty">加载失败</div>';
+        }
+    }
+
+    function hideHistory() {
+        document.getElementById('historyPanel').style.display = 'none';
+        document.getElementById('yearGrid').style.display = '';
     }
 
     init();
