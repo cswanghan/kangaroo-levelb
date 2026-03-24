@@ -2,7 +2,12 @@ interface Env { DB: D1Database; JWT_SECRET: string; }
 
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   try {
-    const user = (context as any).user;
+    const user = (context as any).user || (context as any).data?.user;
+    if (!user?.userId) {
+      return new Response(JSON.stringify({ error: '未登录' }), {
+        status: 401, headers: { 'Content-Type': 'application/json' },
+      });
+    }
     const userId = user.userId;
 
     // 1. Overall stats

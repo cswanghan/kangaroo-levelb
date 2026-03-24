@@ -44,8 +44,9 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     return json({ error: '登录已过期' }, 401, corsHeaders);
   }
 
-  // Attach user info to context
+  // Attach user info to context (both ways for compatibility)
   (context as any).user = payload;
+  (context as any).data = { ...(context as any).data, user: payload };
 
   // Admin route check
   if (path.startsWith('/api/admin') && payload.role !== 'admin') {
