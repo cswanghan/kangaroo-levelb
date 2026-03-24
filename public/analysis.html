@@ -247,7 +247,10 @@
             const r = await fetch('/api/quiz/stats', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
-            if (!r.ok) throw new Error('Failed to load stats');
+            if (!r.ok) {
+                const errBody = await r.text().catch(() => '');
+                throw new Error(`HTTP ${r.status}: ${errBody}`);
+            }
             const data = await r.json();
 
             document.getElementById('loadingState').style.display = 'none';
@@ -265,8 +268,9 @@
             renderWrongTable(data.frequentWrong || []);
             renderSuggestions(data);
         } catch (e) {
+            console.error('Stats load error:', e);
             document.getElementById('loadingState').innerHTML =
-                '<p style="color:var(--error);">加载失败，请稍后刷新重试</p>';
+                `<p style="color:var(--error);">加载失败：${e.message}</p><p style="color:var(--ink-light);font-size:0.8rem;margin-top:8px;">请打开浏览器控制台(F12)查看详细错误</p>`;
         }
     })();
 
