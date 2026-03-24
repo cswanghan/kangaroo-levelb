@@ -249,9 +249,71 @@
             { year: 2013, file: '2013 等级3：5-6年级.pdf' }
         ];
 
-        // For new levels, papers will be loaded dynamically from their directories
-        // For now we store known paper lists for B and C; others use directory-based loading
-        const staticPapers = { b: papersB, c: papersC };
+        const papersA = [
+            { year: 2025, file: '2025 等级A：1-2年级.pdf' },
+            { year: 2024, file: '2024 等级A：1-2年级.pdf' },
+            { year: 2023, file: '2023 等级A：1-2年级.pdf' },
+            { year: 2022, file: '2022 等级1：1-2年级.pdf' },
+            { year: 2021, file: '2021 等级1：1-2年级.pdf' },
+            { year: 2020, file: '2020 等级1：1-2年级.pdf' },
+            { year: 2019, file: '2019 等级1：1-2年级.pdf' },
+            { year: 2018, file: '2018 等级1：1-2年级.pdf' },
+            { year: 2017, file: '2017 等级1：1-2年级.pdf' },
+            { year: 2016, file: '2016 等级1：1-2年级.pdf' },
+            { year: 2015, file: '2015 等级1：1-2年级.pdf' },
+            { year: 2014, file: '2014 等级1：1-2年级.pdf' },
+            { year: 2013, file: '2013 等级1：1-2年级.pdf' }
+        ];
+
+        const papersD = [
+            { year: 2025, file: '2025 等级D：7-8年级.pdf' },
+            { year: 2024, file: '2024 等级D：7-8年级.pdf' },
+            { year: 2023, file: '2023 等级D：7-8年级.pdf' },
+            { year: 2022, file: '2022 等级4：7-8年级.pdf' },
+            { year: 2021, file: '2021 等级4：7-8年级.pdf' },
+            { year: 2020, file: '2020 等级4：7-8年级.pdf' },
+            { year: 2019, file: '2019 等级4：7-8年级.pdf' },
+            { year: 2018, file: '2018 等级4：7-8年级.pdf' },
+            { year: 2017, file: '2017 等级4：7-8年级.pdf' },
+            { year: 2016, file: '2016 等级4：7-8年级.pdf' },
+            { year: 2015, file: '2015 等级4：7-8年级.pdf' },
+            { year: 2014, file: '2014 等级4：7-8年级.pdf' },
+            { year: 2013, file: '2013 等级4：7-8年级.pdf' }
+        ];
+
+        const papersE = [
+            { year: 2025, file: '2025 等级E：9-10年级.pdf' },
+            { year: 2024, file: '2024 等级E：9-10年级.pdf' },
+            { year: 2023, file: '2023 等级E：9-10年级.pdf' },
+            { year: 2022, file: '2022 等级5：9-10年级.pdf' },
+            { year: 2021, file: '2021 等级5：9-10年级.pdf' },
+            { year: 2020, file: '2020 等级5：9-10年级.pdf' },
+            { year: 2019, file: '2019 等级5：9-10年级.pdf' },
+            { year: 2018, file: '2018 等级5：9-10年级.pdf' },
+            { year: 2017, file: '2017 等级5：9-10年级.pdf' },
+            { year: 2016, file: '2016 等级5：9-10年级.pdf' },
+            { year: 2015, file: '2015 等级5：9-10年级.pdf' },
+            { year: 2014, file: '2014 等级5：9-10年级.pdf' },
+            { year: 2013, file: '2013 等级5：9-10年级.pdf' }
+        ];
+
+        const papersF = [
+            { year: 2025, file: '2025 等级F：11-12年级.pdf' },
+            { year: 2024, file: '2024 等级F：11-12年级.pdf' },
+            { year: 2023, file: '2023 等级F：11-12年级.pdf' },
+            { year: 2022, file: '2022 等级6：11-12年级.pdf' },
+            { year: 2021, file: '2021 等级6：11-12年级.pdf' },
+            { year: 2020, file: '2020 等级6：11-12年级.pdf' },
+            { year: 2019, file: '2019 等级6：11-12年级.pdf' },
+            { year: 2018, file: '2018 等级6：11-12年级.pdf' },
+            { year: 2017, file: '2017 等级6：11-12年级.pdf' },
+            { year: 2016, file: '2016 等级6：11-12年级.pdf' },
+            { year: 2015, file: '2015 等级6：11-12年级.pdf' },
+            { year: 2014, file: '2014 等级6：11-12年级.pdf' },
+            { year: 2013, file: '2013 等级6：11-12年级.pdf' }
+        ];
+
+        const staticPapers = { a: papersA, b: papersB, c: papersC, d: papersD, e: papersE, f: papersF };
 
         function papersDir() {
             return currentLevel === 'b' ? 'papers' : `level-${currentLevel}/papers`;
