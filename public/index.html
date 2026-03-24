@@ -79,8 +79,8 @@
 
         /* Entry cards */
         .entry-grid {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 28px; max-width: 640px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 28px; max-width: 800px; margin: 0 auto;
         }
 
         .entry-card {
@@ -112,7 +112,7 @@
 
         @media (max-width: 600px) {
             .site-header h1 { font-size: 2rem; }
-            .entry-grid { grid-template-columns: 1fr; max-width: 360px; }
+            .entry-grid { grid-template-columns: 1fr; max-width: 400px; }
             .entry-card { padding: 36px 24px; }
             .page { padding: 30px 16px 40px; }
             .level-tab { padding: 10px 14px; font-size: 0.85rem; }
@@ -153,6 +153,13 @@
                 <div class="entry-title">在线练习</div>
                 <div class="entry-desc">逐题作答 · 提交判分<br>按年份选择套卷</div>
                 <div class="entry-action">Start →</div>
+            </a>
+
+            <a href="analysis.html" class="entry-card">
+                <div class="entry-icon">📊</div>
+                <div class="entry-title">学习诊断</div>
+                <div class="entry-desc">难度分析 · 趋势图表<br>个性化学习建议</div>
+                <div class="entry-action">Analyze →</div>
             </a>
         </div>
 

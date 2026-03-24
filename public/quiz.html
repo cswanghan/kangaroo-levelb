@@ -275,6 +275,29 @@
         .grade-b { background: #eef2fa; color: #4a5e8a; }
         .grade-c { background: var(--blush-faint); color: #8a6a3d; }
         .grade-d { background: var(--error-bg); color: #8b4444; }
+
+        /* Medal / Kangaroo Level */
+        .medal-toggle {
+            display: flex; justify-content: center; gap: 0; margin-bottom: 16px;
+            border: 1px solid var(--paper-shadow); border-radius: 18px; overflow: hidden;
+        }
+        .medal-toggle-btn {
+            padding: 6px 16px; font-size: 0.78rem; cursor: pointer; border: none; background: transparent;
+            color: var(--ink-light); font-family: var(--font-sans); transition: all 0.15s;
+        }
+        .medal-toggle-btn.active { background: var(--rose); color: white; }
+        .medal-badge {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 14px 24px; border-radius: 12px; margin-bottom: 20px; font-size: 1.1rem; font-weight: 600;
+        }
+        .medal-badge .medal-icon { font-size: 1.8rem; }
+        .medal-gold { background: linear-gradient(135deg, #fef9e7, #fdebd0); color: #b7860b; }
+        .medal-silver { background: linear-gradient(135deg, #f2f4f4, #e5e7e9); color: #5d6d7e; }
+        .medal-bronze { background: linear-gradient(135deg, #fbeee6, #f6ddcc); color: #a0522d; }
+        .medal-prof { background: linear-gradient(135deg, #eaf2f8, #d4e6f1); color: #2e86c1; }
+        .medal-none { background: var(--blush-faint); color: var(--ink-light); }
+        .medal-desc { font-size: 0.78rem; color: var(--ink-light); margin-bottom: 20px; }
+
         .results-actions { display: flex; gap: 12px; justify-content: center; }
 
         .loading { text-align: center; padding: 40px; color: var(--ink-light); }
@@ -303,6 +326,28 @@
         .wrong-item .wi-answers { display: flex; gap: 12px; align-items: center; font-size: 0.85rem; }
         .wrong-item .wi-wrong { color: var(--error); text-decoration: line-through; }
         .wrong-item .wi-correct { color: var(--success); font-weight: 600; }
+        .wrong-item.mastered { opacity: 0.45; }
+        .wrong-item .wi-mastered-tag {
+            font-size: 0.7rem; padding: 2px 8px; border-radius: 10px;
+            background: var(--success-bg); color: var(--success); margin-left: 8px;
+        }
+
+        /* Wrong book filters & stats */
+        .wrong-stats {
+            display: flex; gap: 16px; margin-bottom: 16px; padding: 12px 16px;
+            background: var(--blush-faint); border-radius: 10px; font-size: 0.82rem; color: var(--ink-med);
+        }
+        .wrong-stats .ws-val { font-weight: 600; color: var(--rose); }
+        .wrong-filters {
+            display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+        }
+        .wrong-filter-btn {
+            padding: 4px 12px; border: 1px solid var(--paper-shadow); border-radius: 14px;
+            font-size: 0.78rem; cursor: pointer; background: transparent; color: var(--ink-light);
+            font-family: var(--font-sans); transition: all 0.15s;
+        }
+        .wrong-filter-btn.active { background: var(--rose); color: white; border-color: var(--rose); }
+        .wrong-filter-btn:hover:not(.active) { border-color: var(--blush); color: var(--ink-med); }
         .wrong-detail-overlay {
             display: none; position: fixed; inset: 0; z-index: 900;
             background: rgba(0,0,0,0.4); backdrop-filter: blur(3px);
@@ -373,6 +418,7 @@
         <a href="papers.html" class="nav-link" id="pdfLink">PDF 真题</a>
         <a href="javascript:showHistory()" class="nav-link" id="historyLink">历史成绩</a>
         <a href="javascript:showWrongBook()" class="nav-link" id="wrongLink">错题本</a>
+        <a href="analysis.html" class="nav-link">学习诊断</a>
     </div>
     <div class="level-switch">
         <div class="lv-tab" data-level="a" onclick="switchLevel('a')">Level A · 1-2年级</div>
@@ -393,12 +439,17 @@
         <div id="historyList"><div class="loading">加载中...</div></div>
     </div>
 
-    <!-- Issue #3: Wrong questions book panel -->
+    <!-- Issue #3: Wrong questions book panel (enhanced) -->
     <div id="wrongPanel" style="display:none; margin-top:24px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
             <h2 style="font-family:var(--font-serif); font-size:1.3rem; font-weight:500;">错题本</h2>
-            <a href="javascript:hidePanel()" class="nav-link" style="font-size:0.8rem;">关闭</a>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <a href="javascript:retryAllWrong()" class="nav-link" style="font-size:0.8rem;" id="retryWrongBtn" title="只重做错题">重做错题</a>
+                <a href="javascript:hidePanel()" class="nav-link" style="font-size:0.8rem;">关闭</a>
+            </div>
         </div>
+        <div class="wrong-stats" id="wrongStats" style="display:none;"></div>
+        <div class="wrong-filters" id="wrongFilters"></div>
         <div id="wrongList"><div class="loading">加载中...</div></div>
     </div>
 </div>
@@ -458,6 +509,12 @@
         <div class="results-breakdown" id="finalBreakdown"></div>
         <div class="results-detail" id="finalDetail"></div>
         <div class="results-grade" id="finalGrade"></div>
+        <div class="medal-toggle" id="medalToggle">
+            <button class="medal-toggle-btn active" onclick="switchMedalStandard('international')">国际版</button>
+            <button class="medal-toggle-btn" onclick="switchMedalStandard('china')">中国区</button>
+        </div>
+        <div class="medal-badge" id="medalBadge"></div>
+        <div class="medal-desc" id="medalDesc"></div>
         <div class="results-actions">
             <button class="btn btn-primary" onclick="restartQuiz()">重新做题</button>
             <button class="btn btn-outline" onclick="goHome()">返回</button>
@@ -505,6 +562,7 @@
         <img id="wrongDetailImg" alt="题目" onclick="openLightboxSrc(this.src)">
         <div class="wd-info" id="wrongDetailInfo"></div>
         <div class="wd-actions">
+            <button class="btn btn-ghost" id="wrongMasterBtn" onclick="">标记已掌握</button>
             <button class="btn btn-outline" onclick="closeWrongDetail()">关闭</button>
             <button class="btn btn-primary" id="wrongRetryBtn" onclick="">重做此年</button>
         </div>
@@ -877,6 +935,40 @@
         else if (p >= .75) { g.textContent = '良好'; g.className = 'results-grade grade-b'; }
         else if (p >= .6) { g.textContent = '继续努力'; g.className = 'results-grade grade-c'; }
         else { g.textContent = '加油'; g.className = 'results-grade grade-d'; }
+
+        // Medal display
+        lastScorePercent = p;
+        switchMedalStandard('international');
+    }
+
+    let lastScorePercent = 0;
+    let currentMedalStandard = 'international';
+
+    function getKangarooLevel(pct, std) {
+        if (std === 'international') {
+            if (pct >= 0.90) return { name: 'Gold Medal', icon: '🥇', cls: 'medal-gold', desc: 'Top performance — equivalent to Gold Medal in competition' };
+            if (pct >= 0.75) return { name: 'Silver Medal', icon: '🥈', cls: 'medal-silver', desc: 'Excellent — equivalent to Silver Medal level' };
+            if (pct >= 0.60) return { name: 'Bronze Medal', icon: '🥉', cls: 'medal-bronze', desc: 'Good — equivalent to Bronze Medal level' };
+            if (pct >= 0.45) return { name: 'Proficiency', icon: '📜', cls: 'medal-prof', desc: 'Proficiency level — solid foundational skills' };
+            return { name: 'Participant', icon: '🎯', cls: 'medal-none', desc: 'Keep practicing to reach Proficiency level' };
+        } else {
+            if (pct >= 0.90) return { name: '一等奖', icon: '🥇', cls: 'medal-gold', desc: '对应竞赛一等奖水平（约前5%）' };
+            if (pct >= 0.75) return { name: '二等奖', icon: '🥈', cls: 'medal-silver', desc: '对应竞赛二等奖水平（约前15%）' };
+            if (pct >= 0.60) return { name: '三等奖', icon: '🥉', cls: 'medal-bronze', desc: '对应竞赛三等奖水平（约前30%）' };
+            if (pct >= 0.45) return { name: '数学探花', icon: '🌸', cls: 'medal-prof', desc: '对应竞赛数学探花水平（约前50%）' };
+            return { name: '未获奖', icon: '🎯', cls: 'medal-none', desc: '继续努力，争取数学探花！' };
+        }
+    }
+
+    function switchMedalStandard(std) {
+        currentMedalStandard = std;
+        document.querySelectorAll('.medal-toggle-btn').forEach(b =>
+            b.classList.toggle('active', b.textContent === (std === 'international' ? '国际版' : '中国区')));
+        const medal = getKangarooLevel(lastScorePercent, std);
+        const badge = document.getElementById('medalBadge');
+        badge.className = 'medal-badge ' + medal.cls;
+        badge.innerHTML = `<span class="medal-icon">${medal.icon}</span><span>${medal.name}</span>`;
+        document.getElementById('medalDesc').textContent = medal.desc;
     }
 
     async function submitQuizResult(duration) {
@@ -989,13 +1081,40 @@
         }
     }
 
-    // Issue #3: Wrong questions book
+    // Enhanced wrong questions book
+    let allWrongItems = [];
+    let wrongFilter = 'all'; // all, 3pts, 4pts, 5pts, mastered, unmastered
+
+    // Mastered state stored in localStorage
+    function getMastered() {
+        try { return JSON.parse(localStorage.getItem('wrongMastered') || '{}'); } catch { return {}; }
+    }
+    function setMastered(key, val) {
+        const m = getMastered();
+        if (val) m[key] = true; else delete m[key];
+        localStorage.setItem('wrongMastered', JSON.stringify(m));
+    }
+    function wrongKey(w) { return `${w.level}-${w.year}-${w.question}`; }
+
+    function getDifficultyTier(qNum, total) {
+        if (total <= 24) {
+            if (qNum <= 8) return '3pts';
+            if (qNum <= 16) return '4pts';
+            return '5pts';
+        }
+        if (qNum <= 10) return '3pts';
+        if (qNum <= 20) return '4pts';
+        return '5pts';
+    }
+
     async function showWrongBook() {
         hidePanel();
         document.getElementById('yearGrid').style.display = 'none';
         document.getElementById('wrongPanel').style.display = 'block';
         document.getElementById('wrongLink').classList.add('active');
         document.getElementById('wrongList').innerHTML = '<div class="loading">加载中...</div>';
+        document.getElementById('wrongStats').style.display = 'none';
+        document.getElementById('wrongFilters').innerHTML = '';
 
         const token = localStorage.getItem('token');
         if (!token) {
@@ -1016,31 +1135,106 @@
                 throw new Error(err.error || `HTTP ${r.status}`);
             }
             const d = await r.json();
-            const list = d.wrong || [];
+            allWrongItems = d.wrong || [];
 
-            if (!list.length) {
+            if (!allWrongItems.length) {
                 document.getElementById('wrongList').innerHTML = '<div class="history-empty">暂无错题记录，全部答对！</div>';
+                document.getElementById('retryWrongBtn').style.display = 'none';
                 return;
             }
 
-            document.getElementById('wrongList').innerHTML = list.map((w, i) => {
-                const lvLabel = (w.level||'b').toUpperCase();
-                const pre = w.level === 'b' ? `${w.year}` : `level-${w.level}/${w.year}`;
-                return `<div class="wrong-item" onclick='showWrongDetail(${JSON.stringify(w)})'>
-                    <div class="wi-left">
-                        <div class="wi-title">Level ${lvLabel} · ${w.year} 年 · 第 ${w.question} 题</div>
-                        <div class="wi-meta">${w.created_at ? w.created_at.replace('T',' ').slice(0,16) : ''}</div>
-                    </div>
-                    <div class="wi-answers">
-                        <span class="wi-wrong">${w.user_answer}</span>
-                        <span>→</span>
-                        <span class="wi-correct">${w.correct_answer}</span>
-                    </div>
-                </div>`;
-            }).join('');
+            document.getElementById('retryWrongBtn').style.display = '';
+            // Render stats
+            const mastered = getMastered();
+            const masteredCount = allWrongItems.filter(w => mastered[wrongKey(w)]).length;
+            const statsEl = document.getElementById('wrongStats');
+            statsEl.style.display = 'flex';
+            statsEl.innerHTML =
+                `<span>错题总数 <span class="ws-val">${allWrongItems.length}</span></span>` +
+                `<span>已掌握 <span class="ws-val">${masteredCount}</span></span>` +
+                `<span>待复习 <span class="ws-val">${allWrongItems.length - masteredCount}</span></span>`;
+
+            // Render filter buttons
+            wrongFilter = 'all';
+            const filters = [
+                { key: 'all', label: '全部' },
+                { key: '3pts', label: '3分题(简单)' },
+                { key: '4pts', label: '4分题(中等)' },
+                { key: '5pts', label: '5分题(困难)' },
+                { key: 'unmastered', label: '待复习' },
+                { key: 'mastered', label: '已掌握' },
+            ];
+            document.getElementById('wrongFilters').innerHTML = filters.map(f =>
+                `<button class="wrong-filter-btn${f.key === 'all' ? ' active' : ''}" onclick="filterWrong('${f.key}')">${f.label}</button>`
+            ).join('');
+
+            renderWrongList();
         } catch {
             document.getElementById('wrongList').innerHTML = '<div class="history-empty">加载失败，请稍后再试</div>';
         }
+    }
+
+    function filterWrong(key) {
+        wrongFilter = key;
+        document.querySelectorAll('.wrong-filter-btn').forEach(b =>
+            b.classList.toggle('active', b.textContent === {
+                all:'全部', '3pts':'3分题(简单)', '4pts':'4分题(中等)', '5pts':'5分题(困难)',
+                unmastered:'待复习', mastered:'已掌握'
+            }[key]));
+        renderWrongList();
+    }
+
+    function renderWrongList() {
+        const mastered = getMastered();
+        let filtered = allWrongItems;
+
+        if (wrongFilter === 'mastered') {
+            filtered = filtered.filter(w => mastered[wrongKey(w)]);
+        } else if (wrongFilter === 'unmastered') {
+            filtered = filtered.filter(w => !mastered[wrongKey(w)]);
+        } else if (['3pts','4pts','5pts'].includes(wrongFilter)) {
+            // Estimate total from question number (heuristic: if q > 24, total=30; else 24)
+            filtered = filtered.filter(w => {
+                const total = w.question > 24 ? 30 : 24;
+                return getDifficultyTier(w.question, total) === wrongFilter;
+            });
+        }
+
+        if (!filtered.length) {
+            document.getElementById('wrongList').innerHTML = '<div class="history-empty">当前筛选无错题</div>';
+            return;
+        }
+
+        document.getElementById('wrongList').innerHTML = filtered.map(w => {
+            const lvLabel = (w.level||'b').toUpperCase();
+            const isMastered = mastered[wrongKey(w)];
+            const total = w.question > 24 ? 30 : 24;
+            const tier = getDifficultyTier(w.question, total);
+            const tierLabel = { '3pts':'3分', '4pts':'4分', '5pts':'5分' }[tier] || '';
+            return `<div class="wrong-item${isMastered ? ' mastered' : ''}" onclick='showWrongDetail(${JSON.stringify(w)})'>
+                <div class="wi-left">
+                    <div class="wi-title">Level ${lvLabel} · ${w.year} 年 · 第 ${w.question} 题 <span style="font-size:0.75rem;color:var(--ink-light);">(${tierLabel})</span>${isMastered ? '<span class="wi-mastered-tag">已掌握</span>' : ''}</div>
+                    <div class="wi-meta">${w.created_at ? w.created_at.replace('T',' ').slice(0,16) : ''}</div>
+                </div>
+                <div class="wi-answers">
+                    <span class="wi-wrong">${w.user_answer}</span>
+                    <span>→</span>
+                    <span class="wi-correct">${w.correct_answer}</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // Retry only wrong (unmastered) questions
+    async function retryAllWrong() {
+        const mastered = getMastered();
+        const unmastered = allWrongItems.filter(w => !mastered[wrongKey(w)]);
+        if (!unmastered.length) { alert('没有待复习的错题'); return; }
+        // Group by year, pick the year with most wrong questions
+        const byYear = {};
+        unmastered.forEach(w => { byYear[w.year] = (byYear[w.year] || 0) + 1; });
+        const topYear = Object.entries(byYear).sort((a,b) => b[1] - a[1])[0][0];
+        startQuiz(parseInt(topYear));
     }
 
     function showWrongDetail(w) {
@@ -1048,10 +1242,24 @@
         const pre = w.level === 'b' ? `${w.year}` : `level-${w.level}/${w.year}`;
         document.getElementById('wrongDetailTitle').textContent = `Level ${lvLabel} · ${w.year} 年 · 第 ${w.question} 题`;
         document.getElementById('wrongDetailImg').src = `${pre}/q${w.question}.png`;
+
+        const mastered = getMastered();
+        const key = wrongKey(w);
+        const isMastered = mastered[key];
+
         document.getElementById('wrongDetailInfo').innerHTML =
             `<div>你的答案：<span style="color:var(--error);text-decoration:line-through;">${w.user_answer}</span></div>` +
             `<div>正确答案：<span style="color:var(--success);font-weight:600;">${w.correct_answer}</span></div>`;
         document.getElementById('wrongRetryBtn').onclick = () => { closeWrongDetail(); startQuiz(w.year); };
+
+        const masterBtn = document.getElementById('wrongMasterBtn');
+        masterBtn.textContent = isMastered ? '取消掌握' : '标记已掌握';
+        masterBtn.onclick = () => {
+            setMastered(key, !isMastered);
+            closeWrongDetail();
+            showWrongBook(); // refresh
+        };
+
         document.getElementById('wrongDetailOverlay').classList.add('open');
     }
 
