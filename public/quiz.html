@@ -255,6 +255,30 @@
         .btn-ghost:hover { color: var(--ink-med); }
         .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+        /* Explanation panel */
+        .explanation-panel {
+            margin-top: 12px; padding: 14px 16px; border-radius: 10px;
+            background: linear-gradient(135deg, #f8f6f3, #f0ece8); border: 1px solid var(--paper-shadow);
+            font-size: 0.82rem; color: var(--ink-med); line-height: 1.7; display: none;
+        }
+        .explanation-panel.show { display: block; }
+        .explanation-panel .exp-title {
+            font-family: var(--font-serif); font-size: 0.9rem; font-weight: 600;
+            color: var(--ink); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+        }
+        .explanation-panel .exp-tag {
+            font-size: 0.7rem; padding: 2px 8px; border-radius: 10px;
+            background: var(--blush-faint); color: var(--rose); font-weight: 500;
+        }
+        .explanation-panel .exp-steps {
+            margin: 8px 0 0; padding-left: 18px;
+        }
+        .explanation-panel .exp-steps li { margin-bottom: 4px; }
+        .explanation-panel .exp-note {
+            margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--ink-faint);
+            font-style: italic; color: var(--ink-light); font-size: 0.78rem;
+        }
+
         /* ===== Results ===== */
         .results-page { display: none; max-width: 480px; margin: 80px auto; padding: 20px; }
         .results-card {
@@ -489,6 +513,7 @@
             <h2 class="section-title">选择答案</h2>
             <div class="options" id="options"></div>
             <div class="feedback" id="feedback"></div>
+            <div class="explanation-panel" id="explanationPanel"></div>
 
             <div class="right-spacer"></div>
 
@@ -592,6 +617,23 @@
     let quizStartTime = null, quizSubmitted = false, timerInterval = null;
 
     const dataBase = () => currentLevel === 'b' ? 'data' : `level-${currentLevel}/data`;
+
+    // Cache for loaded question data (with explanations)
+    const questionDataCache = {};
+    async function loadExplanation(level, year, qNum) {
+        const key = `${level}-${year}`;
+        if (!questionDataCache[key]) {
+            try {
+                const base = level === 'b' ? 'data' : `level-${level}/data`;
+                const r = await fetch(`${base}/${year}.json`);
+                if (r.ok) questionDataCache[key] = await r.json();
+            } catch {}
+        }
+        const data = questionDataCache[key];
+        if (!data) return null;
+        const q = data.questions.find(q => q.number === qNum);
+        return q && q.explanation ? q : null;
+    }
     const imgBase = () => currentLevel === 'b' ? '' : `level-${currentLevel}`;
 
     async function init() {
@@ -757,6 +799,25 @@
         } else {
             fb.className = 'feedback';
             fb.style.background = ''; fb.style.color = '';
+        }
+
+        // Explanation: show after quiz submitted if data available
+        const expPanel = document.getElementById('explanationPanel');
+        if (quizSubmitted && q.explanation) {
+            let html = `<div class="exp-title">解析`;
+            if (q.knowledge_point) html += ` <span class="exp-tag">${q.knowledge_point}</span>`;
+            html += `</div>`;
+            html += `<div>${q.explanation}</div>`;
+            if (q.solution_steps && q.solution_steps.length) {
+                html += `<ol class="exp-steps">${q.solution_steps.map(s => `<li>${s}</li>`).join('')}</ol>`;
+            }
+            if (q.difficulty_note) {
+                html += `<div class="exp-note">${q.difficulty_note}</div>`;
+            }
+            expPanel.innerHTML = html;
+            expPanel.className = 'explanation-panel show';
+        } else {
+            expPanel.className = 'explanation-panel';
         }
 
         document.getElementById('panelLeft').scrollTop = 0;
@@ -1247,9 +1308,25 @@
         const key = wrongKey(w);
         const isMastered = mastered[key];
 
-        document.getElementById('wrongDetailInfo').innerHTML =
+        let infoHtml =
             `<div>你的答案：<span style="color:var(--error);text-decoration:line-through;">${w.user_answer}</span></div>` +
             `<div>正确答案：<span style="color:var(--success);font-weight:600;">${w.correct_answer}</span></div>`;
+        // Load explanation if available
+        loadExplanation(w.level, w.year, w.question).then(exp => {
+            if (exp) {
+                infoHtml += `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--ink-faint);">`;
+                infoHtml += `<div style="font-weight:600;margin-bottom:6px;">解析`;
+                if (exp.knowledge_point) infoHtml += ` <span style="font-size:0.7rem;padding:2px 8px;border-radius:10px;background:var(--blush-faint);color:var(--rose);">${exp.knowledge_point}</span>`;
+                infoHtml += `</div>`;
+                infoHtml += `<div style="font-size:0.82rem;line-height:1.7;">${exp.explanation}</div>`;
+                if (exp.solution_steps) {
+                    infoHtml += `<ol style="margin:8px 0 0;padding-left:18px;font-size:0.82rem;line-height:1.7;">${exp.solution_steps.map(s => `<li>${s}</li>`).join('')}</ol>`;
+                }
+                infoHtml += `</div>`;
+                document.getElementById('wrongDetailInfo').innerHTML = infoHtml;
+            }
+        });
+        document.getElementById('wrongDetailInfo').innerHTML = infoHtml;
         document.getElementById('wrongRetryBtn').onclick = () => { closeWrongDetail(); startQuiz(w.year); };
 
         const masterBtn = document.getElementById('wrongMasterBtn');
