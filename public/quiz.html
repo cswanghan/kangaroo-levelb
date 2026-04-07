@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>袋鼠数学 · 在线练习</title>
     <script src="auth-guard.js"></script>
+    <script src="analytics.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Raleway:wght@300;400;500;600&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
@@ -50,91 +51,161 @@
         .year-card .yr { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 500; color: var(--rose); }
         .year-card .cnt { color: var(--ink-light); font-size: 0.8rem; margin-top: 4px; }
 
-        /* ===== Book Quiz Layout ===== */
+        /* ===== Quiz Layout ===== */
         .quiz-wrapper {
             display: none; min-height: 100vh;
-            justify-content: center; align-items: center; padding: 24px; flex-direction: column; gap: 16px;
+            padding: 24px; flex-direction: column; align-items: center;
         }
 
-        /* Top info bar above book */
-        .book-topbar {
-            width: 100%; max-width: 1040px;
+        /* Top bar */
+        .quiz-topbar {
+            width: 100%; max-width: 1200px;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 0 20px; font-size: 0.8rem; color: var(--ink-light);
+            padding: 0 4px; margin-bottom: 16px; font-size: 0.85rem; color: var(--ink-light);
         }
-        .book-topbar .back-btn {
+        .quiz-topbar .back-btn {
             background: none; border: none; font-family: inherit; font-size: 0.85rem;
             color: var(--rose); cursor: pointer; padding: 4px 0;
         }
-        .book-topbar .stats { display: flex; gap: 18px; }
-        .book-topbar .val { font-weight: 600; color: var(--rose); }
 
-        /* Progress under topbar */
-        .book-progress { width: 100%; max-width: 1040px; height: 2px; background: var(--paper-shadow); border-radius: 1px; }
-        .book-progress-fill { height: 100%; background: var(--rose); transition: width 0.3s; border-radius: 1px; }
-
-        /* The book */
-        .book {
-            position: relative; display: flex; width: 1040px; height: 680px;
-            background: var(--paper); border-radius: 4px 12px 12px 4px;
-            box-shadow: -1px 0 2px rgba(0,0,0,0.02), 1px 0 2px rgba(0,0,0,0.02),
-                0 20px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04),
-                20px 20px 60px rgba(0,0,0,0.05), inset -2px 0 4px rgba(0,0,0,0.02);
+        /* 3-column grid */
+        .quiz-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px 240px;
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+            min-height: calc(100vh - 100px);
         }
 
-        .book::after {
-            content: ''; position: absolute; top: 4px; right: -6px; bottom: -4px; width: 100%;
-            background: linear-gradient(to right, transparent 98%, #EAE5DF 98%, #F2EFEA 99%, #DCD7D0 100%);
-            border-radius: 4px 12px 12px 4px; z-index: -1; box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-        }
-
-        /* Pages */
-        .pg { flex: 1; position: relative; overflow: hidden; background: var(--paper); }
-        .pg.left {
-            border-radius: 4px 0 0 4px; padding: 36px 40px 36px 48px;
-            background: linear-gradient(to right, var(--paper) 85%, #F4F1ED 95%, #EBE7E1 100%);
+        .quiz-question {
+            background: var(--paper);
+            border-radius: 12px;
+            padding: 32px 36px 32px 48px;
+            position: relative;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
             overflow-y: auto;
-        }
-        .pg.right {
-            border-radius: 0 12px 12px 0; padding: 36px 48px 36px 40px;
-            background: linear-gradient(to left, var(--paper) 85%, #F4F1ED 95%, #EBE7E1 100%);
-            display: flex; flex-direction: column;
+            max-height: calc(100vh - 100px);
         }
 
-        /* Spine rings */
-        .spine {
-            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-            width: 30px; height: 100%; z-index: 5;
-            display: flex; flex-direction: column; justify-content: space-evenly;
-            padding: 40px 0; pointer-events: none;
+        /* Notebook dots */
+        .notebook-dots {
+            position: absolute; left: 14px; top: 40px; bottom: 40px;
+            width: 12px; display: flex; flex-direction: column;
+            justify-content: space-evenly; pointer-events: none;
         }
-        .ring-group { position: relative; width: 100%; height: 24px; }
-        .ring {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-            width: 48px; height: 8px; background: var(--ring); border-radius: 4px;
-            box-shadow: 0 3px 4px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.8); z-index: 2;
-        }
-        .hole {
-            position: absolute; top: 50%; transform: translateY(-50%); width: 14px; height: 14px;
+        .notebook-dot {
+            width: 10px; height: 10px;
             background: var(--desk); border-radius: 50%;
-            box-shadow: inset 2px 2px 4px rgba(0,0,0,0.2), inset -1px -1px 2px rgba(255,255,255,0.5); z-index: 1;
+            box-shadow: inset 1px 1px 3px rgba(0,0,0,0.15);
         }
-        .hole.l { left: -18px; }
-        .hole.r { right: -18px; }
 
-        /* Page curl */
-        .page-curl-zone { position: absolute; bottom: 0; right: 0; width: 80px; height: 80px; cursor: pointer; z-index: 10; }
-        .page-curl {
-            position: absolute; bottom: 0; right: 0; width: 0; height: 0;
-            background: linear-gradient(135deg, transparent 45%, #fff 50%, #e0dcd7 55%, transparent 60%);
-            box-shadow: -4px -4px 10px rgba(0,0,0,0.05); transition: all 0.4s cubic-bezier(0.25,1,0.5,1);
-            pointer-events: none; border-top-left-radius: 10px;
+        .quiz-answer {
+            background: var(--paper);
+            border-radius: 12px;
+            padding: 32px 28px;
+            display: flex; flex-direction: column;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            overflow-y: auto;
+            max-height: calc(100vh - 100px);
         }
-        .page-curl-zone:hover + .page-curl { width: 50px; height: 50px; }
 
-        /* Corner decoration */
-        .corner-deco { position: absolute; top: 20px; right: 20px; display: flex; gap: 4px; }
-        .corner-dot { width: 4px; height: 4px; background: var(--blush); border-radius: 50%; }
+        .quiz-sidebar {
+            display: flex; flex-direction: column; gap: 16px;
+        }
+
+        /* Timer block */
+        .timer-block {
+            background: var(--paper);
+            border-radius: 12px;
+            padding: 20px 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .timer-row {
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .timer-display {
+            font-family: var(--font-sans);
+            font-size: 2rem; font-weight: 600;
+            color: var(--rose); letter-spacing: 2px;
+        }
+        .timer-progress-text {
+            font-size: 0.82rem; color: var(--ink-light);
+        }
+        .timer-bar {
+            height: 3px; background: var(--paper-shadow); border-radius: 2px; margin-top: 12px;
+        }
+        .timer-bar-fill {
+            height: 100%; background: var(--rose); transition: width 0.3s; border-radius: 2px;
+        }
+
+        /* Nav grid block */
+        .nav-grid-block {
+            background: var(--paper);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            flex: 1;
+        }
+        .nav-grid-title {
+            font-family: var(--font-serif);
+            font-size: 0.9rem; font-weight: 500;
+            color: var(--ink); margin-bottom: 14px;
+        }
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+        .nav-cell {
+            width: 100%; aspect-ratio: 1;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.78rem; cursor: pointer;
+            border: 2px solid var(--paper-shadow);
+            background: transparent; color: var(--ink-light);
+            transition: all 0.15s; font-family: var(--font-sans);
+        }
+        .nav-cell.answered {
+            background: var(--rose); border-color: var(--rose); color: white;
+        }
+        .nav-cell.current {
+            border-color: var(--rose); color: var(--rose); font-weight: 600;
+            box-shadow: 0 0 0 3px var(--blush-faint);
+        }
+        .nav-cell.answered.current {
+            background: var(--rose); color: white;
+            box-shadow: 0 0 0 3px var(--blush-faint);
+        }
+        .nav-cell:hover:not(.current) {
+            border-color: var(--blush); background: var(--blush-faint);
+        }
+        .nav-legend {
+            display: flex; gap: 14px; margin-top: 14px;
+            font-size: 0.72rem; color: var(--ink-light); justify-content: center;
+        }
+        .nav-legend-item { display: flex; align-items: center; gap: 4px; }
+        .nav-legend-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+        }
+        .nav-legend-dot.answered { background: var(--rose); }
+        .nav-legend-dot.unanswered { border: 2px solid var(--paper-shadow); }
+        .nav-legend-dot.current { border: 2px solid var(--rose); box-shadow: 0 0 0 2px var(--blush-faint); }
+
+        /* Sidebar submit */
+        .sidebar-submit {
+            padding: 14px;
+            background: var(--ink);
+            color: white;
+            border: none; border-radius: 12px;
+            font-size: 0.95rem; font-weight: 500;
+            cursor: pointer; font-family: var(--font-sans);
+            transition: opacity 0.15s;
+        }
+        .sidebar-submit:hover { opacity: 0.85; }
+
+        /* Mobile nav drawer toggle */
+        .mobile-nav-toggle { display: none; }
 
         /* Left page content */
         .q-meta {
@@ -154,6 +225,7 @@
             width: 100%; max-width: 100%; border-radius: 6px; border: 1px solid var(--paper-shadow);
             background: white; cursor: zoom-in;
             min-height: 200px; object-fit: contain;
+            -webkit-user-select: none; user-select: none; -webkit-user-drag: none;
         }
         .question-image.loading {
             background: linear-gradient(90deg, #f0ece8 25%, #e8e4df 50%, #f0ece8 75%);
@@ -194,13 +266,13 @@
         .options { display: grid; gap: 10px; flex: 0; }
         .option {
             display: flex; align-items: center; gap: 14px; padding: 12px 14px;
-            border-bottom: 1px solid var(--ink-faint); cursor: pointer; transition: all 0.15s; user-select: none;
+            border: 1.5px solid var(--ink-faint); border-radius: 10px;
+            cursor: pointer; transition: all 0.15s; user-select: none;
         }
-        .option:last-child { border-bottom: none; }
-        .option:hover:not(.disabled) { background: var(--blush-faint); }
-        .option.selected { background: var(--blush-faint); }
-        .option.correct { background: var(--success-bg); }
-        .option.wrong { background: var(--error-bg); }
+        .option:hover:not(.disabled) { border-color: var(--blush); background: var(--blush-faint); }
+        .option.selected { background: var(--blush-faint); border-color: var(--rose); }
+        .option.correct { background: var(--success-bg); border-color: var(--success); }
+        .option.wrong { background: var(--error-bg); border-color: var(--error); }
         .option.disabled { cursor: default; opacity: 0.6; }
 
         .opt-check {
@@ -242,6 +314,10 @@
         .action-bar {
             display: flex; gap: 10px; padding-top: 16px;
             border-top: 1px solid var(--ink-faint);
+            position: sticky; bottom: 0;
+            background: var(--paper);
+            margin-top: auto;
+            z-index: 2;
         }
         .btn {
             flex: 1; padding: 10px 14px; border: none; border-radius: 18px;
@@ -287,7 +363,31 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.08);
         }
         .results-card h2 { font-family: var(--font-serif); font-size: 1.6rem; font-weight: 400; margin-bottom: 8px; }
-        .results-score { font-family: var(--font-serif); font-size: 3.2rem; font-weight: 500; color: var(--rose); margin: 16px 0; }
+
+        /* Score ring */
+        .score-ring-wrap {
+            position: relative; width: 160px; height: 160px; margin: 20px auto;
+        }
+        .score-ring-wrap svg { transform: rotate(-90deg); }
+        .score-ring-bg {
+            fill: none; stroke: var(--paper-shadow); stroke-width: 10;
+        }
+        .score-ring-fill {
+            fill: none; stroke: var(--rose); stroke-width: 10;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .score-ring-text {
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .score-ring-number {
+            font-family: var(--font-serif); font-size: 2.4rem; font-weight: 500; color: var(--rose); line-height: 1;
+        }
+        .score-ring-label {
+            font-size: 0.78rem; color: var(--ink-light); margin-top: 4px;
+        }
+
         .results-detail { color: var(--ink-light); margin-bottom: 16px; font-size: 0.9rem; line-height: 1.8; }
         .results-breakdown {
             text-align: left; background: var(--blush-faint); border-radius: 10px;
@@ -413,13 +513,67 @@
         .modal-actions { display: flex; gap: 10px; }
         .modal-actions .btn { flex: 1; }
 
+        /* Question transition */
+        .quiz-question.fade-out, .quiz-answer.fade-out {
+            opacity: 0; transform: translateY(6px);
+        }
+        .quiz-question, .quiz-answer {
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
         /* Responsive */
         @media (max-width: 1100px) {
-            .book { width: 96vw; height: auto; min-height: 500px; flex-direction: column; border-radius: 12px; }
-            .pg.left { border-radius: 12px 12px 0 0; max-height: 50vh; overflow-y: auto; }
-            .pg.right { border-radius: 0 0 12px 12px; }
-            .spine { display: none; }
-            .book::after { display: none; }
+            .quiz-layout {
+                grid-template-columns: 1fr 220px;
+            }
+            .quiz-question { grid-column: 1; grid-row: 1; max-height: 50vh; }
+            .quiz-answer { grid-column: 1; grid-row: 2; max-height: none; }
+            .quiz-sidebar { grid-column: 2; grid-row: 1 / 3; }
+            .nav-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .quiz-layout {
+                grid-template-columns: 1fr;
+                padding-bottom: 72px;
+            }
+            .quiz-question { max-height: none; }
+            .quiz-sidebar {
+                position: fixed; bottom: 0; left: 0; right: 0;
+                z-index: 100; flex-direction: row;
+                background: var(--paper);
+                padding: 12px 20px;
+                box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+                border-radius: 16px 16px 0 0;
+                align-items: center; gap: 12px;
+            }
+            .timer-block {
+                box-shadow: none; padding: 0; flex-shrink: 0;
+            }
+            .timer-display { font-size: 1.3rem; }
+            .timer-bar { display: none; }
+            .timer-progress-text { font-size: 0.75rem; }
+            .nav-grid-block {
+                display: none;
+                position: fixed; bottom: 60px; left: 0; right: 0;
+                max-height: 50vh; overflow-y: auto;
+                border-radius: 16px 16px 0 0; z-index: 99;
+                box-shadow: 0 -8px 24px rgba(0,0,0,0.1);
+            }
+            .nav-grid-block.mobile-open { display: block; }
+            .nav-grid { grid-template-columns: repeat(6, 1fr); }
+            .mobile-nav-toggle {
+                display: flex; align-items: center; justify-content: center;
+                width: 40px; height: 40px;
+                background: var(--blush-faint); border: 1px solid var(--paper-shadow);
+                border-radius: 10px; cursor: pointer; font-size: 1.1rem;
+                flex-shrink: 0;
+            }
+            .sidebar-submit {
+                padding: 10px 18px; font-size: 0.85rem; flex-shrink: 0;
+            }
+            .notebook-dots { display: none; }
+            .quiz-question { padding: 24px 20px; }
+            .quiz-answer { padding: 24px 20px; }
         }
         @media (max-width: 600px) {
             .select-header h1 { font-size: 1.6rem; }
@@ -478,21 +632,17 @@
     </div>
 </div>
 
-<!-- ===== Book Quiz ===== -->
+<!-- ===== Quiz ===== -->
 <div class="quiz-wrapper" id="quizPage">
-    <div class="book-topbar">
+    <div class="quiz-topbar">
         <button class="back-btn" onclick="goHome()">← 返回</button>
         <span class="quiz-title" id="quizTitle" style="font-family:var(--font-serif);font-weight:500;"></span>
-        <div class="stats">
-            <span id="timerDisplay" class="val" style="font-family:var(--font-sans);letter-spacing:1px;">00:00</span>
-            <span>已答 <span class="val" id="correctCount">0</span> / <span class="val" id="scorePercent">0</span></span>
-        </div>
     </div>
-    <div class="book-progress"><div class="book-progress-fill" id="progressFill"></div></div>
 
-    <div class="book">
-        <!-- Left page: question -->
-        <div class="pg left" id="panelLeft">
+    <div class="quiz-layout">
+        <!-- Left: question -->
+        <div class="quiz-question" id="panelLeft">
+            <div class="notebook-dots" id="notebookDots"></div>
             <div class="q-meta">
                 <span id="questionBadge">第 1 题</span>
                 <div class="q-meta-line"></div>
@@ -500,16 +650,11 @@
             </div>
             <div class="q-number" id="qNumber">Question 1</div>
             <div class="q-sub" id="qSub"></div>
-            <img class="question-image" id="questionImage" alt="题目" onclick="openLightbox()">
+            <img class="question-image" id="questionImage" alt="题目" draggable="false" onclick="openLightbox()">
         </div>
 
-        <!-- Spine -->
-        <div class="spine" id="spineRings"></div>
-
-        <!-- Right page: answers -->
-        <div class="pg right">
-            <div class="corner-deco"><div class="corner-dot"></div><div class="corner-dot" style="opacity:0.5"></div></div>
-
+        <!-- Middle: answers -->
+        <div class="quiz-answer">
             <h2 class="section-title">选择答案</h2>
             <div class="options" id="options"></div>
             <div class="feedback" id="feedback"></div>
@@ -517,11 +662,31 @@
 
             <div class="right-spacer"></div>
 
-            <!-- Issue #6: Redesigned action bar -->
             <div class="action-bar" id="actionBar"></div>
+        </div>
 
-            <div class="page-curl-zone" onclick="nextQuestion()"></div>
-            <div class="page-curl"></div>
+        <!-- Right: sidebar -->
+        <div class="quiz-sidebar">
+            <div class="timer-block">
+                <div class="timer-row">
+                    <span id="timerDisplay" class="timer-display">00:00</span>
+                    <span class="timer-progress-text" id="progressText">已答 0 / 0</span>
+                </div>
+                <div class="timer-bar"><div class="timer-bar-fill" id="progressFill"></div></div>
+            </div>
+
+            <div class="nav-grid-block" id="navGridBlock">
+                <div class="nav-grid-title">题目导航</div>
+                <div class="nav-grid" id="navGrid"></div>
+                <div class="nav-legend">
+                    <span class="nav-legend-item"><span class="nav-legend-dot answered"></span> 已答</span>
+                    <span class="nav-legend-item"><span class="nav-legend-dot unanswered"></span> 未答</span>
+                    <span class="nav-legend-item"><span class="nav-legend-dot current"></span> 当前</span>
+                </div>
+            </div>
+
+            <button class="mobile-nav-toggle" onclick="toggleNavDrawer()" title="题目导航">&#9783;</button>
+            <button class="sidebar-submit" id="sidebarSubmit" onclick="submitQuiz()">提交答卷</button>
         </div>
     </div>
 </div>
@@ -530,7 +695,17 @@
 <div class="results-page" id="resultsPage">
     <div class="results-card">
         <h2>完成</h2>
-        <div class="results-score" id="finalScore">0</div>
+        <div class="score-ring-wrap">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+                <circle class="score-ring-bg" cx="80" cy="80" r="68" />
+                <circle class="score-ring-fill" id="scoreRing" cx="80" cy="80" r="68"
+                    stroke-dasharray="427.26" stroke-dashoffset="427.26" />
+            </svg>
+            <div class="score-ring-text">
+                <div class="score-ring-number" id="finalScore">0</div>
+                <div class="score-ring-label" id="scoreRingLabel">/ 120 分</div>
+            </div>
+        </div>
         <div class="results-breakdown" id="finalBreakdown"></div>
         <div class="results-detail" id="finalDetail"></div>
         <div class="results-grade" id="finalGrade"></div>
@@ -607,10 +782,8 @@
     function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
     document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeWrongDetail(); } });
 
-    // Render spine rings
-    document.getElementById('spineRings').innerHTML = Array(6).fill('').map(() =>
-        '<div class="ring-group"><div class="hole l"></div><div class="ring"></div><div class="hole r"></div></div>'
-    ).join('');
+    // Render notebook dots
+    document.getElementById('notebookDots').innerHTML = Array(8).fill('<div class="notebook-dot"></div>').join('');
 
     let currentLevel = new URLSearchParams(location.search).get('level') || 'b';
     let currentYear = null, questions = [], currentIndex = 0, userAnswers = {};
@@ -662,6 +835,7 @@
     }
 
     function renderYearGrid(years) {
+        window.KangarooAnalytics?.track('quiz_selector_view', { meta: { level: currentLevel, count: years.length } });
         document.getElementById('yearGrid').innerHTML = years.map(y => `
             <div class="year-card" onclick="startQuiz(${y.year})">
                 <div class="yr">${y.year}</div>
@@ -672,6 +846,7 @@
     let pendingYear = null, pendingData = null;
 
     async function startQuiz(year) {
+        window.KangarooAnalytics?.track('quiz_test_select', { meta: { level: currentLevel, year } });
         try {
             const r = await fetch(`${dataBase()}/${year}.json`);
             const d = await r.json();
@@ -706,20 +881,24 @@
         confirmCallback = null;
     }
 
+    let halfwayTracked = false;
     function confirmStart() {
         document.getElementById('startModal').classList.remove('open');
         if (!pendingYear || !pendingData) return;
         currentYear = pendingYear; questions = pendingData.questions;
-        currentIndex = 0; userAnswers = {};
+        currentIndex = 0; userAnswers = {}; halfwayTracked = false;
         quizStartTime = Date.now(); quizSubmitted = false;
+        window.KangarooAnalytics?.track('quiz_start', { meta: { level: currentLevel, year: currentYear, total: questions.length } });
+        clearProgress();
         startTimer();
+        enableBackGuard();
         document.getElementById('homePage').style.display = 'none';
         document.getElementById('quizPage').style.display = 'flex';
         document.getElementById('resultsPage').style.display = 'none';
         document.getElementById('quizTitle').textContent = `${currentYear} · Level ${currentLevel.toUpperCase()}`;
-        // Issue #5: preload first few images
         preloadImages(0);
         renderQuestion();
+        saveProgress();
         pendingYear = null; pendingData = null;
     }
 
@@ -741,14 +920,60 @@
         return letter;
     }
 
+    function renderNavGrid() {
+        const grid = document.getElementById('navGrid');
+        grid.innerHTML = questions.map((q, i) => {
+            const answered = userAnswers[q.number] !== undefined;
+            const current = i === currentIndex;
+            let cls = 'nav-cell';
+            if (current && answered) cls += ' answered current';
+            else if (current) cls += ' current';
+            else if (answered) cls += ' answered';
+            return `<div class="${cls}" onclick="jumpToQuestion(${i})">${q.number}</div>`;
+        }).join('');
+    }
+
+    function jumpToQuestion(index) {
+        if (index < 0 || index >= questions.length) return;
+        transitionToQuestion(() => { currentIndex = index; });
+        document.getElementById('navGridBlock').classList.remove('mobile-open');
+    }
+
+    function transitionToQuestion(updateFn) {
+        const qEl = document.querySelector('.quiz-question');
+        const aEl = document.querySelector('.quiz-answer');
+        qEl.classList.add('fade-out');
+        aEl.classList.add('fade-out');
+        setTimeout(() => {
+            updateFn();
+            renderQuestion();
+            qEl.classList.remove('fade-out');
+            aEl.classList.remove('fade-out');
+        }, 180);
+    }
+
+    function toggleNavDrawer() {
+        document.getElementById('navGridBlock').classList.toggle('mobile-open');
+    }
+
     function renderQuestion() {
         const q = questions[currentIndex];
         const selected = userAnswers[q.number];
         const ac = Object.keys(userAnswers).length;
 
-        document.getElementById('correctCount').textContent = ac;
-        document.getElementById('scorePercent').textContent = `${questions.length} 题`;
+        // Update sidebar progress
+        document.getElementById('progressText').textContent = `已答 ${ac} / ${questions.length}`;
         document.getElementById('progressFill').style.width = ((currentIndex+1)/questions.length*100)+'%';
+
+        // Update sidebar submit button text
+        const submitBtn = document.getElementById('sidebarSubmit');
+        if (quizSubmitted) {
+            submitBtn.textContent = '查看结果';
+            submitBtn.onclick = showResultsPage;
+        } else {
+            submitBtn.textContent = '提交答卷';
+            submitBtn.onclick = submitQuiz;
+        }
 
         document.getElementById('questionBadge').textContent = `第 ${q.number} 题`;
         document.getElementById('questionPoints').textContent = `${q.points} 分`;
@@ -821,6 +1046,9 @@
         }
 
         document.getElementById('panelLeft').scrollTop = 0;
+
+        // Update nav grid
+        renderNavGrid();
     }
 
     // Issue #6: Single primary action button pattern
@@ -872,7 +1100,13 @@
     function selectOption(l) {
         if (quizSubmitted) return;
         userAnswers[questions[currentIndex].number] = l;
+        // Track 50% progress checkpoint
+        if (!halfwayTracked && Object.keys(userAnswers).length >= Math.ceil(questions.length / 2)) {
+            halfwayTracked = true;
+            window.KangarooAnalytics?.track('quiz_progress_checkpoint', { meta: { level: currentLevel, year: currentYear, percent: 50 } });
+        }
         renderQuestion();
+        saveProgress();
     }
 
     // Issue #6: Combined confirm + next
@@ -880,16 +1114,14 @@
         const q = questions[currentIndex];
         if (!userAnswers[q.number]) return;
         if (currentIndex < questions.length - 1) {
-            currentIndex++;
-            renderQuestion();
+            transitionToQuestion(() => { currentIndex++; });
         }
     }
 
     // Issue #6: Skip (move to next without answering)
     function skipQuestion() {
         if (currentIndex < questions.length - 1) {
-            currentIndex++;
-            renderQuestion();
+            transitionToQuestion(() => { currentIndex++; });
         }
     }
 
@@ -902,20 +1134,19 @@
         }
     }
 
-    function prevQuestion() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+    function prevQuestion() { if (currentIndex > 0) { transitionToQuestion(() => { currentIndex--; }); } }
 
     function nextQuestion() {
         if (quizSubmitted) {
-            if (currentIndex < questions.length-1) { currentIndex++; renderQuestion(); }
+            if (currentIndex < questions.length-1) { transitionToQuestion(() => { currentIndex++; }); }
             else showResultsPage();
             return;
         }
-        // If last question and all answered -> submit quiz
         const allAnswered = Object.keys(userAnswers).length === questions.length;
         if (currentIndex === questions.length-1 && allAnswered) {
             submitQuiz();
         } else {
-            if (currentIndex < questions.length-1) { currentIndex++; renderQuestion(); }
+            if (currentIndex < questions.length-1) { transitionToQuestion(() => { currentIndex++; }); }
         }
     }
 
@@ -930,8 +1161,11 @@
     }
     function doSubmitQuiz() {
         if (quizSubmitted) return;
+        window.KangarooAnalytics?.track('quiz_submit_attempt', { meta: { level: currentLevel, year: currentYear } });
         quizSubmitted = true;
         stopTimer();
+        clearProgress();
+        disableBackGuard();
         currentIndex = 0;
         renderQuestion();
         const duration = Math.round((Date.now() - quizStartTime) / 1000);
@@ -976,7 +1210,19 @@
         const { score, maxScore, correct, wrong, unanswered, baseScore, earnedPoints, penalty } = calcScore();
         document.getElementById('quizPage').style.display = 'none';
         document.getElementById('resultsPage').style.display = 'block';
-        document.getElementById('finalScore').textContent = `${score} 分`;
+        document.getElementById('finalScore').textContent = score;
+        document.getElementById('scoreRingLabel').textContent = `/ ${maxScore} 分`;
+
+        // Animate score ring
+        const ring = document.getElementById('scoreRing');
+        const circumference = 2 * Math.PI * 68; // ~427.26
+        const pct = score / maxScore;
+        ring.style.strokeDashoffset = circumference; // reset
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                ring.style.strokeDashoffset = circumference * (1 - pct);
+            });
+        });
 
         // Breakdown
         document.getElementById('finalBreakdown').innerHTML =
@@ -1032,21 +1278,71 @@
         document.getElementById('medalDesc').textContent = medal.desc;
     }
 
+    // Save pending result to localStorage so it can be submitted after login
+    function savePendingResult(duration) {
+        const { score } = calcScore();
+        const answers = questions.map(q => ({
+            question: q.number, answer: userAnswers[q.number] || '',
+            correct: q.answer, isRight: userAnswers[q.number] === q.answer,
+            points: q.points,
+        }));
+        localStorage.setItem('pendingQuizResult', JSON.stringify({
+            level: currentLevel, year: currentYear, answers, duration, score,
+            savedAt: Date.now(),
+        }));
+    }
+
     async function submitQuizResult(duration) {
         const token = localStorage.getItem('token');
-        if (!token) return;
-        const { score, correct } = calcScore();
+        window.KangarooAnalytics?.track('quiz_submit_success', { meta: { level: currentLevel, year: currentYear, loggedIn: !!token } });
+        if (!token) {
+            // Save result locally, prompt login
+            savePendingResult(duration);
+            requireLogin('登录后可保存成绩到云端，查看错题本和学习诊断。');
+            return;
+        }
+        const { score } = calcScore();
         const answers = questions.map(q => ({
             question: q.number, answer: userAnswers[q.number] || '',
             correct: q.answer, isRight: userAnswers[q.number] === q.answer,
             points: q.points,
         }));
         try {
-            await fetch('/api/quiz/submit', {
+            const r = await fetch('/api/quiz/submit', {
                 method: 'POST',
                 headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ level: currentLevel, year: currentYear, answers, duration, score }),
             });
+            if (r.ok) {
+                window.KangarooAnalytics?.track('quiz_save_history_success', { meta: { level: currentLevel, year: currentYear } });
+            } else {
+                window.KangarooAnalytics?.track('quiz_submit_failed', { group: 'friction', meta: { level: currentLevel, year: currentYear, status: r.status } });
+            }
+            // Clear pending result on successful submit
+            localStorage.removeItem('pendingQuizResult');
+        } catch {
+            window.KangarooAnalytics?.track('quiz_submit_failed', { group: 'friction', meta: { level: currentLevel, year: currentYear } });
+        }
+    }
+
+    // On page load, try to submit any pending result from before login
+    async function submitPendingResult() {
+        const token = localStorage.getItem('token');
+        const raw = localStorage.getItem('pendingQuizResult');
+        if (!token || !raw) return;
+        try {
+            const data = JSON.parse(raw);
+            // Expire after 24 hours
+            if (Date.now() - data.savedAt > 24 * 60 * 60 * 1000) {
+                localStorage.removeItem('pendingQuizResult');
+                return;
+            }
+            await fetch('/api/quiz/submit', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+            localStorage.removeItem('pendingQuizResult');
         } catch {}
     }
 
@@ -1054,13 +1350,16 @@
     function goHome() {
         // 做题中（未提交）弹窗确认
         if (!quizSubmitted && quizStartTime && document.getElementById('quizPage').style.display === 'flex') {
-            showConfirmModal('🚪', '确定退出？', '做题尚未完成，当前进度不会保存。', doGoHome);
+            saveProgress();
+            window.KangarooAnalytics?.track('quiz_in_progress_leave', { group: 'friction', meta: { level: currentLevel, year: currentYear, answered: Object.keys(userAnswers).length, total: questions.length } });
+            showConfirmModal('🚪', '确定退出？', '做题进度已自动保存，下次可继续。', doGoHome);
             return;
         }
         doGoHome();
     }
     function doGoHome() {
         stopTimer();
+        disableBackGuard();
         document.getElementById('homePage').style.display = 'block';
         document.getElementById('quizPage').style.display = 'none';
         document.getElementById('resultsPage').style.display = 'none';
@@ -1348,7 +1647,126 @@
     // Legacy compat
     function hideHistory() { hidePanel(); }
 
-    init();
+    // ===== Progress save/restore =====
+    const PROGRESS_KEY = 'quizProgress';
+
+    function saveProgress() {
+        if (!quizStartTime || quizSubmitted) return;
+        const data = {
+            level: currentLevel,
+            year: currentYear,
+            currentIndex,
+            userAnswers,
+            startTime: quizStartTime,
+            savedAt: Date.now(),
+        };
+        localStorage.setItem(PROGRESS_KEY, JSON.stringify(data));
+    }
+
+    function clearProgress() {
+        localStorage.removeItem(PROGRESS_KEY);
+    }
+
+    function getSavedProgress() {
+        try {
+            const raw = localStorage.getItem(PROGRESS_KEY);
+            if (!raw) return null;
+            const data = JSON.parse(raw);
+            // Expire after 4 hours
+            if (Date.now() - data.savedAt > 4 * 60 * 60 * 1000) {
+                clearProgress();
+                return null;
+            }
+            return data;
+        } catch { return null; }
+    }
+
+    async function restoreProgress(prog) {
+        try {
+            currentLevel = prog.level;
+            document.querySelectorAll('.lv-tab').forEach(t =>
+                t.classList.toggle('active', t.dataset.level === currentLevel));
+            const r = await fetch(`${dataBase()}/${prog.year}.json`);
+            const d = await r.json();
+            currentYear = prog.year;
+            questions = d.questions;
+            currentIndex = prog.currentIndex;
+            userAnswers = prog.userAnswers || {};
+            quizStartTime = prog.startTime;
+            quizSubmitted = false;
+            startTimer();
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('quizPage').style.display = 'flex';
+            document.getElementById('resultsPage').style.display = 'none';
+            document.getElementById('quizTitle').textContent = `${currentYear} · Level ${currentLevel.toUpperCase()}`;
+            renderQuestion();
+        } catch {
+            clearProgress();
+        }
+    }
+
+    // Auto-save every 5 seconds during quiz
+    setInterval(() => {
+        if (quizStartTime && !quizSubmitted && document.getElementById('quizPage').style.display === 'flex') {
+            saveProgress();
+        }
+    }, 5000);
+
+    // ===== Browser back/swipe-back protection =====
+    let quizHistoryGuard = false;
+
+    function enableBackGuard() {
+        if (quizHistoryGuard) return;
+        quizHistoryGuard = true;
+        // Push a dummy state so back stays on this page
+        history.pushState({ quizGuard: true }, '');
+    }
+
+    function disableBackGuard() {
+        quizHistoryGuard = false;
+    }
+
+    window.addEventListener('popstate', (e) => {
+        if (quizStartTime && !quizSubmitted && document.getElementById('quizPage').style.display === 'flex') {
+            // Re-push to prevent leaving
+            history.pushState({ quizGuard: true }, '');
+            showConfirmModal('🚪', '确定退出？', '做题进度已自动保存，可稍后继续。', () => {
+                saveProgress();
+                disableBackGuard();
+                doGoHome();
+            });
+        }
+    });
+
+    // beforeunload for tab close / refresh
+    window.addEventListener('beforeunload', (e) => {
+        if (quizStartTime && !quizSubmitted && document.getElementById('quizPage').style.display === 'flex') {
+            saveProgress();
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
+    // Check for saved progress on load
+    async function initWithProgress() {
+        await init();
+        submitPendingResult();
+        const prog = getSavedProgress();
+        if (prog) {
+            showConfirmModal('📋', '发现未完成的做题', `${prog.year} 年 · Level ${prog.level.toUpperCase()}，已答 ${Object.keys(prog.userAnswers || {}).length} 题。是否继续？`, () => {
+                restoreProgress(prog);
+            });
+            // If user cancels, clear progress
+            const origClose = closeConfirmModal;
+            closeConfirmModal = function() {
+                origClose();
+                clearProgress();
+                closeConfirmModal = origClose;
+            };
+        }
+    }
+
+    initWithProgress();
 </script>
 </body>
 </html>
