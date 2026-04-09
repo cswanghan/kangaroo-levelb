@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>袋鼠数学 · Kangaroo Math</title>
     <script src="auth-guard.js"></script>
+    <script src="analytics.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -110,12 +111,152 @@
 
         .site-footer { text-align: center; margin-top: 60px; color: var(--text-light); font-size: 0.8rem; opacity: 0.7; }
 
+        /* Bottom action row */
+        .bottom-actions {
+            display: flex; justify-content: center; gap: 32px;
+            margin-top: 48px; flex-wrap: wrap;
+        }
+        .bottom-action {
+            display: flex; align-items: center; gap: 8px;
+            color: var(--text-light); font-size: 0.88rem; cursor: pointer;
+            padding: 10px 22px; border: 1px solid var(--warm); border-radius: 20px;
+            background: none; font-family: inherit; transition: all 0.2s;
+            text-decoration: none;
+        }
+        .bottom-action:hover { color: var(--accent); border-color: var(--rose); background: var(--rose-bg); }
+        .bottom-action .act-icon { font-size: 1.1rem; }
+
+        /* Modal */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(50,40,35,0.5); z-index: 100; align-items: center; justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: white; border-radius: 20px; padding: 36px 32px;
+            max-width: 480px; width: 90%; max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(50,40,35,0.2); position: relative;
+        }
+        .modal-close {
+            position: absolute; top: 14px; right: 18px; background: none; border: none;
+            font-size: 1.4rem; color: var(--text-light); cursor: pointer; line-height: 1;
+        }
+        .modal-close:hover { color: var(--text); }
+        .modal h2 {
+            font-family: 'Playfair Display', 'Noto Serif SC', serif;
+            font-size: 1.4rem; margin-bottom: 20px; text-align: center;
+        }
+
+        /* Feedback form */
+        .fb-types { display: flex; gap: 8px; margin-bottom: 16px; justify-content: center; }
+        .fb-type {
+            padding: 6px 16px; border: 1px solid var(--warm); border-radius: 14px;
+            font-size: 0.82rem; cursor: pointer; background: none; font-family: inherit;
+            color: var(--text-light); transition: all 0.15s;
+        }
+        .fb-type.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .fb-textarea {
+            width: 100%; min-height: 120px; border: 1px solid var(--warm); border-radius: 12px;
+            padding: 14px; font-family: inherit; font-size: 0.9rem; resize: vertical;
+            background: var(--cream); color: var(--text); outline: none;
+        }
+        .fb-textarea:focus { border-color: var(--rose); }
+        .fb-submit {
+            display: block; width: 100%; margin-top: 14px; padding: 12px;
+            background: var(--accent); color: white; border: none; border-radius: 14px;
+            font-size: 0.95rem; cursor: pointer; font-family: inherit; transition: opacity 0.2s;
+        }
+        .fb-submit:hover { opacity: 0.9; }
+        .fb-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+        .fb-msg { text-align: center; margin-top: 12px; font-size: 0.85rem; }
+        .fb-msg.ok { color: var(--success, #6b9a7d); }
+        .fb-msg.err { color: var(--error, #c47070); }
+
+        /* Top support ribbon */
+        .support-ribbon {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--rose-light);
+            border-radius: 18px;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 0 auto 28px;
+            max-width: 720px;
+            box-shadow: 0 2px 12px rgba(196, 160, 138, 0.08);
+        }
+        .support-ribbon-copy {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+            flex-wrap: wrap;
+        }
+        .support-ribbon strong {
+            color: var(--accent);
+            font-family: 'Playfair Display', 'Noto Serif SC', serif;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+        .support-ribbon p {
+            color: var(--text-light);
+            font-size: 0.82rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .support-ribbon button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 999px;
+            border: 1px solid var(--rose-light);
+            background: white;
+            color: var(--text);
+            font: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .support-ribbon button:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+            background: var(--rose-bg);
+        }
+        @media (max-width: 600px) {
+            .support-ribbon { border-radius: 14px; padding: 12px 16px; }
+            .support-ribbon-copy { align-items: flex-start; }
+            .support-ribbon button { width: 100%; justify-content: center; }
+        }
+
+        /* Donate modal */
+        .donate-intro { text-align: center; color: var(--text-light); font-size: 0.88rem; line-height: 1.8; margin-bottom: 20px; }
+        .qr-tabs { display: flex; justify-content: center; gap: 0; margin-bottom: 16px; border-bottom: 1px solid var(--warm); }
+        .qr-tab {
+            padding: 8px 24px; font-size: 0.88rem; cursor: pointer; border-bottom: 2px solid transparent;
+            color: var(--text-light); font-family: inherit; background: none; border-top: none; border-left: none; border-right: none;
+        }
+        .qr-tab.active { font-weight: 600; border-bottom-color: currentColor; }
+        .qr-tab.alipay.active { color: #1677ff; }
+        .qr-tab.wechat.active { color: #07c160; }
+        .qr-img { display: block; margin: 0 auto; max-width: 260px; border-radius: 12px; }
+        .donate-thanks {
+            text-align: center; margin-top: 16px; color: var(--text-light); font-size: 0.82rem; line-height: 1.7;
+        }
+
         @media (max-width: 600px) {
             .site-header h1 { font-size: 2rem; }
             .entry-grid { grid-template-columns: 1fr; max-width: 400px; }
             .entry-card { padding: 36px 24px; }
             .page { padding: 30px 16px 40px; }
             .level-tab { padding: 10px 14px; font-size: 0.85rem; }
+            .modal { padding: 28px 20px; }
+            .bottom-actions { gap: 12px; }
         }
     </style>
 </head>
@@ -125,6 +266,14 @@
             <h1>Kangaroo Math</h1>
             <p class="tagline">国际袋鼠数学竞赛 · 历年真题与练习</p>
         </div>
+
+        <section class="support-ribbon">
+            <div class="support-ribbon-copy">
+                <strong>支持维护</strong>
+                <p>如果这个网站对你家孩子有帮助，欢迎请我喝杯咖啡。</p>
+            </div>
+            <button onclick="openDonate()">☕ 请我喝杯咖啡</button>
+        </section>
 
         <div class="level-tabs">
             <div class="level-tab" onclick="switchLevel('a')">Level A</div>
@@ -148,7 +297,7 @@
                 <div class="entry-action">Browse →</div>
             </a>
 
-            <a id="quizEntry" href="quiz.html" class="entry-card">
+            <a id="quizEntry" href="quiz.html" class="entry-card" onclick="window.KangarooAnalytics?.track('home_entry_click',{meta:{target:'quiz'}})">
                 <div class="entry-icon">✏️</div>
                 <div class="entry-title">在线练习</div>
                 <div class="entry-desc">逐题作答 · 提交判分<br>按年份选择套卷</div>
@@ -163,12 +312,57 @@
             </a>
         </div>
 
+        <div class="bottom-actions">
+            <button class="bottom-action" onclick="openFeedback()">
+                <span class="act-icon">💬</span> 意见反馈
+            </button>
+            <button class="bottom-action" onclick="openDonate()">
+                <span class="act-icon">☕</span> 请我喝杯咖啡
+            </button>
+        </div>
+
         <div class="login-link" id="authArea">
             <a href="login.html">登录 / 注册</a>
         </div>
 
         <div class="site-footer">
             Math Kangaroo Practice System
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal-overlay" id="feedbackModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeFeedback()">&times;</button>
+            <h2>意见反馈</h2>
+            <div class="fb-types">
+                <button class="fb-type active" data-type="suggestion">建议</button>
+                <button class="fb-type" data-type="praise">表扬</button>
+                <button class="fb-type" data-type="bug">问题报错</button>
+            </div>
+            <textarea class="fb-textarea" id="fbContent" placeholder="请输入你的反馈内容..."></textarea>
+            <button class="fb-submit" id="fbSubmit" onclick="submitFeedback()">提交反馈</button>
+            <div class="fb-msg" id="fbMsg"></div>
+        </div>
+    </div>
+
+    <!-- Donate Modal -->
+    <div class="modal-overlay" id="donateModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeDonate()">&times;</button>
+            <h2>支持我们</h2>
+            <div class="donate-intro">
+                这个网站由一位家长利用业余时间开发维护<br>
+                如果对你有帮助，欢迎请我喝杯咖啡 :)
+            </div>
+            <div class="qr-tabs">
+                <button class="qr-tab alipay active" onclick="switchQR('alipay')">支付宝</button>
+                <button class="qr-tab wechat" onclick="switchQR('wechat')">微信</button>
+            </div>
+            <img class="qr-img" id="qrImg" src="images/alipay-qr.png" alt="收款码">
+            <div class="donate-thanks">
+                感谢你的支持与鼓励<br>每一份心意都是继续更新的动力
+            </div>
         </div>
     </div>
 
@@ -184,6 +378,71 @@
                     ` <a href="javascript:void(0)" onclick="localStorage.clear();location.reload()">退出</a>`;
             }
         })();
+    </script>
+
+    <!-- Feedback & Donate -->
+    <script>
+        let fbType = 'suggestion';
+
+        document.querySelectorAll('.fb-type').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.fb-type').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                fbType = btn.dataset.type;
+            });
+        });
+
+        function openFeedback() {
+            if (!requireLogin('登录后可提交反馈。')) return;
+            document.getElementById('fbContent').value = '';
+            document.getElementById('fbMsg').textContent = '';
+            document.getElementById('fbSubmit').disabled = false;
+            document.getElementById('feedbackModal').classList.add('show');
+        }
+        function closeFeedback() { document.getElementById('feedbackModal').classList.remove('show'); }
+
+        async function submitFeedback() {
+            const content = document.getElementById('fbContent').value.trim();
+            if (!content) { showFbMsg('请输入内容', 'err'); return; }
+            const btn = document.getElementById('fbSubmit');
+            btn.disabled = true; btn.textContent = '提交中...';
+            try {
+                const token = localStorage.getItem('token');
+                const r = await fetch('/api/feedback/submit', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: fbType, content })
+                });
+                const data = await r.json();
+                if (data.ok) {
+                    showFbMsg('感谢你的反馈！', 'ok');
+                    document.getElementById('fbContent').value = '';
+                    setTimeout(closeFeedback, 1500);
+                } else {
+                    showFbMsg(data.error || '提交失败，请稍后重试', 'err');
+                }
+            } catch { showFbMsg('网络错误，请稍后重试', 'err'); }
+            btn.disabled = false; btn.textContent = '提交反馈';
+        }
+        function showFbMsg(msg, type) {
+            const el = document.getElementById('fbMsg');
+            el.textContent = msg; el.className = 'fb-msg ' + type;
+        }
+
+        function openDonate() { document.getElementById('donateModal').classList.add('show'); }
+        function closeDonate() { document.getElementById('donateModal').classList.remove('show'); }
+        function switchQR(type) {
+            document.querySelectorAll('.qr-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.qr-tab.' + type).classList.add('active');
+            document.getElementById('qrImg').src = 'images/' + type + '-qr.png';
+        }
+
+        // Close modals on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) overlay.classList.remove('show');
+            });
+        });
     </script>
 
     <!-- Level switch -->
