@@ -375,7 +375,7 @@
         </div>
     </div>
 
-    <!-- User status -->
+    <!-- User status (rendered after i18n init, see below) -->
     <script>
         function renderAuthArea() {
             const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -389,7 +389,6 @@
                 area.innerHTML = `<a href="login.html">${I18n.t('auth_login')}</a>`;
             }
         }
-        renderAuthArea();
     </script>
 
     <!-- Feedback & Donate -->
@@ -557,6 +556,12 @@
     };
     </script>
     <script src="i18n.js"></script>
+    <script>
+        // Render auth area after i18n is ready
+        I18n.onSwitch(() => renderAuthArea());
+        // Also render on first load (after i18n init via setTimeout 0, so use setTimeout 0 too)
+        setTimeout(() => renderAuthArea(), 0);
+    </script>
 
     <!-- Level switch -->
     <script>
@@ -583,8 +588,6 @@
         // Re-render level info on language switch
         I18n.onSwitch(() => {
             switchLevel(currentLevel);
-            // Re-render auth area
-            renderAuthArea();
         });
     </script>
 
