@@ -583,60 +583,309 @@
         }
     </style>
 </head>
+<script>
+window.I18N = {
+    zh: {
+        q_title: '在线练习',
+        q_sub: '选择年份开始做题',
+        nav_home: '← 首页',
+        nav_pdf: 'PDF 真题',
+        nav_history: '历史成绩',
+        nav_wrong: '错题本',
+        nav_analysis: '学习诊断',
+        choose_answer: '选择答案',
+        nav_title: '题目导航',
+        legend_answered: '已答',
+        legend_unanswered: '未答',
+        legend_current: '当前',
+        submit_quiz: '提交答卷',
+        result_done: '完成',
+        medal_intl: '国际版',
+        medal_china: '中国区',
+        btn_restart: '重新做题',
+        btn_back: '返回',
+        btn_back_arrow: '← 返回',
+        start_title: '开始做题',
+        start_desc: '点击开始后将自动计时，请确保准备好后再开始。',
+        btn_cancel: '取消',
+        btn_start: '开始',
+        btn_confirm: '确定',
+        confirm_title: '确认',
+        confirm_msg: '确定要执行此操作吗？',
+        lightbox_hint: '点击任意位置关闭',
+        btn_mastered: '标记已掌握',
+        btn_unmastered: '取消掌握',
+        btn_close: '关闭',
+        btn_retry_year: '重做此年',
+        loading: '加载中...',
+        no_data: '暂无数据',
+        q_badge: '第 {n} 题',
+        q_points: '{n} 分',
+        answered_progress: '已答 {a} / {t}',
+        view_result: '查看结果',
+        next_q: '下一题',
+        prev_q: '← 上一题',
+        skip: '跳过',
+        submit_paper: '提交试卷',
+        confirm_next: '确认，下一题',
+        confirm_submit: '确认并提交试卷',
+        confirm_only: '确认',
+        correct_answer: '✓ 回答正确',
+        wrong_answer: '✗ 正确答案',
+        not_answered: '未作答 · 正确答案',
+        explanation: '解析',
+        confirm_submit_title: '确认提交？',
+        unanswered_warn: '还有 {n} 题未作答（未答题不加不扣分）。',
+        base_score: '起始分',
+        earned_pts: '答对加分',
+        penalty_pts: '答错扣分',
+        not_answered_label: '未作答',
+        final_score: '最终得分',
+        time_spent: '用时 {m}分{s}秒',
+        grade_a: '优秀',
+        grade_b: '良好',
+        grade_c: '继续努力',
+        grade_d: '加油',
+        medal_1: '一等奖',
+        medal_1_desc: '对应竞赛一等奖水平（约前5%）',
+        medal_2: '二等奖',
+        medal_2_desc: '对应竞赛二等奖水平（约前15%）',
+        medal_3: '三等奖',
+        medal_3_desc: '对应竞赛三等奖水平（约前30%）',
+        medal_4: '数学探花',
+        medal_4_desc: '对应竞赛数学探花水平（约前50%）',
+        medal_none: '未获奖',
+        medal_none_desc: '继续努力，争取数学探花！',
+        login_save: '登录后可保存成绩到云端，查看错题本和学习诊断。',
+        exit_confirm: '确定退出？',
+        exit_msg: '做题进度已自动保存，下次可继续。',
+        exit_msg_alt: '做题进度已自动保存，可稍后继续。',
+        history_title: '历史成绩',
+        wrong_title: '错题本',
+        retry_wrong: '重做错题',
+        login_required: '请先登录查看历史成绩',
+        login_expired: '登录已过期，请重新登录',
+        no_history: '暂无做题记录，完成一套题目后这里会显示成绩',
+        load_failed: '加载失败',
+        correct_label: '正确',
+        q_count: '{n} 题',
+        year_level: '{year} 年 · Level {lv}',
+        total_info: '共 {t} 题 · 满分 {m} 分 · 开始后自动计时',
+        login_wrong: '请先登录查看错题本',
+        no_wrong: '暂无错题记录，全部答对！',
+        wrong_total: '错题总数',
+        wrong_mastered: '已掌握',
+        wrong_review: '待复习',
+        filter_all: '全部',
+        filter_3pts: '3分题(简单)',
+        filter_4pts: '4分题(中等)',
+        filter_5pts: '5分题(困难)',
+        filter_unmastered: '待复习',
+        filter_mastered: '已掌握',
+        no_wrong_filter: '当前筛选无错题',
+        your_answer: '你的答案',
+        correct_answer_label: '正确答案',
+        no_retry: '没有待复习的错题',
+        found_progress: '发现未完成的做题',
+        progress_info: '{year} 年 · Level {lv}，已答 {n} 题。是否继续？',
+        score_label: '分',
+        grade_a_tab: 'Level A · 1-2年级',
+        grade_b_tab: 'Level B · 3-4年级',
+        grade_c_tab: 'Level C · 5-6年级',
+        grade_d_tab: 'Level D · 7-8年级',
+        grade_e_tab: 'Level E · 9-10年级',
+        grade_f_tab: 'Level F · 11-12年级',
+        score_pts: '{n} 分',
+        hi_correct: '正确',
+        hi_time: '用时 {m}分{s}秒',
+        tier_3pts: '3分',
+        tier_4pts: '4分',
+        tier_5pts: '5分',
+        wi_mastered_tag: '已掌握',
+        load_failed_msg: '加载失败：{msg}',
+        load_failed_retry: '加载失败，请稍后再试',
+        no_penalty: '不加不扣',
+    },
+    en: {
+        q_title: 'Online Practice',
+        q_sub: 'Select a year to start',
+        nav_home: '← Home',
+        nav_pdf: 'PDF Papers',
+        nav_history: 'History',
+        nav_wrong: 'Wrong Answers',
+        nav_analysis: 'Analytics',
+        choose_answer: 'Choose Answer',
+        nav_title: 'Navigation',
+        legend_answered: 'Done',
+        legend_unanswered: 'Todo',
+        legend_current: 'Current',
+        submit_quiz: 'Submit',
+        result_done: 'Done',
+        medal_intl: 'International',
+        medal_china: 'China',
+        btn_restart: 'Try Again',
+        btn_back: 'Back',
+        btn_back_arrow: '← Back',
+        start_title: 'Start Quiz',
+        start_desc: 'Timer starts automatically. Make sure you are ready.',
+        btn_cancel: 'Cancel',
+        btn_start: 'Start',
+        btn_confirm: 'OK',
+        confirm_title: 'Confirm',
+        confirm_msg: 'Are you sure?',
+        lightbox_hint: 'Click anywhere to close',
+        btn_mastered: 'Mark Mastered',
+        btn_unmastered: 'Unmark',
+        btn_close: 'Close',
+        btn_retry_year: 'Retry Year',
+        loading: 'Loading...',
+        no_data: 'No data',
+        q_badge: 'Q{n}',
+        q_points: '{n} pts',
+        answered_progress: '{a} / {t} answered',
+        view_result: 'View Results',
+        next_q: 'Next',
+        prev_q: '← Previous',
+        skip: 'Skip',
+        submit_paper: 'Submit',
+        confirm_next: 'Confirm, Next',
+        confirm_submit: 'Confirm & Submit',
+        confirm_only: 'Confirm',
+        correct_answer: '✓ Correct',
+        wrong_answer: '✗ Correct answer',
+        not_answered: 'Not answered · Correct answer',
+        explanation: 'Explanation',
+        confirm_submit_title: 'Submit?',
+        unanswered_warn: '{n} questions unanswered (no penalty for unanswered).',
+        base_score: 'Base score',
+        earned_pts: 'Earned',
+        penalty_pts: 'Penalty',
+        not_answered_label: 'Unanswered',
+        final_score: 'Final score',
+        time_spent: 'Time: {m}m {s}s',
+        grade_a: 'Excellent',
+        grade_b: 'Good',
+        grade_c: 'Keep Going',
+        grade_d: 'Try Harder',
+        medal_1: 'Gold Award',
+        medal_1_desc: 'Top 5% — equivalent to Gold Award',
+        medal_2: 'Silver Award',
+        medal_2_desc: 'Top 15% — equivalent to Silver Award',
+        medal_3: 'Bronze Award',
+        medal_3_desc: 'Top 30% — equivalent to Bronze Award',
+        medal_4: 'Proficiency',
+        medal_4_desc: 'Top 50% — Proficiency level',
+        medal_none: 'No Award',
+        medal_none_desc: 'Keep practicing!',
+        login_save: 'Login to save scores, view wrong answers and analytics.',
+        exit_confirm: 'Leave quiz?',
+        exit_msg: 'Progress saved. You can continue later.',
+        exit_msg_alt: 'Progress saved. You can continue later.',
+        history_title: 'History',
+        wrong_title: 'Wrong Answers',
+        retry_wrong: 'Retry Wrong',
+        login_required: 'Please login first',
+        login_expired: 'Login expired, please login again',
+        no_history: 'No records yet. Complete a quiz to see results here.',
+        load_failed: 'Load failed',
+        correct_label: 'Correct',
+        q_count: '{n} Qs',
+        year_level: '{year} · Level {lv}',
+        total_info: '{t} questions · Max {m} pts · Timer starts on begin',
+        login_wrong: 'Please login to view wrong answers',
+        no_wrong: 'No wrong answers — perfect!',
+        wrong_total: 'Total Wrong',
+        wrong_mastered: 'Mastered',
+        wrong_review: 'To Review',
+        filter_all: 'All',
+        filter_3pts: '3pts (Easy)',
+        filter_4pts: '4pts (Medium)',
+        filter_5pts: '5pts (Hard)',
+        filter_unmastered: 'To Review',
+        filter_mastered: 'Mastered',
+        no_wrong_filter: 'No wrong answers for this filter',
+        your_answer: 'Your answer',
+        correct_answer_label: 'Correct answer',
+        no_retry: 'No wrong answers to retry',
+        found_progress: 'Unfinished quiz found',
+        progress_info: '{year} · Level {lv}, {n} answered. Continue?',
+        score_label: 'pts',
+        grade_a_tab: 'Level A · Grades 1-2',
+        grade_b_tab: 'Level B · Grades 3-4',
+        grade_c_tab: 'Level C · Grades 5-6',
+        grade_d_tab: 'Level D · Grades 7-8',
+        grade_e_tab: 'Level E · Grades 9-10',
+        grade_f_tab: 'Level F · Grades 11-12',
+        score_pts: '{n} pts',
+        hi_correct: 'Correct',
+        hi_time: 'Time: {m}m {s}s',
+        tier_3pts: '3pts',
+        tier_4pts: '4pts',
+        tier_5pts: '5pts',
+        wi_mastered_tag: 'Mastered',
+        load_failed_msg: 'Load failed: {msg}',
+        load_failed_retry: 'Load failed, please try again',
+        no_penalty: 'no penalty',
+    }
+};
+</script>
+<script src="i18n.js"></script>
 <body>
 
 <!-- ===== Year Select ===== -->
 <div class="select-page" id="homePage">
-    <div class="select-header">
-        <h1>在线练习</h1>
-        <p class="sub">选择年份开始做题</p>
+    <div class="select-header" style="position:relative;">
+        <button class="i18n-toggle" onclick="I18n.toggle()" style="position:absolute;top:8px;right:8px;padding:4px 14px;border-radius:999px;border:1px solid rgba(196,160,138,0.3);background:white;color:#3d3530;font-size:0.82rem;font-family:inherit;cursor:pointer;">EN</button>
+        <h1 data-i18n="q_title">在线练习</h1>
+        <p class="sub" data-i18n="q_sub">选择年份开始做题</p>
     </div>
     <div class="nav-row">
-        <a href="index.html" class="nav-link">← 首页</a>
-        <a href="papers.html" class="nav-link" id="pdfLink">PDF 真题</a>
-        <a href="javascript:showHistory()" class="nav-link" id="historyLink">历史成绩</a>
-        <a href="javascript:showWrongBook()" class="nav-link" id="wrongLink">错题本</a>
-        <a href="analysis.html" class="nav-link">学习诊断</a>
+        <a href="index.html" class="nav-link" data-i18n="nav_home">← 首页</a>
+        <a href="papers.html" class="nav-link" id="pdfLink" data-i18n="nav_pdf">PDF 真题</a>
+        <a href="javascript:showHistory()" class="nav-link" id="historyLink" data-i18n="nav_history">历史成绩</a>
+        <a href="javascript:showWrongBook()" class="nav-link" id="wrongLink" data-i18n="nav_wrong">错题本</a>
+        <a href="analysis.html" class="nav-link" data-i18n="nav_analysis">学习诊断</a>
     </div>
     <div class="level-switch">
-        <div class="lv-tab" data-level="a" onclick="switchLevel('a')">Level A · 1-2年级</div>
-        <div class="lv-tab" data-level="b" onclick="switchLevel('b')">Level B · 3-4年级</div>
-        <div class="lv-tab" data-level="c" onclick="switchLevel('c')">Level C · 5-6年级</div>
-        <div class="lv-tab" data-level="d" onclick="switchLevel('d')">Level D · 7-8年级</div>
-        <div class="lv-tab" data-level="e" onclick="switchLevel('e')">Level E · 9-10年级</div>
-        <div class="lv-tab" data-level="f" onclick="switchLevel('f')">Level F · 11-12年级</div>
+        <div class="lv-tab" data-level="a" onclick="switchLevel('a')" data-i18n="grade_a_tab">Level A · 1-2年级</div>
+        <div class="lv-tab" data-level="b" onclick="switchLevel('b')" data-i18n="grade_b_tab">Level B · 3-4年级</div>
+        <div class="lv-tab" data-level="c" onclick="switchLevel('c')" data-i18n="grade_c_tab">Level C · 5-6年级</div>
+        <div class="lv-tab" data-level="d" onclick="switchLevel('d')" data-i18n="grade_d_tab">Level D · 7-8年级</div>
+        <div class="lv-tab" data-level="e" onclick="switchLevel('e')" data-i18n="grade_e_tab">Level E · 9-10年级</div>
+        <div class="lv-tab" data-level="f" onclick="switchLevel('f')" data-i18n="grade_f_tab">Level F · 11-12年级</div>
     </div>
-    <div class="year-grid" id="yearGrid"><div class="loading">加载中...</div></div>
+    <div class="year-grid" id="yearGrid"><div class="loading" data-i18n="loading">加载中...</div></div>
 
     <!-- History panel (hidden by default) -->
     <div id="historyPanel" style="display:none; margin-top:24px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-            <h2 style="font-family:var(--font-serif); font-size:1.3rem; font-weight:500;">历史成绩</h2>
-            <a href="javascript:hidePanel()" class="nav-link" style="font-size:0.8rem;">关闭</a>
+            <h2 style="font-family:var(--font-serif); font-size:1.3rem; font-weight:500;" data-i18n="history_title">历史成绩</h2>
+            <a href="javascript:hidePanel()" class="nav-link" style="font-size:0.8rem;" data-i18n="btn_close">关闭</a>
         </div>
-        <div id="historyList"><div class="loading">加载中...</div></div>
+        <div id="historyList"><div class="loading" data-i18n="loading">加载中...</div></div>
     </div>
 
     <!-- Issue #3: Wrong questions book panel (enhanced) -->
     <div id="wrongPanel" style="display:none; margin-top:24px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-            <h2 style="font-family:var(--font-serif); font-size:1.3rem; font-weight:500;">错题本</h2>
+            <h2 style="font-family:var(--font-serif); font-size:1.3rem; font-weight:500;" data-i18n="wrong_title">错题本</h2>
             <div style="display:flex; gap:8px; align-items:center;">
-                <a href="javascript:retryAllWrong()" class="nav-link" style="font-size:0.8rem;" id="retryWrongBtn" title="只重做错题">重做错题</a>
-                <a href="javascript:hidePanel()" class="nav-link" style="font-size:0.8rem;">关闭</a>
+                <a href="javascript:retryAllWrong()" class="nav-link" style="font-size:0.8rem;" id="retryWrongBtn" title="只重做错题" data-i18n="retry_wrong" data-i18n-title="retry_wrong">重做错题</a>
+                <a href="javascript:hidePanel()" class="nav-link" style="font-size:0.8rem;" data-i18n="btn_close">关闭</a>
             </div>
         </div>
         <div class="wrong-stats" id="wrongStats" style="display:none;"></div>
         <div class="wrong-filters" id="wrongFilters"></div>
-        <div id="wrongList"><div class="loading">加载中...</div></div>
+        <div id="wrongList"><div class="loading" data-i18n="loading">加载中...</div></div>
     </div>
 </div>
 
 <!-- ===== Quiz ===== -->
 <div class="quiz-wrapper" id="quizPage">
-    <div class="quiz-topbar">
-        <button class="back-btn" onclick="goHome()">← 返回</button>
+    <div class="quiz-topbar" style="position:relative;">
+        <button class="back-btn" onclick="goHome()" data-i18n="btn_back_arrow">← 返回</button>
         <span class="quiz-title" id="quizTitle" style="font-family:var(--font-serif);font-weight:500;"></span>
+        <button class="i18n-toggle" onclick="I18n.toggle()" style="padding:4px 14px;border-radius:999px;border:1px solid rgba(196,160,138,0.3);background:white;color:#3d3530;font-size:0.82rem;font-family:inherit;cursor:pointer;">EN</button>
     </div>
 
     <div class="quiz-layout">
@@ -655,7 +904,7 @@
 
         <!-- Middle: answers -->
         <div class="quiz-answer">
-            <h2 class="section-title">选择答案</h2>
+            <h2 class="section-title" data-i18n="choose_answer">选择答案</h2>
             <div class="options" id="options"></div>
             <div class="feedback" id="feedback"></div>
             <div class="explanation-panel" id="explanationPanel"></div>
@@ -676,17 +925,17 @@
             </div>
 
             <div class="nav-grid-block" id="navGridBlock">
-                <div class="nav-grid-title">题目导航</div>
+                <div class="nav-grid-title" data-i18n="nav_title">题目导航</div>
                 <div class="nav-grid" id="navGrid"></div>
                 <div class="nav-legend">
-                    <span class="nav-legend-item"><span class="nav-legend-dot answered"></span> 已答</span>
-                    <span class="nav-legend-item"><span class="nav-legend-dot unanswered"></span> 未答</span>
-                    <span class="nav-legend-item"><span class="nav-legend-dot current"></span> 当前</span>
+                    <span class="nav-legend-item"><span class="nav-legend-dot answered"></span> <span data-i18n="legend_answered">已答</span></span>
+                    <span class="nav-legend-item"><span class="nav-legend-dot unanswered"></span> <span data-i18n="legend_unanswered">未答</span></span>
+                    <span class="nav-legend-item"><span class="nav-legend-dot current"></span> <span data-i18n="legend_current">当前</span></span>
                 </div>
             </div>
 
-            <button class="mobile-nav-toggle" onclick="toggleNavDrawer()" title="题目导航">&#9783;</button>
-            <button class="sidebar-submit" id="sidebarSubmit" onclick="submitQuiz()">提交答卷</button>
+            <button class="mobile-nav-toggle" onclick="toggleNavDrawer()" title="题目导航" data-i18n-title="nav_title">&#9783;</button>
+            <button class="sidebar-submit" id="sidebarSubmit" onclick="submitQuiz()" data-i18n="submit_quiz">提交答卷</button>
         </div>
     </div>
 </div>
@@ -694,7 +943,7 @@
 <!-- ===== Results ===== -->
 <div class="results-page" id="resultsPage">
     <div class="results-card">
-        <h2>完成</h2>
+        <h2 data-i18n="result_done">完成</h2>
         <div class="score-ring-wrap">
             <svg width="160" height="160" viewBox="0 0 160 160">
                 <circle class="score-ring-bg" cx="80" cy="80" r="68" />
@@ -710,14 +959,14 @@
         <div class="results-detail" id="finalDetail"></div>
         <div class="results-grade" id="finalGrade"></div>
         <div class="medal-toggle" id="medalToggle">
-            <button class="medal-toggle-btn active" onclick="switchMedalStandard('international')">国际版</button>
-            <button class="medal-toggle-btn" onclick="switchMedalStandard('china')">中国区</button>
+            <button class="medal-toggle-btn active" onclick="switchMedalStandard('international')" data-i18n="medal_intl">国际版</button>
+            <button class="medal-toggle-btn" onclick="switchMedalStandard('china')" data-i18n="medal_china">中国区</button>
         </div>
         <div class="medal-badge" id="medalBadge"></div>
         <div class="medal-desc" id="medalDesc"></div>
         <div class="results-actions">
-            <button class="btn btn-primary" onclick="restartQuiz()">重新做题</button>
-            <button class="btn btn-outline" onclick="goHome()">返回</button>
+            <button class="btn btn-primary" onclick="restartQuiz()" data-i18n="btn_restart">重新做题</button>
+            <button class="btn btn-outline" onclick="goHome()" data-i18n="btn_back">返回</button>
         </div>
     </div>
 </div>
@@ -726,12 +975,12 @@
 <div class="modal-overlay" id="startModal">
     <div class="modal-box">
         <div class="modal-icon">📝</div>
-        <h3 id="modalTitle">开始做题</h3>
-        <p>点击开始后将自动计时，请确保准备好后再开始。</p>
+        <h3 id="modalTitle" data-i18n="start_title">开始做题</h3>
+        <p data-i18n="start_desc">点击开始后将自动计时，请确保准备好后再开始。</p>
         <div class="modal-info" id="modalInfo">—</div>
         <div class="modal-actions">
-            <button class="btn btn-outline" onclick="closeStartModal()">取消</button>
-            <button class="btn btn-primary" onclick="confirmStart()">开始</button>
+            <button class="btn btn-outline" onclick="closeStartModal()" data-i18n="btn_cancel">取消</button>
+            <button class="btn btn-primary" onclick="confirmStart()" data-i18n="btn_start">开始</button>
         </div>
     </div>
 </div>
@@ -740,11 +989,11 @@
 <div class="modal-overlay" id="confirmModal">
     <div class="modal-box">
         <div class="modal-icon" id="confirmIcon">⚠️</div>
-        <h3 id="confirmTitle">确认</h3>
-        <p id="confirmMsg">确定要执行此操作吗？</p>
+        <h3 id="confirmTitle" data-i18n="confirm_title">确认</h3>
+        <p id="confirmMsg" data-i18n="confirm_msg">确定要执行此操作吗？</p>
         <div class="modal-actions">
-            <button class="btn btn-outline" onclick="closeConfirmModal()">取消</button>
-            <button class="btn btn-primary" id="confirmOkBtn" onclick="">确定</button>
+            <button class="btn btn-outline" onclick="closeConfirmModal()" data-i18n="btn_cancel">取消</button>
+            <button class="btn btn-primary" id="confirmOkBtn" onclick="" data-i18n="btn_confirm">确定</button>
         </div>
     </div>
 </div>
@@ -752,7 +1001,7 @@
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
     <img id="lightboxImg" alt="题目大图">
-    <div class="lightbox-hint">点击任意位置关闭</div>
+    <div class="lightbox-hint" data-i18n="lightbox_hint">点击任意位置关闭</div>
 </div>
 
 <!-- Issue #3: Wrong question detail overlay -->
@@ -762,9 +1011,9 @@
         <img id="wrongDetailImg" alt="题目" onclick="openLightboxSrc(this.src)">
         <div class="wd-info" id="wrongDetailInfo"></div>
         <div class="wd-actions">
-            <button class="btn btn-ghost" id="wrongMasterBtn" onclick="">标记已掌握</button>
-            <button class="btn btn-outline" onclick="closeWrongDetail()">关闭</button>
-            <button class="btn btn-primary" id="wrongRetryBtn" onclick="">重做此年</button>
+            <button class="btn btn-ghost" id="wrongMasterBtn" onclick="" data-i18n="btn_mastered">标记已掌握</button>
+            <button class="btn btn-outline" onclick="closeWrongDetail()" data-i18n="btn_close">关闭</button>
+            <button class="btn btn-primary" id="wrongRetryBtn" onclick="" data-i18n="btn_retry_year">重做此年</button>
         </div>
     </div>
 </div>
@@ -821,7 +1070,7 @@
             const r = await fetch(`${dataBase()}/index.json`);
             const d = await r.json();
             renderYearGrid(d.years);
-        } catch { document.getElementById('yearGrid').innerHTML = '<div class="loading">暂无数据</div>'; }
+        } catch { document.getElementById('yearGrid').innerHTML = `<div class="loading">${I18n.t('no_data')}</div>`; }
     }
 
     function switchLevel(lv) {
@@ -839,7 +1088,7 @@
         document.getElementById('yearGrid').innerHTML = years.map(y => `
             <div class="year-card" onclick="startQuiz(${y.year})">
                 <div class="yr">${y.year}</div>
-                <div class="cnt">${y.totalQuestions} 题</div>
+                <div class="cnt">${I18n.t('q_count').replace('{n}', y.totalQuestions)}</div>
             </div>`).join('');
     }
 
@@ -855,10 +1104,10 @@
             const lv = currentLevel.toUpperCase();
             const total = d.questions.length;
             const maxPts = total + d.questions.reduce((s, q) => s + q.points, 0);
-            document.getElementById('modalTitle').textContent = `${year} 年 · Level ${lv}`;
-            document.getElementById('modalInfo').textContent = `共 ${total} 题 · 满分 ${maxPts} 分 · 开始后自动计时`;
+            document.getElementById('modalTitle').textContent = I18n.t('year_level').replace('{year}', year).replace('{lv}', lv);
+            document.getElementById('modalInfo').textContent = I18n.t('total_info').replace('{t}', total).replace('{m}', maxPts);
             document.getElementById('startModal').classList.add('open');
-        } catch { alert('加载失败'); }
+        } catch { alert(I18n.t('load_failed')); }
     }
 
     function closeStartModal() {
@@ -962,21 +1211,21 @@
         const ac = Object.keys(userAnswers).length;
 
         // Update sidebar progress
-        document.getElementById('progressText').textContent = `已答 ${ac} / ${questions.length}`;
+        document.getElementById('progressText').textContent = I18n.t('answered_progress').replace('{a}', ac).replace('{t}', questions.length);
         document.getElementById('progressFill').style.width = ((currentIndex+1)/questions.length*100)+'%';
 
         // Update sidebar submit button text
         const submitBtn = document.getElementById('sidebarSubmit');
         if (quizSubmitted) {
-            submitBtn.textContent = '查看结果';
+            submitBtn.textContent = I18n.t('view_result');
             submitBtn.onclick = showResultsPage;
         } else {
-            submitBtn.textContent = '提交答卷';
+            submitBtn.textContent = I18n.t('submit_quiz');
             submitBtn.onclick = submitQuiz;
         }
 
-        document.getElementById('questionBadge').textContent = `第 ${q.number} 题`;
-        document.getElementById('questionPoints').textContent = `${q.points} 分`;
+        document.getElementById('questionBadge').textContent = I18n.t('q_badge').replace('{n}', q.number);
+        document.getElementById('questionPoints').textContent = I18n.t('q_points').replace('{n}', q.points);
         document.getElementById('qNumber').textContent = `Question ${q.number}`;
         document.getElementById('qSub').textContent = `${currentYear} · Level ${currentLevel.toUpperCase()} · ${q.points} points`;
 
@@ -1016,11 +1265,11 @@
         if (quizSubmitted && selected) {
             const ok = selected === q.answer;
             fb.className = 'feedback show ' + (ok ? 'correct' : 'wrong');
-            fb.textContent = ok ? `✓ 回答正确 (+${q.points}分)` : `✗ 正确答案: ${q.answer} (${selected ? '-1分' : '0分'})`;
+            fb.textContent = ok ? `${I18n.t('correct_answer')} (+${q.points}${I18n.t('score_label')})` : `${I18n.t('wrong_answer')}: ${q.answer} (${selected ? '-1'+I18n.t('score_label') : '0'+I18n.t('score_label')})`;
         } else if (quizSubmitted && !selected) {
             fb.className = 'feedback show';
             fb.style.background = '#f5f3f0'; fb.style.color = 'var(--ink-light)';
-            fb.textContent = `未作答 · 正确答案: ${q.answer} (0分)`;
+            fb.textContent = `${I18n.t('not_answered')}: ${q.answer} (0${I18n.t('score_label')})`;
         } else {
             fb.className = 'feedback';
             fb.style.background = ''; fb.style.color = '';
@@ -1029,7 +1278,7 @@
         // Explanation: show after quiz submitted if data available
         const expPanel = document.getElementById('explanationPanel');
         if (quizSubmitted && q.explanation) {
-            let html = `<div class="exp-title">解析`;
+            let html = `<div class="exp-title">${I18n.t('explanation')}`;
             if (q.knowledge_point) html += ` <span class="exp-tag">${q.knowledge_point}</span>`;
             html += `</div>`;
             html += `<div>${q.explanation}</div>`;
@@ -1059,9 +1308,9 @@
         const bar = document.getElementById('actionBar');
 
         if (quizSubmitted) {
-            // After submit: just prev/next navigation, "查看结果" on last
-            const prevBtn = isFirst ? '' : `<button class="btn btn-ghost" onclick="prevQuestion()">← 上一题</button>`;
-            const nextText = isLast ? '查看结果 →' : '下一题 →';
+            // After submit: just prev/next navigation
+            const prevBtn = isFirst ? '' : `<button class="btn btn-ghost" onclick="prevQuestion()">${I18n.t('prev_q')}</button>`;
+            const nextText = isLast ? `${I18n.t('view_result')} →` : `${I18n.t('next_q')} →`;
             bar.innerHTML = `${prevBtn}<button class="btn btn-primary" onclick="nextQuestion()">${nextText}</button>`;
             return;
         }
@@ -1071,26 +1320,24 @@
 
         // Prev button
         if (!isFirst) {
-            html += `<button class="btn btn-ghost" onclick="prevQuestion()">← 上一题</button>`;
+            html += `<button class="btn btn-ghost" onclick="prevQuestion()">${I18n.t('prev_q')}</button>`;
         }
 
         if (!selected) {
-            // No answer selected: "跳过" as primary, or "提交试卷" if last & all answered
             if (isLast && allAnswered) {
-                html += `<button class="btn btn-primary" onclick="submitQuiz()">提交试卷</button>`;
+                html += `<button class="btn btn-primary" onclick="submitQuiz()">${I18n.t('submit_paper')}</button>`;
             } else {
-                html += `<button class="btn btn-outline" onclick="skipQuestion()">跳过</button>`;
+                html += `<button class="btn btn-outline" onclick="skipQuestion()">${I18n.t('skip')}</button>`;
             }
         } else {
-            // Answer selected: "确认" as primary action
             if (isLast) {
                 if (allAnswered) {
-                    html += `<button class="btn btn-outline" onclick="nextQuestion()">确认并提交试卷 →</button>`;
+                    html += `<button class="btn btn-outline" onclick="nextQuestion()">${I18n.t('confirm_submit')} →</button>`;
                 } else {
-                    html += `<button class="btn btn-primary" onclick="confirmAndNext()">确认</button>`;
+                    html += `<button class="btn btn-primary" onclick="confirmAndNext()">${I18n.t('confirm_only')}</button>`;
                 }
             } else {
-                html += `<button class="btn btn-primary" onclick="confirmAndNext()">确认，下一题 →</button>`;
+                html += `<button class="btn btn-primary" onclick="confirmAndNext()">${I18n.t('confirm_next')} →</button>`;
             }
         }
 
@@ -1154,7 +1401,7 @@
         if (quizSubmitted) return;
         const unanswered = questions.filter(q => !userAnswers[q.number]);
         if (unanswered.length > 0) {
-            showConfirmModal('📝', '确认提交？', `还有 ${unanswered.length} 题未作答（未答题不加不扣分）。`, doSubmitQuiz);
+            showConfirmModal('📝', I18n.t('confirm_submit_title'), I18n.t('unanswered_warn').replace('{n}', unanswered.length), doSubmitQuiz);
             return;
         }
         doSubmitQuiz();
@@ -1211,7 +1458,7 @@
         document.getElementById('quizPage').style.display = 'none';
         document.getElementById('resultsPage').style.display = 'block';
         document.getElementById('finalScore').textContent = score;
-        document.getElementById('scoreRingLabel').textContent = `/ ${maxScore} 分`;
+        document.getElementById('scoreRingLabel').textContent = `/ ${maxScore} ${I18n.t('score_label')}`;
 
         // Animate score ring
         const ring = document.getElementById('scoreRing');
@@ -1226,22 +1473,22 @@
 
         // Breakdown
         document.getElementById('finalBreakdown').innerHTML =
-            `<div><span class="label">起始分：</span>${baseScore} 分</div>` +
-            `<div><span class="label">答对加分：</span>+${earnedPoints} 分（${correct} 题）</div>` +
-            `<div><span class="label">答错扣分：</span>-${penalty} 分（${wrong} 题）</div>` +
-            `<div><span class="label">未作答：</span>${unanswered} 题（不加不扣）</div>` +
+            `<div><span class="label">${I18n.t('base_score')}:</span> ${baseScore} ${I18n.t('score_label')}</div>` +
+            `<div><span class="label">${I18n.t('earned_pts')}:</span> +${earnedPoints} ${I18n.t('score_label')} (${correct} ${I18n.t('q_count').replace('{n}','')})</div>` +
+            `<div><span class="label">${I18n.t('penalty_pts')}:</span> -${penalty} ${I18n.t('score_label')} (${wrong} ${I18n.t('q_count').replace('{n}','')})</div>` +
+            `<div><span class="label">${I18n.t('not_answered_label')}:</span> ${unanswered} ${I18n.t('q_count').replace('{n}','')} (${I18n.t('no_penalty')})</div>` +
             `<div style="margin-top:6px;border-top:1px solid var(--paper-shadow);padding-top:6px;font-weight:600;">` +
-            `<span class="label">最终得分：</span>${baseScore} + ${earnedPoints} - ${penalty} = ${score} 分 / ${maxScore} 分</div>`;
+            `<span class="label">${I18n.t('final_score')}:</span> ${baseScore} + ${earnedPoints} - ${penalty} = ${score} ${I18n.t('score_label')} / ${maxScore} ${I18n.t('score_label')}</div>`;
 
         const duration = Math.round((Date.now() - quizStartTime) / 1000);
         const mins = Math.floor(duration / 60), secs = duration % 60;
-        document.getElementById('finalDetail').textContent = `用时 ${mins}分${secs}秒`;
+        document.getElementById('finalDetail').textContent = I18n.t('time_spent').replace('{m}', mins).replace('{s}', secs);
 
         const p = score / maxScore, g = document.getElementById('finalGrade');
-        if (p >= .9) { g.textContent = '优秀'; g.className = 'results-grade grade-a'; }
-        else if (p >= .75) { g.textContent = '良好'; g.className = 'results-grade grade-b'; }
-        else if (p >= .6) { g.textContent = '继续努力'; g.className = 'results-grade grade-c'; }
-        else { g.textContent = '加油'; g.className = 'results-grade grade-d'; }
+        if (p >= .9) { g.textContent = I18n.t('grade_a'); g.className = 'results-grade grade-a'; }
+        else if (p >= .75) { g.textContent = I18n.t('grade_b'); g.className = 'results-grade grade-b'; }
+        else if (p >= .6) { g.textContent = I18n.t('grade_c'); g.className = 'results-grade grade-c'; }
+        else { g.textContent = I18n.t('grade_d'); g.className = 'results-grade grade-d'; }
 
         // Medal display
         lastScorePercent = p;
@@ -1259,18 +1506,18 @@
             if (pct >= 0.45) return { name: 'Proficiency', icon: '📜', cls: 'medal-prof', desc: 'Proficiency level — solid foundational skills' };
             return { name: 'Participant', icon: '🎯', cls: 'medal-none', desc: 'Keep practicing to reach Proficiency level' };
         } else {
-            if (pct >= 0.90) return { name: '一等奖', icon: '🥇', cls: 'medal-gold', desc: '对应竞赛一等奖水平（约前5%）' };
-            if (pct >= 0.75) return { name: '二等奖', icon: '🥈', cls: 'medal-silver', desc: '对应竞赛二等奖水平（约前15%）' };
-            if (pct >= 0.60) return { name: '三等奖', icon: '🥉', cls: 'medal-bronze', desc: '对应竞赛三等奖水平（约前30%）' };
-            if (pct >= 0.45) return { name: '数学探花', icon: '🌸', cls: 'medal-prof', desc: '对应竞赛数学探花水平（约前50%）' };
-            return { name: '未获奖', icon: '🎯', cls: 'medal-none', desc: '继续努力，争取数学探花！' };
+            if (pct >= 0.90) return { name: I18n.t('medal_1'), icon: '🥇', cls: 'medal-gold', desc: I18n.t('medal_1_desc') };
+            if (pct >= 0.75) return { name: I18n.t('medal_2'), icon: '🥈', cls: 'medal-silver', desc: I18n.t('medal_2_desc') };
+            if (pct >= 0.60) return { name: I18n.t('medal_3'), icon: '🥉', cls: 'medal-bronze', desc: I18n.t('medal_3_desc') };
+            if (pct >= 0.45) return { name: I18n.t('medal_4'), icon: '🌸', cls: 'medal-prof', desc: I18n.t('medal_4_desc') };
+            return { name: I18n.t('medal_none'), icon: '🎯', cls: 'medal-none', desc: I18n.t('medal_none_desc') };
         }
     }
 
     function switchMedalStandard(std) {
         currentMedalStandard = std;
         document.querySelectorAll('.medal-toggle-btn').forEach(b =>
-            b.classList.toggle('active', b.textContent === (std === 'international' ? '国际版' : '中国区')));
+            b.classList.toggle('active', b.textContent === (std === 'international' ? I18n.t('medal_intl') : I18n.t('medal_china'))));
         const medal = getKangarooLevel(lastScorePercent, std);
         const badge = document.getElementById('medalBadge');
         badge.className = 'medal-badge ' + medal.cls;
@@ -1298,7 +1545,7 @@
         if (!token) {
             // Save result locally, prompt login
             savePendingResult(duration);
-            requireLogin('登录后可保存成绩到云端，查看错题本和学习诊断。');
+            requireLogin(I18n.t('login_save'));
             return;
         }
         const { score } = calcScore();
@@ -1352,7 +1599,7 @@
         if (!quizSubmitted && quizStartTime && document.getElementById('quizPage').style.display === 'flex') {
             saveProgress();
             window.KangarooAnalytics?.track('quiz_in_progress_leave', { group: 'friction', meta: { level: currentLevel, year: currentYear, answered: Object.keys(userAnswers).length, total: questions.length } });
-            showConfirmModal('🚪', '确定退出？', '做题进度已自动保存，下次可继续。', doGoHome);
+            showConfirmModal('🚪', I18n.t('exit_confirm'), I18n.t('exit_msg'), doGoHome);
             return;
         }
         doGoHome();
@@ -1396,11 +1643,11 @@
         document.getElementById('yearGrid').style.display = 'none';
         document.getElementById('historyPanel').style.display = 'block';
         document.getElementById('historyLink').classList.add('active');
-        document.getElementById('historyList').innerHTML = '<div class="loading">加载中...</div>';
+        document.getElementById('historyList').innerHTML = `<div class="loading">${I18n.t('loading')}</div>`;
 
         const token = localStorage.getItem('token');
         if (!token) {
-            document.getElementById('historyList').innerHTML = '<div class="history-empty">请先登录查看历史成绩</div>';
+            document.getElementById('historyList').innerHTML = `<div class="history-empty">${I18n.t('login_required')}</div>`;
             return;
         }
 
@@ -1409,7 +1656,7 @@
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             if (r.status === 401) {
-                document.getElementById('historyList').innerHTML = '<div class="history-empty">登录已过期，请重新登录</div>';
+                document.getElementById('historyList').innerHTML = `<div class="history-empty">${I18n.t('login_expired')}</div>`;
                 return;
             }
             if (!r.ok) {
@@ -1420,7 +1667,7 @@
             const list = d.sessions || [];
 
             if (!list.length) {
-                document.getElementById('historyList').innerHTML = '<div class="history-empty">暂无做题记录，完成一套题目后这里会显示成绩</div>';
+                document.getElementById('historyList').innerHTML = `<div class="history-empty">${I18n.t('no_history')}</div>`;
                 return;
             }
 
@@ -1430,14 +1677,14 @@
                 const lvLabel = (s.level||'b').toUpperCase();
                 return `<div class="history-item">
                     <div class="hi-left">
-                        <div class="hi-title">Level ${lvLabel} · ${s.year} 年</div>
-                        <div class="hi-meta">${dt} · 正确 ${s.correct}/${s.total} · 用时 ${mins}分${secs}秒</div>
+                        <div class="hi-title">${I18n.t('year_level').replace('{year}', s.year).replace('{lv}', lvLabel)}</div>
+                        <div class="hi-meta">${dt} · ${I18n.t('hi_correct')} ${s.correct}/${s.total} · ${I18n.t('hi_time').replace('{m}', mins).replace('{s}', secs)}</div>
                     </div>
-                    <div class="hi-score">${s.score} 分</div>
+                    <div class="hi-score">${s.score} ${I18n.t('score_label')}</div>
                 </div>`;
             }).join('');
         } catch(e) {
-            document.getElementById('historyList').innerHTML = `<div class="history-empty">加载失败：${e.message || '请稍后再试'}</div>`;
+            document.getElementById('historyList').innerHTML = `<div class="history-empty">${I18n.t('load_failed_msg').replace('{msg}', e.message || '')}</div>`;
         }
     }
 
@@ -1472,13 +1719,13 @@
         document.getElementById('yearGrid').style.display = 'none';
         document.getElementById('wrongPanel').style.display = 'block';
         document.getElementById('wrongLink').classList.add('active');
-        document.getElementById('wrongList').innerHTML = '<div class="loading">加载中...</div>';
+        document.getElementById('wrongList').innerHTML = `<div class="loading">${I18n.t('loading')}</div>`;
         document.getElementById('wrongStats').style.display = 'none';
         document.getElementById('wrongFilters').innerHTML = '';
 
         const token = localStorage.getItem('token');
         if (!token) {
-            document.getElementById('wrongList').innerHTML = '<div class="history-empty">请先登录查看错题本</div>';
+            document.getElementById('wrongList').innerHTML = `<div class="history-empty">${I18n.t('login_wrong')}</div>`;
             return;
         }
 
@@ -1487,7 +1734,7 @@
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             if (r.status === 401) {
-                document.getElementById('wrongList').innerHTML = '<div class="history-empty">登录已过期，请重新登录</div>';
+                document.getElementById('wrongList').innerHTML = `<div class="history-empty">${I18n.t('login_expired')}</div>`;
                 return;
             }
             if (!r.ok) {
@@ -1498,7 +1745,7 @@
             allWrongItems = d.wrong || [];
 
             if (!allWrongItems.length) {
-                document.getElementById('wrongList').innerHTML = '<div class="history-empty">暂无错题记录，全部答对！</div>';
+                document.getElementById('wrongList').innerHTML = `<div class="history-empty">${I18n.t('no_wrong')}</div>`;
                 document.getElementById('retryWrongBtn').style.display = 'none';
                 return;
             }
@@ -1510,19 +1757,19 @@
             const statsEl = document.getElementById('wrongStats');
             statsEl.style.display = 'flex';
             statsEl.innerHTML =
-                `<span>错题总数 <span class="ws-val">${allWrongItems.length}</span></span>` +
-                `<span>已掌握 <span class="ws-val">${masteredCount}</span></span>` +
-                `<span>待复习 <span class="ws-val">${allWrongItems.length - masteredCount}</span></span>`;
+                `<span>${I18n.t('wrong_total')} <span class="ws-val">${allWrongItems.length}</span></span>` +
+                `<span>${I18n.t('wrong_mastered')} <span class="ws-val">${masteredCount}</span></span>` +
+                `<span>${I18n.t('wrong_review')} <span class="ws-val">${allWrongItems.length - masteredCount}</span></span>`;
 
             // Render filter buttons
             wrongFilter = 'all';
             const filters = [
-                { key: 'all', label: '全部' },
-                { key: '3pts', label: '3分题(简单)' },
-                { key: '4pts', label: '4分题(中等)' },
-                { key: '5pts', label: '5分题(困难)' },
-                { key: 'unmastered', label: '待复习' },
-                { key: 'mastered', label: '已掌握' },
+                { key: 'all', label: I18n.t('filter_all') },
+                { key: '3pts', label: I18n.t('filter_3pts') },
+                { key: '4pts', label: I18n.t('filter_4pts') },
+                { key: '5pts', label: I18n.t('filter_5pts') },
+                { key: 'unmastered', label: I18n.t('filter_unmastered') },
+                { key: 'mastered', label: I18n.t('filter_mastered') },
             ];
             document.getElementById('wrongFilters').innerHTML = filters.map(f =>
                 `<button class="wrong-filter-btn${f.key === 'all' ? ' active' : ''}" onclick="filterWrong('${f.key}')">${f.label}</button>`
@@ -1530,17 +1777,18 @@
 
             renderWrongList();
         } catch {
-            document.getElementById('wrongList').innerHTML = '<div class="history-empty">加载失败，请稍后再试</div>';
+            document.getElementById('wrongList').innerHTML = `<div class="history-empty">${I18n.t('load_failed_retry')}</div>`;
         }
     }
 
     function filterWrong(key) {
         wrongFilter = key;
+        const labelMap = {
+            all: I18n.t('filter_all'), '3pts': I18n.t('filter_3pts'), '4pts': I18n.t('filter_4pts'), '5pts': I18n.t('filter_5pts'),
+            unmastered: I18n.t('filter_unmastered'), mastered: I18n.t('filter_mastered')
+        };
         document.querySelectorAll('.wrong-filter-btn').forEach(b =>
-            b.classList.toggle('active', b.textContent === {
-                all:'全部', '3pts':'3分题(简单)', '4pts':'4分题(中等)', '5pts':'5分题(困难)',
-                unmastered:'待复习', mastered:'已掌握'
-            }[key]));
+            b.classList.toggle('active', b.textContent === labelMap[key]));
         renderWrongList();
     }
 
@@ -1561,7 +1809,7 @@
         }
 
         if (!filtered.length) {
-            document.getElementById('wrongList').innerHTML = '<div class="history-empty">当前筛选无错题</div>';
+            document.getElementById('wrongList').innerHTML = `<div class="history-empty">${I18n.t('no_wrong_filter')}</div>`;
             return;
         }
 
@@ -1570,10 +1818,10 @@
             const isMastered = mastered[wrongKey(w)];
             const total = w.question > 24 ? 30 : 24;
             const tier = getDifficultyTier(w.question, total);
-            const tierLabel = { '3pts':'3分', '4pts':'4分', '5pts':'5分' }[tier] || '';
+            const tierLabel = { '3pts': I18n.t('tier_3pts'), '4pts': I18n.t('tier_4pts'), '5pts': I18n.t('tier_5pts') }[tier] || '';
             return `<div class="wrong-item${isMastered ? ' mastered' : ''}" onclick='showWrongDetail(${JSON.stringify(w)})'>
                 <div class="wi-left">
-                    <div class="wi-title">Level ${lvLabel} · ${w.year} 年 · 第 ${w.question} 题 <span style="font-size:0.75rem;color:var(--ink-light);">(${tierLabel})</span>${isMastered ? '<span class="wi-mastered-tag">已掌握</span>' : ''}</div>
+                    <div class="wi-title">Level ${lvLabel} · ${w.year} · ${I18n.t('q_badge').replace('{n}', w.question)} <span style="font-size:0.75rem;color:var(--ink-light);">(${tierLabel})</span>${isMastered ? `<span class="wi-mastered-tag">${I18n.t('wi_mastered_tag')}</span>` : ''}</div>
                     <div class="wi-meta">${w.created_at ? w.created_at.replace('T',' ').slice(0,16) : ''}</div>
                 </div>
                 <div class="wi-answers">
@@ -1589,7 +1837,7 @@
     async function retryAllWrong() {
         const mastered = getMastered();
         const unmastered = allWrongItems.filter(w => !mastered[wrongKey(w)]);
-        if (!unmastered.length) { alert('没有待复习的错题'); return; }
+        if (!unmastered.length) { alert(I18n.t('no_retry')); return; }
         // Group by year, pick the year with most wrong questions
         const byYear = {};
         unmastered.forEach(w => { byYear[w.year] = (byYear[w.year] || 0) + 1; });
@@ -1600,7 +1848,7 @@
     function showWrongDetail(w) {
         const lvLabel = (w.level||'b').toUpperCase();
         const pre = w.level === 'b' ? `${w.year}` : `level-${w.level}/${w.year}`;
-        document.getElementById('wrongDetailTitle').textContent = `Level ${lvLabel} · ${w.year} 年 · 第 ${w.question} 题`;
+        document.getElementById('wrongDetailTitle').textContent = `Level ${lvLabel} · ${w.year} · ${I18n.t('q_badge').replace('{n}', w.question)}`;
         document.getElementById('wrongDetailImg').src = `${pre}/q${w.question}.png`;
 
         const mastered = getMastered();
@@ -1608,13 +1856,13 @@
         const isMastered = mastered[key];
 
         let infoHtml =
-            `<div>你的答案：<span style="color:var(--error);text-decoration:line-through;">${w.user_answer}</span></div>` +
-            `<div>正确答案：<span style="color:var(--success);font-weight:600;">${w.correct_answer}</span></div>`;
+            `<div>${I18n.t('your_answer')}: <span style="color:var(--error);text-decoration:line-through;">${w.user_answer}</span></div>` +
+            `<div>${I18n.t('correct_answer_label')}: <span style="color:var(--success);font-weight:600;">${w.correct_answer}</span></div>`;
         // Load explanation if available
         loadExplanation(w.level, w.year, w.question).then(exp => {
             if (exp) {
                 infoHtml += `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--ink-faint);">`;
-                infoHtml += `<div style="font-weight:600;margin-bottom:6px;">解析`;
+                infoHtml += `<div style="font-weight:600;margin-bottom:6px;">${I18n.t('explanation')}`;
                 if (exp.knowledge_point) infoHtml += ` <span style="font-size:0.7rem;padding:2px 8px;border-radius:10px;background:var(--blush-faint);color:var(--rose);">${exp.knowledge_point}</span>`;
                 infoHtml += `</div>`;
                 infoHtml += `<div style="font-size:0.82rem;line-height:1.7;">${exp.explanation}</div>`;
@@ -1629,7 +1877,7 @@
         document.getElementById('wrongRetryBtn').onclick = () => { closeWrongDetail(); startQuiz(w.year); };
 
         const masterBtn = document.getElementById('wrongMasterBtn');
-        masterBtn.textContent = isMastered ? '取消掌握' : '标记已掌握';
+        masterBtn.textContent = isMastered ? I18n.t('btn_unmastered') : I18n.t('btn_mastered');
         masterBtn.onclick = () => {
             setMastered(key, !isMastered);
             closeWrongDetail();
@@ -1730,7 +1978,7 @@
         if (quizStartTime && !quizSubmitted && document.getElementById('quizPage').style.display === 'flex') {
             // Re-push to prevent leaving
             history.pushState({ quizGuard: true }, '');
-            showConfirmModal('🚪', '确定退出？', '做题进度已自动保存，可稍后继续。', () => {
+            showConfirmModal('🚪', I18n.t('exit_confirm'), I18n.t('exit_msg_alt'), () => {
                 saveProgress();
                 disableBackGuard();
                 doGoHome();
@@ -1753,7 +2001,7 @@
         submitPendingResult();
         const prog = getSavedProgress();
         if (prog) {
-            showConfirmModal('📋', '发现未完成的做题', `${prog.year} 年 · Level ${prog.level.toUpperCase()}，已答 ${Object.keys(prog.userAnswers || {}).length} 题。是否继续？`, () => {
+            showConfirmModal('📋', I18n.t('found_progress'), I18n.t('progress_info').replace('{year}', prog.year).replace('{lv}', prog.level.toUpperCase()).replace('{n}', Object.keys(prog.userAnswers || {}).length), () => {
                 restoreProgress(prog);
             });
             // If user cancels, clear progress
@@ -1767,6 +2015,27 @@
     }
 
     initWithProgress();
+
+    // I18n: re-render dynamic content on language switch
+    I18n.onSwitch(() => {
+        // Re-render level tabs
+        document.querySelectorAll('.lv-tab').forEach(t => {
+            const lv = t.dataset.level;
+            t.textContent = I18n.t('grade_' + lv + '_tab');
+        });
+        // Re-render current page state
+        if (document.getElementById('homePage').style.display !== 'none') {
+            init(); // re-render year grid
+        }
+        // Re-render quiz page dynamic text if visible
+        if (document.getElementById('quizPage').style.display === 'flex') {
+            renderQuestion();
+        }
+        // Re-render results page if visible
+        if (document.getElementById('resultsPage').style.display === 'block') {
+            showResultsPage();
+        }
+    });
 </script>
 </body>
 </html>
