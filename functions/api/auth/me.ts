@@ -8,7 +8,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     'SELECT id, username, role, status FROM users WHERE id = ?'
   ).bind(jwtUser.userId).first<any>();
 
-  if (!dbUser || dbUser.status !== 'approved') {
+  if (!dbUser || dbUser.status === 'pending' || dbUser.status === 'rejected') {
     return new Response(JSON.stringify({ error: '账号不可用' }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' },
