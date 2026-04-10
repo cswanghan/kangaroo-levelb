@@ -188,12 +188,25 @@ window.I18N = {
         return 'index.html';
     }
 
-    // Check if already logged in
-    const token = localStorage.getItem('token');
-    if (token) {
-        fetch('/api/auth/me', { headers: { 'Authorization': `Bearer ${token}` } })
-            .then(r => r.ok ? window.location.href = getRedirect() : localStorage.removeItem('token'))
-            .catch(() => {});
+    // Check if already logged in (skip if ?force=1 for re-login)
+    const forceLogin = new URLSearchParams(location.search).get('force');
+    if (forceLogin) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+    } else {
+        const token = localStorage.getItem('token');
+        if (token) {
+            fetch('/api/auth/me', { headers: { 'Authorization': `Bearer ${token}` } })
+                .then(r => {
+                    if (r.ok) {
+                        window.location.href = getRedirect();
+                    } else {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                    }
+                })
+                .catch(() => {});
+        }
     }
 
     function showTab(tab) {
