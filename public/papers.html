@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>袋鼠数学 · 历年真题 PDF</title>
     <script src="auth-guard.js"></script>
+    <script src="analytics.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -183,17 +184,18 @@
 </head>
 <body>
     <div class="page">
-        <div class="page-header">
-            <h1>历年真题</h1>
+        <div class="page-header" style="position:relative;">
+            <button class="i18n-toggle" onclick="I18n.toggle()" style="position:absolute;top:0;right:0;padding:4px 14px;border-radius:999px;border:1px solid var(--rose-light);background:white;color:var(--text);font-size:0.82rem;font-family:inherit;cursor:pointer;">EN</button>
+            <h1 data-i18n="papers_title">历年真题</h1>
             <p class="sub" id="subtitle">袋鼠数学 · 2013 — 2025</p>
         </div>
 
         <div class="nav-row">
-            <a href="index.html" class="nav-link">← 首页</a>
-            <a href="quiz.html" class="nav-link" id="quizLink">在线练习</a>
+            <a href="index.html" class="nav-link" data-i18n="nav_home">← 首页</a>
+            <a href="quiz.html" class="nav-link" id="quizLink" data-i18n="nav_quiz">在线练习</a>
         </div>
 
-        <div class="level-switch">
+        <div class="level-switch" id="levelSwitch">
             <div class="lv-tab" data-level="a" onclick="switchLevel('a')">Level A · 1-2年级</div>
             <div class="lv-tab" data-level="b" onclick="switchLevel('b')">Level B · 3-4年级</div>
             <div class="lv-tab" data-level="c" onclick="switchLevel('c')">Level C · 5-6年级</div>
@@ -206,15 +208,39 @@
     </div>
 
     <script>
+    window.I18N = {
+        zh: {
+            papers_title: '历年真题', nav_home: '← 首页', nav_quiz: '在线练习',
+            subtitle_tpl: '袋鼠数学 {label} · {grade}',
+            back_list: '← 返回列表', download_pdf: '下载 PDF', year_paper: '{year} 年真题',
+            view_download: '查看 / 下载', no_data: '暂无 PDF 数据',
+            login_download: '登录后可下载 PDF 真题文件。',
+            grade_a: '1-2年级', grade_b: '3-4年级', grade_c: '5-6年级',
+            grade_d: '7-8年级', grade_e: '9-10年级', grade_f: '11-12年级',
+        },
+        en: {
+            papers_title: 'Past Papers', nav_home: '← Home', nav_quiz: 'Online Practice',
+            subtitle_tpl: 'Math Kangaroo {label} · {grade}',
+            back_list: '← Back to List', download_pdf: 'Download PDF', year_paper: '{year} Paper',
+            view_download: 'View / Download', no_data: 'No papers available',
+            login_download: 'Please login to download PDF papers.',
+            grade_a: 'Grades 1-2', grade_b: 'Grades 3-4', grade_c: 'Grades 5-6',
+            grade_d: 'Grades 7-8', grade_e: 'Grades 9-10', grade_f: 'Grades 11-12',
+        }
+    };
+    </script>
+    <script src="i18n.js"></script>
+
+    <script>
         let currentLevel = new URLSearchParams(location.search).get('level') || 'b';
 
         const levelMeta = {
-            a: { label: 'Level A', grade: '1-2年级' },
-            b: { label: 'Level B', grade: '3-4年级' },
-            c: { label: 'Level C', grade: '5-6年级' },
-            d: { label: 'Level D', grade: '7-8年级' },
-            e: { label: 'Level E', grade: '9-10年级' },
-            f: { label: 'Level F', grade: '11-12年级' }
+            a: { label: 'Level A' },
+            b: { label: 'Level B' },
+            c: { label: 'Level C' },
+            d: { label: 'Level D' },
+            e: { label: 'Level E' },
+            f: { label: 'Level F' }
         };
 
         const papersB = [
@@ -340,25 +366,39 @@
 
         function updateHeader() {
             const cfg = getConfig();
+            const grade = I18n.t('grade_' + currentLevel);
             document.getElementById('subtitle').textContent =
-                `袋鼠数学 ${cfg.label} · ${cfg.grade}`;
+                I18n.t('subtitle_tpl').replace('{label}', cfg.label).replace('{grade}', grade);
             document.getElementById('quizLink').href =
                 currentLevel === 'b' ? 'quiz.html' : `quiz.html?level=${currentLevel}`;
+            // Update level tabs text
+            document.querySelectorAll('.lv-tab').forEach(t => {
+                const lv = t.dataset.level;
+                t.textContent = `${levelMeta[lv].label} · ${I18n.t('grade_' + lv)}`;
+            });
         }
 
         function showPaper(file, year) {
             const cfg = getConfig();
+            const downloadUrl = `${cfg.dir}/${file}`;
             document.getElementById('content').className = '';
             document.getElementById('content').innerHTML = `
-                <a href="javascript:renderList()" class="back-list-btn">← 返回列表</a>
+                <a href="javascript:renderList()" class="back-list-btn">${I18n.t('back_list')}</a>
                 <div class="pdf-viewer">
                     <div class="pdf-header">
-                        <span class="pdf-title">${year} 年真题</span>
-                        <a href="${cfg.dir}/${file}" download class="download-btn">下载 PDF</a>
+                        <span class="pdf-title">${I18n.t('year_paper').replace('{year}', year)}</span>
+                        <a href="javascript:void(0)" onclick="downloadPDF('${downloadUrl}')" class="download-btn">${I18n.t('download_pdf')}</a>
                     </div>
                     <iframe src="${cfg.dir}/${file}"></iframe>
                 </div>`;
             window.scrollTo(0, 0);
+        }
+
+        function downloadPDF(url) {
+            if (!requireLogin(I18n.t('login_download'))) return;
+            const a = document.createElement('a');
+            a.href = url; a.download = ''; document.body.appendChild(a);
+            a.click(); document.body.removeChild(a);
         }
 
         async function renderList() {
@@ -378,7 +418,7 @@
 
             if (!papers.length) {
                 document.getElementById('content').className = 'papers-grid';
-                document.getElementById('content').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-light);padding:40px;">暂无 PDF 数据</div>';
+                document.getElementById('content').innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--text-light);padding:40px;">${I18n.t('no_data')}</div>`;
                 return;
             }
 
@@ -386,10 +426,13 @@
             document.getElementById('content').innerHTML = papers.map(p => `
                 <a href="javascript:showPaper('${encodeURIComponent(p.file)}', ${p.year})" class="paper-card">
                     <div class="year">${p.year}</div>
-                    <div class="label">查看 / 下载</div>
+                    <div class="label">${I18n.t('view_download')}</div>
                 </a>
             `).join('');
         }
+
+        // Re-render on language switch
+        I18n.onSwitch(() => { updateHeader(); renderList(); });
 
         // Init
         document.querySelectorAll('.lv-tab').forEach(t =>
