@@ -1,4 +1,5 @@
 import { verifyPassword, signJWT } from '../../../src/auth';
+import { getJwtSecret } from '../../../src/env';
 
 interface Env { DB: D1Database; JWT_SECRET: string; }
 
@@ -32,7 +33,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
   const token = await signJWT(
     { userId: user.id, username: user.username, role: user.role },
-    context.env.JWT_SECRET
+    getJwtSecret(context.env)
   );
 
   return json({ token, user: { id: user.id, username: user.username, role: user.role } });

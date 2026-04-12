@@ -1,4 +1,5 @@
 import { verifyJWT } from '../../src/auth';
+import { getJwtSecret } from '../../src/env';
 
 interface Env {
   DB: D1Database;
@@ -9,6 +10,7 @@ const PUBLIC_PATHS = [
   '/api/auth/login',
   '/api/auth/register',
   '/api/invite/verify',
+  '/api/analytics/track',
 ];
 
 export const onRequest: PagesFunction<Env> = async (context) => {
@@ -39,7 +41,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   }
 
   const token = authHeader.slice(7);
-  const payload = await verifyJWT(token, context.env.JWT_SECRET);
+  const payload = await verifyJWT(token, getJwtSecret(context.env));
   if (!payload) {
     return json({ error: '登录已过期' }, 401, corsHeaders);
   }

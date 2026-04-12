@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS users (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
     username   TEXT    NOT NULL UNIQUE,
     password   TEXT    NOT NULL,
+    email      TEXT    UNIQUE,
     phone      TEXT,
     role       TEXT    NOT NULL DEFAULT 'user',
     status     TEXT    NOT NULL DEFAULT 'pending',
@@ -24,6 +25,7 @@ CREATE TABLE IF NOT EXISTS invite_codes (
 
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 CREATE INDEX IF NOT EXISTS idx_users_status ON users(status);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_invite_codes_code ON invite_codes(code);
 
 -- 答题记录：每次完成一套卷的汇总
