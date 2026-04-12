@@ -269,6 +269,13 @@
             return;
         }
 
+        document.getElementById('welcomeText').textContent = `${user?.username || ''} · ${user?.role === 'admin' ? '管理员' : '用户'}`;
+
+        if (user?.role === 'admin') {
+            document.getElementById('adminSection').style.display = 'block';
+            await Promise.allSettled([loadUsers('pending'), loadInvites()]);
+        }
+
         try {
             const data = await api('/api/auth/me');
             user = data?.user || user || {};
@@ -280,7 +287,6 @@
             }
 
             document.getElementById('adminSection').style.display = 'block';
-            await Promise.allSettled([loadUsers('pending'), loadInvites()]);
         } catch (e) {
             if (e.status === 401 || /重新登录|未登录|过期/.test(e.message)) {
                 localStorage.removeItem('token');
@@ -289,9 +295,11 @@
                 return;
             }
 
-            document.getElementById('welcomeText').textContent = '管理员';
-            showError('userList', e.message);
-            document.getElementById('codeList').innerHTML = `<div class="error-msg">${escapeHtml(e.message)}</div>`;
+            if (!user?.role || user.role !== 'admin') {
+                document.getElementById('welcomeText').textContent = '管理员';
+                showError('userList', e.message);
+                document.getElementById('codeList').innerHTML = `<div class="error-msg">${escapeHtml(e.message)}</div>`;
+            }
         }
     }
 

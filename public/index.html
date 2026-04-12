@@ -377,16 +377,21 @@
 
     <!-- User status (rendered after i18n init, see below) -->
     <script>
+        function authLabel(key, fallback) {
+            const translated = typeof I18n?.t === 'function' ? I18n.t(key) : key;
+            return translated === key ? fallback : translated;
+        }
+
         function renderAuthArea() {
             const user = JSON.parse(localStorage.getItem('user') || 'null');
             const area = document.getElementById('authArea');
             if (user) {
-                const adminLink = user.role === 'admin' ? ` <a href="admin.html">${I18n.t('auth_admin')}</a>` : '';
+                const adminLink = user.role === 'admin' ? ` <a href="admin.html">${authLabel('auth_admin', '管理后台')}</a>` : '';
                 area.innerHTML = `<span style="color:var(--text-light);font-size:0.85rem;">${user.username}</span> ` +
-                    `<a href="admin.html">${I18n.t('auth_center')}</a>` + adminLink +
-                    ` <a href="javascript:void(0)" onclick="localStorage.clear();location.reload()">${I18n.t('auth_logout')}</a>`;
+                    `<a href="admin.html">${authLabel('auth_center', '个人中心')}</a>` + adminLink +
+                    ` <a href="javascript:void(0)" onclick="localStorage.clear();location.reload()">${authLabel('auth_logout', '退出')}</a>`;
             } else {
-                area.innerHTML = `<a href="login.html">${I18n.t('auth_login')}</a>`;
+                area.innerHTML = `<a href="login.html">${authLabel('auth_login', '登录 / 注册')}</a>`;
             }
         }
     </script>
