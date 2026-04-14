@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>袋鼠数学 · 设置用户名</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --cream: #faf8f5; --warm: #f3ede6; --rose: #c4a08a; --rose-light: #e8d5c8;
+            --rose-bg: #fdf5f0; --text: #3d3530; --text-light: #8a7e76; --accent: #b07d62;
+            --success: #6b9a7d; --error: #c47070;
+        }
+        body {
+            font-family: 'Noto Serif SC', 'Georgia', serif;
+            background: var(--cream); min-height: 100vh; color: var(--text);
+            display: flex; align-items: center; justify-content: center; padding: 20px;
+        }
+        .auth-container { width: 100%; max-width: 400px; }
+        .auth-header { text-align: center; margin-bottom: 36px; position: relative; }
+        .auth-header .icon { font-size: 2.4rem; margin-bottom: 8px; }
+        .auth-header h1 {
+            font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 4px;
+        }
+        .auth-header .sub { color: var(--text-light); font-size: 0.85rem; }
+        .auth-card {
+            background: white; border: 1px solid var(--warm); border-radius: 16px;
+            padding: 32px 28px; position: relative;
+        }
+        .auth-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: var(--rose-light); border-radius: 16px 16px 0 0;
+        }
+        .intro { color: var(--text-light); font-size: 0.88rem; line-height: 1.7; margin-bottom: 18px; }
+        .form-group { margin-bottom: 18px; }
+        .form-label {
+            display: block; font-size: 0.8rem; color: var(--text-light);
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+        }
+        .form-input {
+            width: 100%; padding: 12px 14px; border: 1px solid var(--warm); border-radius: 10px;
+            font-size: 0.95rem; font-family: inherit; color: var(--text);
+            background: var(--cream); transition: border-color 0.2s; outline: none;
+        }
+        .form-input:focus { border-color: var(--accent); }
+        .submit-btn {
+            width: 100%; padding: 13px; border: none; border-radius: 20px;
+            background: var(--accent); color: white; font-size: 0.95rem;
+            font-family: inherit; font-weight: 500; cursor: pointer; transition: background 0.2s;
+            margin-top: 4px;
+        }
+        .submit-btn:hover { background: #9a6b52; }
+        .submit-btn:disabled { background: var(--rose-light); cursor: not-allowed; }
+        .message {
+            margin-top: 14px; padding: 10px 14px; border-radius: 8px;
+            font-size: 0.85rem; display: none;
+        }
+        .message.show { display: block; }
+        .message.error { background: #fdf0f0; color: #8b4444; }
+        .message.success { background: #edf5f0; color: #3d6b4f; }
+        .i18n-toggle {
+            position: absolute; top: 0; right: 0;
+            padding: 4px 14px; border-radius: 999px;
+            border: 1px solid var(--rose-light); background: white;
+            color: var(--text); font-size: 0.82rem; font-family: inherit;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .i18n-toggle:hover { border-color: var(--accent); color: var(--accent); }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <div class="auth-header">
+        <button class="i18n-toggle" onclick="I18n.toggle()">EN</button>
+        <div class="icon">🦘</div>
+        <h1>Kangaroo Math</h1>
+        <p class="sub" data-i18n="sub">设置一个用户名</p>
+    </div>
+
+    <div class="auth-card">
+        <div class="intro" data-i18n="intro">
+            欢迎！请为你的账号设置一个用户名（3-20 字符，支持字母、数字、下划线、横线）。
+        </div>
+        <form id="form" onsubmit="submitUsername(event)">
+            <div class="form-group">
+                <label class="form-label" data-i18n="label_username">用户名</label>
+                <input class="form-input" id="username" name="username"
+                       data-i18n-placeholder="ph_username" placeholder="例如 tommy2017" required>
+            </div>
+            <button class="submit-btn" type="submit" data-i18n="btn_submit">确定</button>
+            <div class="message" id="msg"></div>
+        </form>
+    </div>
+</div>
+
+<script src="analytics.js"></script>
+<script>
+window.I18N = {
+    zh: {
+        sub: '设置一个用户名',
+        intro: '欢迎！请为你的账号设置一个用户名（3-20 字符，支持字母、数字、下划线、横线）。',
+        label_username: '用户名', ph_username: '例如 tommy2017',
+        btn_submit: '确定', err_network: '网络错误', err_server: '服务端错误',
+        err_not_login: '未登录，请先登录',
+    },
+    en: {
+        sub: 'Pick a username',
+        intro: 'Welcome! Please choose a username (3-20 chars, letters/numbers/underscore/dash).',
+        label_username: 'USERNAME', ph_username: 'e.g. tommy2017',
+        btn_submit: 'Submit', err_network: 'Network error', err_server: 'Server error',
+        err_not_login: 'Not logged in',
+    }
+};
+</script>
+<script src="i18n.js"></script>
+
+<script>
+    const redirect = new URLSearchParams(location.search).get('redirect') || 'index.html';
+
+    function showMsg(text, type) {
+        const el = document.getElementById('msg');
+        el.textContent = text;
+        el.className = `message show ${type}`;
+    }
+
+    async function submitUsername(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value.trim();
+        const token = localStorage.getItem('token');
+        if (!token) {
+            showMsg(I18n.t('err_not_login'), 'error');
+            setTimeout(() => location.href = 'login.html', 1200);
+            return;
+        }
+
+        const btn = document.querySelector('.submit-btn');
+        btn.disabled = true;
+        try {
+            const r = await fetch('/api/auth/complete-username', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username }),
+            });
+            const res = await r.json();
+            if (!r.ok) {
+                showMsg(res.error || I18n.t('err_server'), 'error');
+                btn.disabled = false;
+                return;
+            }
+            localStorage.setItem('token', res.token);
+            localStorage.setItem('user', JSON.stringify(res.user));
+            window.location.href = redirect;
+        } catch (err) {
+            showMsg(I18n.t('err_network') + ': ' + err.message, 'error');
+            btn.disabled = false;
+        }
+    }
+</script>
+</body>
+</html>

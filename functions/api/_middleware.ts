@@ -9,6 +9,8 @@ interface Env {
 const PUBLIC_PATHS = [
   '/api/auth/login',
   '/api/auth/register',
+  '/api/auth/google',
+  '/api/auth/google-config',
   '/api/invite/verify',
   '/api/analytics/track',
 ];

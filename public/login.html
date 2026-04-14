@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>袋鼠数学 · 登录</title>
     <script src="analytics.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -89,6 +90,16 @@
 
         #loginForm, #registerForm { display: none; }
         #loginForm.active, #registerForm.active { display: block; }
+
+        .divider {
+            display: flex; align-items: center; margin: 20px 0 16px; color: var(--text-light);
+            font-size: 0.78rem; letter-spacing: 1px;
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1; height: 1px; background: var(--warm);
+        }
+        .divider span { padding: 0 12px; }
+        .google-btn-wrap { display: flex; justify-content: center; }
         .i18n-toggle {
             position: absolute; top: 0; right: 0;
             padding: 4px 14px; border-radius: 999px;
@@ -125,6 +136,10 @@
             </div>
             <button class="submit-btn" type="submit" data-i18n="btn_login">登录</button>
             <div class="message" id="loginMsg"></div>
+
+            <div class="divider"><span data-i18n="divider_or">OR</span></div>
+            <div class="google-btn-wrap" id="googleBtnWrap"></div>
+            <div class="message" id="googleMsg"></div>
         </form>
 
         <form id="registerForm" onsubmit="handleRegister(event)">
@@ -164,6 +179,7 @@ window.I18N = {
         ph_email: '用于找回密码', ph_phone: '选填',
         btn_login: '登录', btn_register: '注册', back_home: '← 返回首页',
         err_server: '服务端错误', err_network: '网络错误',
+        divider_or: '或',
     },
     en: {
         login_sub: 'Login or register to start practicing', tab_login: 'Login', tab_register: 'Register',
@@ -173,6 +189,7 @@ window.I18N = {
         ph_email: 'For password recovery', ph_phone: 'Optional',
         btn_login: 'Login', btn_register: 'Register', back_home: '← Back to Home',
         err_server: 'Server error', err_network: 'Network error',
+        divider_or: 'OR',
     }
 };
 </script>
@@ -258,6 +275,72 @@ window.I18N = {
             showMsg('loginMsg', I18n.t('err_network') + ': ' + err.message, 'error');
         }
     }
+
+    let googleClientId = '';
+
+    async function initGoogleSignIn() {
+        try {
+            const r = await fetch('/api/auth/google-config');
+            const cfg = await r.json();
+            googleClientId = cfg.clientId || '';
+            if (!googleClientId) return;
+
+            const tryInit = () => {
+                if (!window.google?.accounts?.id) {
+                    setTimeout(tryInit, 200);
+                    return;
+                }
+                window.google.accounts.id.initialize({
+                    client_id: googleClientId,
+                    callback: handleGoogleCredential,
+                    ux_mode: 'popup',
+                    auto_select: false,
+                });
+                const wrap = document.getElementById('googleBtnWrap');
+                window.google.accounts.id.renderButton(wrap, {
+                    theme: 'outline',
+                    size: 'large',
+                    width: 300,
+                    text: 'signin_with',
+                    shape: 'pill',
+                });
+            };
+            tryInit();
+        } catch {
+            // silently skip — google signin not available
+        }
+    }
+
+    async function handleGoogleCredential(resp) {
+        window.KangarooAnalytics?.track('auth_google_attempt');
+        try {
+            const r = await fetch('/api/auth/google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ credential: resp.credential }),
+            });
+            const res = await r.json();
+            if (!r.ok) {
+                window.KangarooAnalytics?.track('auth_google_failure', { group: 'friction', label: res.error });
+                showMsg('googleMsg', res.error || I18n.t('err_server'), 'error');
+                return;
+            }
+            window.KangarooAnalytics?.track('auth_google_success');
+            localStorage.setItem('token', res.token);
+            localStorage.setItem('user', JSON.stringify(res.user));
+            if (res.needsUsername) {
+                const next = encodeURIComponent(getRedirect());
+                window.location.href = 'complete-username.html?redirect=' + next;
+            } else {
+                window.location.href = getRedirect();
+            }
+        } catch (err) {
+            window.KangarooAnalytics?.track('auth_google_failure', { group: 'friction', label: err.message });
+            showMsg('googleMsg', I18n.t('err_network') + ': ' + err.message, 'error');
+        }
+    }
+
+    initGoogleSignIn();
 
     async function handleRegister(e) {
         e.preventDefault();
