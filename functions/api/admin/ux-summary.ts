@@ -4,7 +4,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   try {
     const url = new URL(context.request.url);
     const days = Math.min(Math.max(parseInt(url.searchParams.get('days') || '7'), 1), 30);
-    const since = new Date(Date.now() - days * 86400000).toISOString();
+    const since = toSqlDateTime(new Date(Date.now() - days * 86400000));
 
     const [overview, pages, friction, auth, quiz, quizFunnel] = await Promise.all([
       // 1. Overview
@@ -13,7 +13,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
           COUNT(*) FILTER (WHERE event_name = 'page_view') AS pageViews,
           COUNT(DISTINCT session_id) FILTER (WHERE event_name = 'page_view') AS activeSessions,
           COUNT(*) FILTER (WHERE event_group = 'error') AS errors,
-          COALESCE(AVG(value) FILTER (WHERE event_name = 'page_leave' AND value > 0), 0) AS avgDurationSeconds,
+          COALESCE(AVG(value) FILTER (WHERE event_name = 'page_leave' AND value BETWEEN 1 AND 3600), 0) AS avgDurationSeconds,
           COUNT(*) FILTER (WHERE event_name = 'low_engagement_bounce') AS bounces
         FROM ux_events WHERE created_at >= ?
       `).bind(since).first<any>(),
@@ -22,12 +22,14 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       context.env.DB.prepare(`
         SELECT
           page_path AS pagePath,
-          COUNT(*) AS views,
-          COALESCE(AVG(CASE WHEN event_name = 'page_leave' THEN value END), 0) AS avgDurationSeconds,
+          COUNT(*) FILTER (WHERE event_name = 'page_view') AS views,
+          COUNT(DISTINCT session_id) FILTER (WHERE event_name = 'page_view') AS sessions,
+          COALESCE(AVG(value) FILTER (WHERE event_name = 'page_leave' AND value BETWEEN 1 AND 3600), 0) AS avgDurationSeconds,
           COUNT(CASE WHEN event_name = 'low_engagement_bounce' THEN 1 END) AS bounceCount
         FROM ux_events
         WHERE created_at >= ? AND event_name IN ('page_view', 'page_leave', 'low_engagement_bounce')
         GROUP BY page_path
+        HAVING views > 0
         ORDER BY views DESC LIMIT 8
       `).bind(since).all(),
 
@@ -60,6 +62,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       context.env.DB.prepare(`
         SELECT
           COUNT(*) FILTER (WHERE event_name = 'quiz_start') AS starts,
+          COUNT(*) FILTER (WHERE event_name = 'quiz_complete') AS completes,
           COUNT(*) FILTER (WHERE event_name = 'quiz_submit_attempt') AS submitAttempts,
           COUNT(*) FILTER (WHERE event_name = 'quiz_submit_success') AS submitSuccess,
           COUNT(*) FILTER (WHERE event_name = 'quiz_save_history_success') AS saveHistorySuccess,
@@ -76,7 +79,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
         FROM ux_events
         WHERE created_at >= ? AND event_name IN (
           'home_entry_click', 'quiz_selector_view', 'quiz_test_select',
-          'quiz_start', 'quiz_progress_checkpoint',
+          'quiz_start', 'quiz_progress_checkpoint', 'quiz_complete',
           'quiz_submit_attempt', 'quiz_submit_success', 'quiz_save_history_success'
         )
         GROUP BY event_name
@@ -90,6 +93,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       { key: 'quiz_test_select', label: '选择具体套卷' },
       { key: 'quiz_start', label: '开始作答' },
       { key: 'quiz_progress_checkpoint', label: '做到 50%' },
+      { key: 'quiz_complete', label: '完成答卷' },
       { key: 'quiz_submit_attempt', label: '提交答卷' },
       { key: 'quiz_submit_success', label: '提交成功' },
       { key: 'quiz_save_history_success', label: '保存历史记录' },
@@ -126,6 +130,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       },
       quiz: {
         starts: quiz?.starts || 0,
+        completes: quiz?.completes || 0,
         submitAttempts: quiz?.submitAttempts || 0,
         submitSuccess: quiz?.submitSuccess || 0,
         saveHistorySuccess: quiz?.saveHistorySuccess || 0,
@@ -138,6 +143,10 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     return json({ error: e.message || 'Internal error' }, 500);
   }
 };
+
+function toSqlDateTime(d: Date) {
+  return d.toISOString().slice(0, 19).replace('T', ' ');
+}
 
 function json(data: any, status = 200) {
   return new Response(JSON.stringify(data), {

@@ -1038,6 +1038,12 @@ window.I18N = {
     let currentYear = null, questions = [], currentIndex = 0, userAnswers = {};
     let quizStartTime = null, quizSubmitted = false, timerInterval = null;
 
+    function trackAnalytics(eventName, opts) {
+        if (window.KangarooAnalytics && typeof window.KangarooAnalytics.track === 'function') {
+            window.KangarooAnalytics.track(eventName, opts);
+        }
+    }
+
     const dataBase = () => currentLevel === 'b' ? 'data' : `level-${currentLevel}/data`;
 
     // Cache for loaded question data (with explanations)
@@ -1084,7 +1090,7 @@ window.I18N = {
     }
 
     function renderYearGrid(years) {
-        window.KangarooAnalytics?.track('quiz_selector_view', { meta: { level: currentLevel, count: years.length } });
+        trackAnalytics('quiz_selector_view', { meta: { level: currentLevel, count: years.length } });
         document.getElementById('yearGrid').innerHTML = years.map(y => `
             <div class="year-card" onclick="startQuiz(${y.year})">
                 <div class="yr">${y.year}</div>
@@ -1095,7 +1101,7 @@ window.I18N = {
     let pendingYear = null, pendingData = null;
 
     async function startQuiz(year) {
-        window.KangarooAnalytics?.track('quiz_test_select', { meta: { level: currentLevel, year } });
+        trackAnalytics('quiz_test_select', { meta: { level: currentLevel, year } });
         try {
             const r = await fetch(`${dataBase()}/${year}.json`);
             const d = await r.json();
@@ -1137,7 +1143,7 @@ window.I18N = {
         currentYear = pendingYear; questions = pendingData.questions;
         currentIndex = 0; userAnswers = {}; halfwayTracked = false;
         quizStartTime = Date.now(); quizSubmitted = false;
-        window.KangarooAnalytics?.track('quiz_start', { meta: { level: currentLevel, year: currentYear, total: questions.length } });
+        trackAnalytics('quiz_start', { meta: { level: currentLevel, year: currentYear, total: questions.length } });
         clearProgress();
         startTimer();
         enableBackGuard();
@@ -1206,7 +1212,14 @@ window.I18N = {
     }
 
     function renderQuestion() {
+        // Defensive guard: never crash on an empty/out-of-range question set
+        // (e.g. stale restored progress whose index no longer maps to the paper)
+        if (!Array.isArray(questions) || questions.length === 0) return;
+        if (currentIndex < 0 || currentIndex >= questions.length) {
+            currentIndex = Math.max(0, Math.min(currentIndex, questions.length - 1));
+        }
         const q = questions[currentIndex];
+        if (!q) return;
         const selected = userAnswers[q.number];
         const ac = Object.keys(userAnswers).length;
 
@@ -1350,7 +1363,7 @@ window.I18N = {
         // Track 50% progress checkpoint
         if (!halfwayTracked && Object.keys(userAnswers).length >= Math.ceil(questions.length / 2)) {
             halfwayTracked = true;
-            window.KangarooAnalytics?.track('quiz_progress_checkpoint', { meta: { level: currentLevel, year: currentYear, percent: 50 } });
+            trackAnalytics('quiz_progress_checkpoint', { meta: { level: currentLevel, year: currentYear, percent: 50 } });
         }
         renderQuestion();
         saveProgress();
@@ -1408,7 +1421,7 @@ window.I18N = {
     }
     function doSubmitQuiz() {
         if (quizSubmitted) return;
-        window.KangarooAnalytics?.track('quiz_submit_attempt', { meta: { level: currentLevel, year: currentYear } });
+        trackAnalytics('quiz_submit_attempt', { meta: { level: currentLevel, year: currentYear } });
         quizSubmitted = true;
         stopTimer();
         clearProgress();
@@ -1541,7 +1554,7 @@ window.I18N = {
 
     async function submitQuizResult(duration) {
         const token = localStorage.getItem('token');
-        window.KangarooAnalytics?.track('quiz_submit_success', { meta: { level: currentLevel, year: currentYear, loggedIn: !!token } });
+        trackAnalytics('quiz_complete', { meta: { level: currentLevel, year: currentYear, loggedIn: !!token } });
         if (!token) {
             // Save result locally, prompt login
             savePendingResult(duration);
@@ -1561,14 +1574,14 @@ window.I18N = {
                 body: JSON.stringify({ level: currentLevel, year: currentYear, answers, duration, score }),
             });
             if (r.ok) {
-                window.KangarooAnalytics?.track('quiz_save_history_success', { meta: { level: currentLevel, year: currentYear } });
+                trackAnalytics('quiz_submit_success', { meta: { level: currentLevel, year: currentYear } });
+                trackAnalytics('quiz_save_history_success', { meta: { level: currentLevel, year: currentYear } });
+                localStorage.removeItem('pendingQuizResult');
             } else {
-                window.KangarooAnalytics?.track('quiz_submit_failed', { group: 'friction', meta: { level: currentLevel, year: currentYear, status: r.status } });
+                trackAnalytics('quiz_submit_failed', { group: 'friction', meta: { level: currentLevel, year: currentYear, status: r.status } });
             }
-            // Clear pending result on successful submit
-            localStorage.removeItem('pendingQuizResult');
         } catch {
-            window.KangarooAnalytics?.track('quiz_submit_failed', { group: 'friction', meta: { level: currentLevel, year: currentYear } });
+            trackAnalytics('quiz_submit_failed', { group: 'friction', meta: { level: currentLevel, year: currentYear } });
         }
     }
 
@@ -1598,7 +1611,7 @@ window.I18N = {
         // 做题中（未提交）弹窗确认
         if (!quizSubmitted && quizStartTime && document.getElementById('quizPage').style.display === 'flex') {
             saveProgress();
-            window.KangarooAnalytics?.track('quiz_in_progress_leave', { group: 'friction', meta: { level: currentLevel, year: currentYear, answered: Object.keys(userAnswers).length, total: questions.length } });
+            trackAnalytics('quiz_in_progress_leave', { group: 'friction', meta: { level: currentLevel, year: currentYear, answered: Object.keys(userAnswers).length, total: questions.length } });
             showConfirmModal('🚪', I18n.t('exit_confirm'), I18n.t('exit_msg'), doGoHome);
             return;
         }
@@ -1937,8 +1950,10 @@ window.I18N = {
             const r = await fetch(`${dataBase()}/${prog.year}.json`);
             const d = await r.json();
             currentYear = prog.year;
-            questions = d.questions;
-            currentIndex = prog.currentIndex;
+            questions = Array.isArray(d.questions) ? d.questions : [];
+            if (questions.length === 0) { clearProgress(); return; }
+            // Clamp restored index into range — paper data may have changed since save
+            currentIndex = Math.min(Math.max(0, prog.currentIndex | 0), questions.length - 1);
             userAnswers = prog.userAnswers || {};
             quizStartTime = prog.startTime;
             quizSubmitted = false;

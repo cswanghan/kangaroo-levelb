@@ -250,7 +250,7 @@
             }
 
             if (!r.ok) {
-                const err = new Error(data?.error || `请求失败 (${r.status})`);
+                const err = new Error((data && data.error) || `请求失败 (${r.status})`);
                 err.status = r.status;
                 throw err;
             }
@@ -267,16 +267,16 @@
             return;
         }
 
-        document.getElementById('welcomeText').textContent = `${user?.username || ''} · ${user?.role === 'admin' ? '管理员' : '用户'}`;
+        document.getElementById('welcomeText').textContent = `${(user && user.username) || ''} · ${user && user.role === 'admin' ? '管理员' : '用户'}`;
 
-        if (user?.role === 'admin') {
+        if (user && user.role === 'admin') {
             document.getElementById('adminSection').style.display = 'block';
             await Promise.allSettled([loadUsers('pending'), loadInvites()]);
         }
 
         try {
             const data = await api('/api/auth/me');
-            user = data?.user || user || {};
+            user = (data && data.user) || user || {};
             localStorage.setItem('user', JSON.stringify(user));
             document.getElementById('welcomeText').textContent = `${user.username || ''} · ${user.role === 'admin' ? '管理员' : '用户'}`;
 
@@ -293,7 +293,7 @@
                 return;
             }
 
-            if (!user?.role || user.role !== 'admin') {
+            if (!user || !user.role || user.role !== 'admin') {
                 document.getElementById('welcomeText').textContent = '管理员';
                 showError('userList', e.message);
                 document.getElementById('codeList').innerHTML = `<div class="error-msg">${escapeHtml(e.message)}</div>`;
@@ -317,7 +317,7 @@
 
         try {
             const data = await api(`/api/admin/users?status=${status}`);
-            if (!data?.users?.length) {
+            if (!data || !data.users || !data.users.length) {
                 list.innerHTML = '<div class="empty">暂无数据</div>';
                 return;
             }
@@ -326,7 +326,7 @@
                 <div class="user-row">
                     <div class="user-info">
                         <div class="name">${escapeHtml(u.username)}</div>
-                        <div class="meta">${u.email || '无邮箱'} · ${u.phone || '无手机号'} · ${u.created_at?.slice(0,10) || ''}</div>
+                        <div class="meta">${u.email || '无邮箱'} · ${u.phone || '无手机号'} · ${u.created_at ? u.created_at.slice(0,10) : ''}</div>
                     </div>
                     ${status === 'pending' ? `
                     <div class="user-actions">
@@ -369,7 +369,7 @@
                 daily.forEach(d => {
                     const pct = Math.max((d.sessions / maxSessions) * 100, 8);
                     html += `<div class="daily-row">
-                        <span class="date">${d.date?.slice(5) || ''}</span>
+                        <span class="date">${d.date ? d.date.slice(5) : ''}</span>
                         <div class="bar-wrap"><div class="bar" style="width:${pct}%">${d.sessions} 次</div></div>
                         <span class="meta">${d.users} 人 · 均分 ${d.avg_score}</span>
                     </div>`;
@@ -378,7 +378,7 @@
             }
 
             // Per-user cards
-            if (data.users?.length) {
+            if (data.users && data.users.length) {
                 html += data.users.map(u => {
                     if (!u.total_quizzes) {
                         return `<div class="activity-card">
@@ -386,7 +386,7 @@
                                 <span class="name">${escapeHtml(u.username)}</span>
                                 <span class="role-badge">${u.role === 'admin' ? '管理员' : '用户'}</span>
                             </div>
-                            <div class="no-quiz">注册于 ${u.registered_at?.slice(0,10) || '—'}，尚未做题</div>
+                            <div class="no-quiz">注册于 ${u.registered_at ? u.registered_at.slice(0,10) : '—'}，尚未做题</div>
                         </div>`;
                     }
                     const accuracy = u.total_questions > 0 ? Math.round(u.total_correct / u.total_questions * 100) : 0;
@@ -398,13 +398,13 @@
                         </div>
                         <div class="stats">
                             <span>做题 <span class="stat-val">${u.total_quizzes}</span> 次</span>
-                            <span>均分 <span class="stat-val">${u.avg_score ?? '-'}</span></span>
-                            <span>最高 <span class="stat-val">${u.best_score ?? '-'}</span></span>
+                            <span>均分 <span class="stat-val">${u.avg_score != null ? u.avg_score : '-'}</span></span>
+                            <span>最高 <span class="stat-val">${u.best_score != null ? u.best_score : '-'}</span></span>
                             <span>正确率 <span class="stat-val">${accuracy}%</span>
                                 <span class="accuracy-bar"><span class="fill" style="width:${accuracy}%;background:${barColor}"></span></span>
                             </span>
                             <span>级别 <span class="stat-val">${u.levels_practiced}</span></span>
-                            <span>最近 <span class="stat-val">${u.last_quiz_at?.slice(0, 10) || '-'}</span></span>
+                            <span>最近 <span class="stat-val">${u.last_quiz_at ? u.last_quiz_at.slice(0, 10) : '-'}</span></span>
                         </div>
                     </div>`;
                 }).join('');
@@ -430,7 +430,7 @@
             const data = await api('/api/invite/mine');
             const list = document.getElementById('codeList');
 
-            if (!data?.codes?.length) {
+            if (!data || !data.codes || !data.codes.length) {
                 list.innerHTML = '<div class="empty">还没有邀请码</div>';
                 return;
             }
@@ -500,7 +500,7 @@
                     <div style="font-size:0.72rem;color:var(--text-light);margin-top:2px">活跃会话 ${o.activeSessions}</div>
                 </div>
                 <div class="summary-card">
-                    <div class="num">${o.avgDurationSeconds}s</div><div class="label">平均停留</div>
+                    <div class="num">${o.avgDurationSeconds}s</div><div class="label">截尾平均停留</div>
                     <div style="font-size:0.72rem;color:var(--text-light);margin-top:2px">低参与跳出 ${o.bounces}</div>
                 </div>
                 <div class="summary-card">
@@ -517,11 +517,11 @@
             html += `<div class="summary-row">
                 <div class="summary-card">
                     <div class="num">${q.starts}</div><div class="label">做题启动</div>
-                    <div style="font-size:0.72rem;color:var(--text-light);margin-top:2px">提交成功 ${q.submitSuccess}</div>
+                    <div style="font-size:0.72rem;color:var(--text-light);margin-top:2px">完成答卷 ${q.completes || 0}</div>
                 </div>
                 <div class="summary-card">
                     <div class="num">${q.saveHistorySuccess}</div><div class="label">历史保存</div>
-                    <div style="font-size:0.72rem;color:var(--text-light);margin-top:2px">提交失败 ${q.submitFailed}</div>
+                    <div style="font-size:0.72rem;color:var(--text-light);margin-top:2px">保存成功 ${q.submitSuccess} · 失败 ${q.submitFailed}</div>
                 </div>
                 <div class="summary-card">
                     <div class="num">${q.inProgressLeave}</div><div class="label">中途离开</div>
@@ -544,7 +544,7 @@
                     html += `<div class="ux-panel-row">
                         <div>
                             <div class="ux-label">${escapeHtml(p.pagePath)}</div>
-                            <div class="ux-sub">平均停留 ${Math.round(p.avgDurationSeconds)}s · 跳出 ${p.bounceCount}</div>
+                            <div class="ux-sub">会话 ${p.sessions || 0} · 截尾停留 ${Math.round(p.avgDurationSeconds)}s · 跳出 ${p.bounceCount}</div>
                         </div>
                         <div class="ux-count">${p.views}</div>
                     </div>`;
@@ -602,7 +602,7 @@
 
         try {
             const data = await api(`/api/admin/feedback?page=${page}`);
-            if (!data?.feedback?.length) {
+            if (!data || !data.feedback || !data.feedback.length) {
                 list.innerHTML = '<div class="empty">暂无反馈</div>';
                 return;
             }
@@ -614,7 +614,7 @@
                         <span class="fb-badge ${fbTypeCls[f.type] || ''}">${fbTypeLabels[f.type] || f.type}</span>
                     </div>
                     <div class="fb-body">${escapeHtml(f.content)}</div>
-                    <div class="fb-time">${f.created_at?.slice(0, 16).replace('T', ' ') || ''}</div>
+                    <div class="fb-time">${f.created_at ? f.created_at.slice(0, 16).replace('T', ' ') : ''}</div>
                 </div>
             `).join('');
 

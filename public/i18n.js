@@ -19,7 +19,9 @@ const I18n = (() => {
     const _callbacks = [];
 
     function t(key) {
-        return _dict[_lang]?.[key] ?? _dict['zh']?.[key] ?? key;
+        if (_dict[_lang] && _dict[_lang][key] != null) return _dict[_lang][key];
+        if (_dict.zh && _dict.zh[key] != null) return _dict.zh[key];
+        return key;
     }
 
     function apply() {

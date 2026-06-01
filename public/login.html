@@ -239,11 +239,17 @@ window.I18N = {
         el.className = `message show ${type}`;
     }
 
+    function trackAnalytics(eventName, opts) {
+        if (window.KangarooAnalytics && typeof window.KangarooAnalytics.track === 'function') {
+            window.KangarooAnalytics.track(eventName, opts);
+        }
+    }
+
     async function handleLogin(e) {
         e.preventDefault();
         const form = e.target;
         const data = { username: form.username.value, password: form.password.value };
-        window.KangarooAnalytics?.track('auth_login_attempt');
+        trackAnalytics('auth_login_attempt');
 
         try {
             const r = await fetch('/api/auth/login', {
@@ -262,16 +268,16 @@ window.I18N = {
             }
 
             if (r.ok) {
-                window.KangarooAnalytics?.track('auth_login_success');
+                trackAnalytics('auth_login_success');
                 localStorage.setItem('token', res.token);
                 localStorage.setItem('user', JSON.stringify(res.user));
                 window.location.href = getRedirect();
             } else {
-                window.KangarooAnalytics?.track('auth_login_failure', { group: 'friction', label: res.error });
+                trackAnalytics('auth_login_failure', { group: 'friction', label: res.error });
                 showMsg('loginMsg', res.error, 'error');
             }
         } catch (err) {
-            window.KangarooAnalytics?.track('auth_login_failure', { group: 'friction', label: err.message });
+            trackAnalytics('auth_login_failure', { group: 'friction', label: err.message });
             showMsg('loginMsg', I18n.t('err_network') + ': ' + err.message, 'error');
         }
     }
@@ -286,7 +292,7 @@ window.I18N = {
             if (!googleClientId) return;
 
             const tryInit = () => {
-                if (!window.google?.accounts?.id) {
+                if (!window.google || !window.google.accounts || !window.google.accounts.id) {
                     setTimeout(tryInit, 200);
                     return;
                 }
@@ -312,7 +318,7 @@ window.I18N = {
     }
 
     async function handleGoogleCredential(resp) {
-        window.KangarooAnalytics?.track('auth_google_attempt');
+        trackAnalytics('auth_google_attempt');
         try {
             const r = await fetch('/api/auth/google', {
                 method: 'POST',
@@ -321,11 +327,11 @@ window.I18N = {
             });
             const res = await r.json();
             if (!r.ok) {
-                window.KangarooAnalytics?.track('auth_google_failure', { group: 'friction', label: res.error });
+                trackAnalytics('auth_google_failure', { group: 'friction', label: res.error });
                 showMsg('googleMsg', res.error || I18n.t('err_server'), 'error');
                 return;
             }
-            window.KangarooAnalytics?.track('auth_google_success');
+            trackAnalytics('auth_google_success');
             localStorage.setItem('token', res.token);
             localStorage.setItem('user', JSON.stringify(res.user));
             if (res.needsUsername) {
@@ -335,7 +341,7 @@ window.I18N = {
                 window.location.href = getRedirect();
             }
         } catch (err) {
-            window.KangarooAnalytics?.track('auth_google_failure', { group: 'friction', label: err.message });
+            trackAnalytics('auth_google_failure', { group: 'friction', label: err.message });
             showMsg('googleMsg', I18n.t('err_network') + ': ' + err.message, 'error');
         }
     }
@@ -352,7 +358,7 @@ window.I18N = {
             phone: form.phone.value || undefined,
         };
 
-        window.KangarooAnalytics?.track('auth_register_attempt');
+        trackAnalytics('auth_register_attempt');
         try {
             const r = await fetch('/api/auth/register', {
                 method: 'POST',
@@ -362,15 +368,15 @@ window.I18N = {
             const res = await r.json();
 
             if (r.ok) {
-                window.KangarooAnalytics?.track('auth_register_success');
+                trackAnalytics('auth_register_success');
                 showMsg('registerMsg', res.message, 'success');
                 setTimeout(() => showTab('login'), 1500);
             } else {
-                window.KangarooAnalytics?.track('auth_register_failure', { group: 'friction', label: res.error });
+                trackAnalytics('auth_register_failure', { group: 'friction', label: res.error });
                 showMsg('registerMsg', res.error, 'error');
             }
         } catch {
-            window.KangarooAnalytics?.track('auth_register_failure', { group: 'friction' });
+            trackAnalytics('auth_register_failure', { group: 'friction' });
             showMsg('registerMsg', I18n.t('err_network'), 'error');
         }
     }

@@ -7,6 +7,7 @@
   var flushTimer = null;
   var pageEnterTime = Date.now();
   var interactions = 0;
+  var leaveTracked = false;
 
   // Session ID
   function getSessionId() {
@@ -114,6 +115,8 @@
 
   // Auto-track: page_leave with duration
   function onLeave() {
+    if (leaveTracked) return;
+    leaveTracked = true;
     var duration = Math.round((Date.now() - pageEnterTime) / 1000);
     track('page_leave', {
       value: duration,
