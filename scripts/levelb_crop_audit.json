@@ -1,0 +1,484 @@
+[
+  {
+    "year": 2013,
+    "detected": 20,
+    "issues": [
+      {
+        "q": 20,
+        "kind": "size-mismatch",
+        "page": 7,
+        "y0": 271.5,
+        "expected_size": [
+          1786,
+          1652
+        ],
+        "actual_size": [
+          1786,
+          1142
+        ],
+        "delta_h": -510
+      }
+    ]
+  },
+  {
+    "year": 2014,
+    "detected": 20,
+    "issues": [
+      {
+        "q": 20,
+        "kind": "size-mismatch",
+        "page": 11,
+        "y0": 68.1,
+        "expected_size": [
+          1786,
+          2262
+        ],
+        "actual_size": [
+          1786,
+          1544
+        ],
+        "delta_h": -718
+      }
+    ]
+  },
+  {
+    "year": 2015,
+    "detected": 9,
+    "issues": [
+      {
+        "q": 1,
+        "kind": "marker-not-found"
+      },
+      {
+        "q": 2,
+        "kind": "marker-not-found"
+      },
+      {
+        "q": 3,
+        "kind": "marker-not-found"
+      },
+      {
+        "q": 11,
+        "kind": "marker-not-found"
+      },
+      {
+        "q": 12,
+        "kind": "marker-not-found"
+      },
+      {
+        "q": 13,
+        "kind": "marker-not-found"
+      },
+      {
+        "q": 14,
+        "kind": "marker-not-found"
+      },
+      {
+        "q": 15,
+        "kind": "marker-not-found"
+      },
+      {
+        "q": 16,
+        "kind": "marker-not-found"
+      },
+      {
+        "q": 19,
+        "kind": "marker-not-found"
+      },
+      {
+        "q": 20,
+        "kind": "marker-not-found"
+      }
+    ]
+  },
+  {
+    "year": 2016,
+    "detected": 20,
+    "issues": [
+      {
+        "q": 20,
+        "kind": "size-mismatch",
+        "page": 9,
+        "y0": 68.9,
+        "expected_size": [
+          1786,
+          2260
+        ],
+        "actual_size": [
+          1786,
+          1806
+        ],
+        "delta_h": -454
+      }
+    ]
+  },
+  {
+    "year": 2017,
+    "detected": 20,
+    "issues": [
+      {
+        "q": 20,
+        "kind": "size-mismatch",
+        "page": 13,
+        "y0": 359.3,
+        "expected_size": [
+          1786,
+          1389
+        ],
+        "actual_size": [
+          1786,
+          1042
+        ],
+        "delta_h": -347
+      }
+    ]
+  },
+  {
+    "year": 2018,
+    "detected": 20,
+    "issues": [
+      {
+        "q": 1,
+        "kind": "size-mismatch",
+        "page": 1,
+        "y0": 99.7,
+        "expected_size": [
+          1786,
+          689
+        ],
+        "actual_size": [
+          1786,
+          73
+        ],
+        "delta_h": -616
+      },
+      {
+        "q": 8,
+        "kind": "size-mismatch",
+        "page": 4,
+        "y0": 68.7,
+        "expected_size": [
+          1786,
+          1151
+        ],
+        "actual_size": [
+          1786,
+          2275
+        ],
+        "delta_h": 1124
+      },
+      {
+        "q": 9,
+        "kind": "size-mismatch",
+        "page": 4,
+        "y0": 449.2,
+        "expected_size": [
+          1786,
+          1119
+        ],
+        "actual_size": [
+          1786,
+          638
+        ],
+        "delta_h": -481
+      },
+      {
+        "q": 20,
+        "kind": "size-mismatch",
+        "page": 10,
+        "y0": 455.1,
+        "expected_size": [
+          1786,
+          1101
+        ],
+        "actual_size": [
+          1786,
+          908
+        ],
+        "delta_h": -193
+      }
+    ]
+  },
+  {
+    "year": 2019,
+    "detected": 19,
+    "issues": [
+      {
+        "q": 2,
+        "kind": "size-mismatch",
+        "page": 1,
+        "y0": 469.8,
+        "expected_size": [
+          1785,
+          89
+        ],
+        "actual_size": [
+          1785,
+          440
+        ],
+        "delta_h": 351
+      },
+      {
+        "q": 8,
+        "kind": "size-mismatch",
+        "page": 1,
+        "y0": 496.2,
+        "expected_size": [
+          1785,
+          372
+        ],
+        "actual_size": [
+          1785,
+          621
+        ],
+        "delta_h": 249
+      },
+      {
+        "q": 5,
+        "kind": "size-mismatch",
+        "page": 2,
+        "y0": 273.0,
+        "expected_size": [
+          1785,
+          836
+        ],
+        "actual_size": [
+          1785,
+          930
+        ],
+        "delta_h": 94
+      },
+      {
+        "q": 6,
+        "kind": "size-mismatch",
+        "page": 2,
+        "y0": 548.2,
+        "expected_size": [
+          1785,
+          822
+        ],
+        "actual_size": [
+          1785,
+          1461
+        ],
+        "delta_h": 639
+      },
+      {
+        "q": 9,
+        "kind": "size-mismatch",
+        "page": 4,
+        "y0": 341.6,
+        "expected_size": [
+          1785,
+          1442
+        ],
+        "actual_size": [
+          1785,
+          810
+        ],
+        "delta_h": -632
+      },
+      {
+        "q": 12,
+        "kind": "size-mismatch",
+        "page": 5,
+        "y0": 334.3,
+        "expected_size": [
+          1785,
+          661
+        ],
+        "actual_size": [
+          1785,
+          705
+        ],
+        "delta_h": 44
+      },
+      {
+        "q": 13,
+        "kind": "size-mismatch",
+        "page": 5,
+        "y0": 551.3,
+        "expected_size": [
+          1785,
+          371
+        ],
+        "actual_size": [
+          1785,
+          555
+        ],
+        "delta_h": 184
+      },
+      {
+        "q": 14,
+        "kind": "size-mismatch",
+        "page": 5,
+        "y0": 671.6,
+        "expected_size": [
+          1785,
+          452
+        ],
+        "actual_size": [
+          1785,
+          306
+        ],
+        "delta_h": -146
+      },
+      {
+        "q": 17,
+        "kind": "size-mismatch",
+        "page": 7,
+        "y0": 129.2,
+        "expected_size": [
+          1785,
+          617
+        ],
+        "actual_size": [
+          1785,
+          750
+        ],
+        "delta_h": 133
+      },
+      {
+        "q": 19,
+        "kind": "size-mismatch",
+        "page": 7,
+        "y0": 605.6,
+        "expected_size": [
+          1785,
+          420
+        ],
+        "actual_size": [
+          1785,
+          741
+        ],
+        "delta_h": 321
+      },
+      {
+        "q": 20,
+        "kind": "size-mismatch",
+        "page": 7,
+        "y0": 742.3,
+        "expected_size": [
+          1785,
+          240
+        ],
+        "actual_size": [
+          1785,
+          990
+        ],
+        "delta_h": 750
+      },
+      {
+        "q": 21,
+        "kind": "size-mismatch",
+        "page": 8,
+        "y0": 281.5,
+        "expected_size": [
+          1785,
+          382
+        ],
+        "actual_size": [
+          1785,
+          675
+        ],
+        "delta_h": 293
+      },
+      {
+        "q": 22,
+        "kind": "size-mismatch",
+        "page": 8,
+        "y0": 405.4,
+        "expected_size": [
+          1785,
+          1250
+        ],
+        "actual_size": [
+          1785,
+          741
+        ],
+        "delta_h": -509
+      },
+      {
+        "q": 24,
+        "kind": "size-mismatch",
+        "page": 9,
+        "y0": 430.8,
+        "expected_size": [
+          1785,
+          1174
+        ],
+        "actual_size": [
+          1785,
+          1095
+        ],
+        "delta_h": -79
+      },
+      {
+        "q": 7,
+        "kind": "marker-not-found"
+      },
+      {
+        "q": 10,
+        "kind": "marker-not-found"
+      },
+      {
+        "q": 11,
+        "kind": "marker-not-found"
+      },
+      {
+        "q": 15,
+        "kind": "marker-not-found"
+      },
+      {
+        "q": 16,
+        "kind": "marker-not-found"
+      }
+    ]
+  },
+  {
+    "year": 2020,
+    "detected": 24,
+    "issues": []
+  },
+  {
+    "year": 2021,
+    "detected": 24,
+    "issues": []
+  },
+  {
+    "year": 2022,
+    "detected": 24,
+    "issues": []
+  },
+  {
+    "year": 2023,
+    "detected": 24,
+    "issues": []
+  },
+  {
+    "year": 2024,
+    "detected": 24,
+    "issues": [
+      {
+        "q": 24,
+        "kind": "size-mismatch",
+        "page": 9,
+        "y0": 417.0,
+        "expected_size": [
+          1786,
+          1215
+        ],
+        "actual_size": [
+          1786,
+          1155
+        ],
+        "delta_h": -60
+      }
+    ]
+  },
+  {
+    "year": 2025,
+    "detected": 24,
+    "issues": []
+  }
+]

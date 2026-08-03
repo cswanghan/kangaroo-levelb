@@ -1,0 +1,130 @@
+[
+  {
+    "pdf": "public/papers/2019 等级2：3-4年级.pdf",
+    "issues": [
+      {
+        "n": 8,
+        "page": 0,
+        "y0": 496.1780090332031,
+        "text": "8. Which picture stands for 12 ?"
+      }
+    ]
+  },
+  {
+    "pdf": "public/papers/2020 等级2：3-4年级.pdf",
+    "issues": [
+      {
+        "n": 22,
+        "page": 9,
+        "y0": 96.8525161743164,
+        "text": "# 22. Several teams came to the summer Kangaroo camp. Each t"
+      }
+    ]
+  },
+  {
+    "pdf": "public/level-c/papers/2020 等级3：5-6年级.pdf",
+    "issues": [
+      {
+        "n": 13,
+        "page": 4,
+        "y0": 94.5984878540039,
+        "text": "# 13. An elf and a troll meet. The troll always lies, while "
+      }
+    ]
+  },
+  {
+    "pdf": "public/level-d/papers/2016 等级4：7-8年级.pdf",
+    "issues": [
+      {
+        "n": 27,
+        "page": 7,
+        "y0": 451.6368103027344,
+        "text": "27. What is p + q + r + s?"
+      }
+    ]
+  },
+  {
+    "pdf": "public/level-d/papers/2017 等级4：7-8年级.pdf",
+    "issues": [
+      {
+        "n": 25,
+        "page": 7,
+        "y0": 302.9278564453125,
+        "text": "25. What is the product of the numbers she writes in the gre"
+      }
+    ]
+  },
+  {
+    "pdf": "public/level-d/papers/2021 等级4：7-8年级.pdf",
+    "issues": [
+      {
+        "n": 20,
+        "page": 6,
+        "y0": 500.9442443847656,
+        "text": "# 20. Three villages are connected by paths as shown. From D"
+      },
+      {
+        "n": 22,
+        "page": 7,
+        "y0": 223.14524841308594,
+        "text": "# 22. A triangular pyramid is built with 20 cannon balls, as"
+      }
+    ]
+  },
+  {
+    "pdf": "public/level-f/papers/2013 等级6：11-12年级.pdf",
+    "issues": [
+      {
+        "n": 12,
+        "page": 2,
+        "y0": 558.9947509765625,
+        "text": "12. By how much does its"
+      }
+    ]
+  },
+  {
+    "pdf": "public/level-f/papers/2014 等级6：11-12年级.pdf",
+    "issues": [
+      {
+        "n": 12,
+        "page": 3,
+        "y0": 106.51378631591797,
+        "text": "12. Then the radius of the big circle is"
+      }
+    ]
+  },
+  {
+    "pdf": "public/level-f/papers/2020 等级6：11-12年级.pdf",
+    "issues": [
+      {
+        "n": 3,
+        "page": 0,
+        "y0": 524.04150390625,
+        "text": "# 3. Rene marked two points a and b on the number line. Whic"
+      },
+      {
+        "n": 5,
+        "page": 1,
+        "y0": 412.0085144042969,
+        "text": "# 5. The sum of ﬁve three-digit numbers is 2664, as shown be"
+      },
+      {
+        "n": 11,
+        "page": 3,
+        "y0": 89.51749420166016,
+        "text": "# 11. A blue rectangle and a red rectangle are overlapping. "
+      }
+    ]
+  },
+  {
+    "pdf": "public/level-f/papers/2022 等级6：11-12年级.pdf",
+    "issues": [
+      {
+        "n": 25,
+        "page": 7,
+        "y0": 325.24249267578125,
+        "text": "25. What number is in the circle containing the question mar"
+      }
+    ]
+  }
+]
