@@ -4,6 +4,8 @@ pages_build_output_dir = "public"
 
 [vars]
 GOOGLE_CLIENT_ID = "232457399345-qn9vp9uuflqi285me3n2242kdfksso9n.apps.googleusercontent.com"
+# Comma-separated emails that always get admin on Google login
+ADMIN_EMAILS = "cswanghan@gmail.com"
 
 [[ d1_databases ]]
 binding = "DB"

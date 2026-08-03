@@ -6,9 +6,18 @@ interface Env {
   DB: D1Database;
   JWT_SECRET: string;
   GOOGLE_CLIENT_ID: string;
+  /** Comma-separated emails that should always have admin role after Google login */
+  ADMIN_EMAILS?: string;
 }
 
 const GOOGLE_PASSWORD_PLACEHOLDER = '!google-oauth!';
+
+function adminEmails(env: Env): Set<string> {
+  const raw = env.ADMIN_EMAILS || 'cswanghan@gmail.com';
+  return new Set(
+    raw.split(',').map((s) => s.trim().toLowerCase()).filter(Boolean)
+  );
+}
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
   const clientId = context.env.GOOGLE_CLIENT_ID;
@@ -36,6 +45,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   }
 
   const db = context.env.DB;
+  const email = String(payload.email || '').toLowerCase();
+  const isAdminEmail = email && adminEmails(context.env).has(email);
 
   let user = await db.prepare(
     'SELECT id, username, role, status, email, google_sub FROM users WHERE google_sub = ?'
@@ -63,10 +74,11 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         tempUsername = `google_${randomUsernameSuffix()}`;
       }
 
+      const role = isAdminEmail ? 'admin' : 'user';
       const insert = await db.prepare(
         `INSERT INTO users (username, password, email, google_sub, status, role)
-         VALUES (?, ?, ?, ?, 'approved', 'user')`
-      ).bind(tempUsername, GOOGLE_PASSWORD_PLACEHOLDER, payload.email, payload.sub).run();
+         VALUES (?, ?, ?, ?, 'approved', ?)`
+      ).bind(tempUsername, GOOGLE_PASSWORD_PLACEHOLDER, payload.email, payload.sub, role).run();
 
       const newId = (insert.meta as any)?.last_row_id;
       if (!newId) return json({ error: '创建用户失败' }, 500);
@@ -74,13 +86,22 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       user = {
         id: newId,
         username: tempUsername,
-        role: 'user',
+        role,
         status: 'approved',
         email: payload.email,
         google_sub: payload.sub,
       };
       needsUsername = true;
     }
+  }
+
+  // Keep configured owner emails as admin (JWT role is taken from DB at login time)
+  if (isAdminEmail && user.role !== 'admin') {
+    await db.prepare(
+      "UPDATE users SET role = 'admin', status = 'approved', updated_at = datetime('now') WHERE id = ?"
+    ).bind(user.id).run();
+    user.role = 'admin';
+    user.status = 'approved';
   }
 
   if (user.status === 'pending') return json({ error: '账号待审核，请耐心等待' }, 403);
