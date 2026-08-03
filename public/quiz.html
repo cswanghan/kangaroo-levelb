@@ -635,6 +635,54 @@
         }
         .img-fallback.show { display: block; }
         .question-image.broken { display: none; }
+
+        /* Practice mode switcher (#20) */
+        .mode-switch {
+            display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+            margin: 0 auto 20px; max-width: 640px;
+        }
+        .mode-btn {
+            padding: 8px 16px; border-radius: 999px; border: 1px solid var(--paper-shadow);
+            background: var(--paper); color: var(--ink-light); font: inherit; font-size: 0.88rem;
+            cursor: pointer; transition: all 0.15s;
+        }
+        .mode-btn:hover { border-color: var(--blush); color: var(--ink-med); }
+        .mode-btn.active { background: var(--rose); color: #fff; border-color: var(--rose); }
+        .mode-panel { display: none; max-width: 720px; margin: 0 auto 24px; }
+        .mode-panel.show { display: block; }
+        .quick-options {
+            display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center;
+        }
+        .quick-card {
+            background: var(--paper); border: 1px solid var(--paper-shadow); border-radius: 14px;
+            padding: 20px 22px; min-width: 140px; text-align: center; cursor: pointer; transition: all 0.2s;
+        }
+        .quick-card:hover { border-color: var(--blush); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.05); }
+        .quick-card .qc-n { font-family: var(--font-serif); font-size: 1.6rem; color: var(--rose); font-weight: 500; }
+        .quick-card .qc-d { color: var(--ink-light); font-size: 0.8rem; margin-top: 4px; }
+        .timer-toggle {
+            display: flex; align-items: center; gap: 8px; color: var(--ink-med); font-size: 0.88rem;
+            padding: 8px 14px; border: 1px solid var(--paper-shadow); border-radius: 999px; background: var(--paper);
+            cursor: pointer; user-select: none;
+        }
+        .timer-toggle input { accent-color: var(--rose); }
+        .kp-grid {
+            display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+        }
+        .kp-chip {
+            padding: 10px 14px; border-radius: 12px; border: 1px solid var(--paper-shadow);
+            background: var(--paper); cursor: pointer; font-size: 0.85rem; color: var(--ink-med);
+            transition: all 0.15s; text-align: left; min-width: 120px;
+        }
+        .kp-chip:hover { border-color: var(--blush); color: var(--ink); }
+        .kp-chip .kp-count { display: block; color: var(--ink-light); font-size: 0.75rem; margin-top: 2px; }
+        .mode-hint {
+            text-align: center; color: var(--ink-light); font-size: 0.82rem; margin-bottom: 14px; line-height: 1.5;
+        }
+        .mode-b-only {
+            text-align: center; color: var(--ink-med); font-size: 0.9rem; padding: 24px; background: var(--paper);
+            border: 1px dashed var(--paper-shadow); border-radius: 12px;
+        }
     </style>
 </head>
 <script>
@@ -721,6 +769,22 @@ window.I18N = {
         level_cap_b: 'Level B：2013–2025 在线含解析',
         level_cap_c: 'Level C：2013–2025 在线可判分（解析完善中）',
         level_cap_other: '本等级在线年份有限（约 2013–2019），完整卷请用 PDF',
+        mode_full: '整卷练习',
+        mode_quick: '快速练',
+        mode_kp: '按知识点',
+        mode_quick_hint: '从 Level B 历年真题中随机抽题，适合每天 10 分钟。',
+        mode_kp_hint: '按粗分类知识点练习（基于题库标签聚合）。',
+        mode_b_only: '快速练 / 知识点练目前仅支持 Level B，请先切换到 Level B。',
+        quick_10: '10 题',
+        quick_15: '15 题',
+        quick_10_desc: '约 10–15 分钟',
+        quick_15_desc: '约 15–20 分钟',
+        timed_on: '计时',
+        kp_loading: '加载知识点中…',
+        kp_empty: '暂无该分类题目',
+        quick_title: '快速练 {n} 题',
+        kp_title: '知识点 · {name}',
+        practice_from: '{year} 年第 {n} 题',
         exit_confirm: '确定退出？',
         exit_msg: '做题进度已自动保存，下次可继续。',
         exit_msg_alt: '做题进度已自动保存，可稍后继续。',
@@ -852,6 +916,22 @@ window.I18N = {
         level_cap_b: 'Level B: 2013–2025 online with solutions',
         level_cap_c: 'Level C: 2013–2025 online grading (solutions in progress)',
         level_cap_other: 'Limited online years (~2013–2019). Use PDF for full coverage.',
+        mode_full: 'Full paper',
+        mode_quick: 'Quick practice',
+        mode_kp: 'By topic',
+        mode_quick_hint: 'Random questions from Level B past papers — great for 10 minutes a day.',
+        mode_kp_hint: 'Practice by coarse knowledge topics (aggregated from tags).',
+        mode_b_only: 'Quick / topic practice is Level B only. Switch to Level B first.',
+        quick_10: '10 Qs',
+        quick_15: '15 Qs',
+        quick_10_desc: '~10–15 min',
+        quick_15_desc: '~15–20 min',
+        timed_on: 'Timer',
+        kp_loading: 'Loading topics…',
+        kp_empty: 'No questions in this topic',
+        quick_title: 'Quick · {n} Qs',
+        kp_title: 'Topic · {name}',
+        practice_from: '{year} Q{n}',
         exit_confirm: 'Leave quiz?',
         exit_msg: 'Progress saved. You can continue later.',
         exit_msg_alt: 'Progress saved. You can continue later.',
@@ -930,7 +1010,42 @@ window.I18N = {
     </div>
     <div class="level-note" id="levelNote">Level B：2013–2025 在线含解析</div>
     <div class="pending-banner" id="pendingBanner"></div>
-    <div class="year-grid" id="yearGrid"><div class="loading" data-i18n="loading">加载中...</div></div>
+
+    <!-- Practice mode switcher (#20) -->
+    <div class="mode-switch" id="modeSwitch">
+        <button type="button" class="mode-btn active" data-mode="full" onclick="setPracticeMode('full')" data-i18n="mode_full">整卷练习</button>
+        <button type="button" class="mode-btn" data-mode="quick" onclick="setPracticeMode('quick')" data-i18n="mode_quick">快速练</button>
+        <button type="button" class="mode-btn" data-mode="knowledge" onclick="setPracticeMode('knowledge')" data-i18n="mode_kp">按知识点</button>
+    </div>
+
+    <div class="mode-panel show" id="panelFull">
+        <div class="year-grid" id="yearGrid"><div class="loading" data-i18n="loading">加载中...</div></div>
+    </div>
+
+    <div class="mode-panel" id="panelQuick">
+        <div class="mode-hint" id="quickHint" data-i18n="mode_quick_hint">从 Level B 历年真题中随机抽题，适合每天 10 分钟。</div>
+        <div class="mode-b-only" id="quickBOnly" style="display:none;" data-i18n="mode_b_only">快速练 / 知识点练目前仅支持 Level B。</div>
+        <div class="quick-options" id="quickOptions">
+            <label class="timer-toggle"><input type="checkbox" id="timerToggle" checked> <span data-i18n="timed_on">计时</span></label>
+            <div class="quick-card" onclick="startQuickPractice(10)">
+                <div class="qc-n" data-i18n="quick_10">10 题</div>
+                <div class="qc-d" data-i18n="quick_10_desc">约 10–15 分钟</div>
+            </div>
+            <div class="quick-card" onclick="startQuickPractice(15)">
+                <div class="qc-n" data-i18n="quick_15">15 题</div>
+                <div class="qc-d" data-i18n="quick_15_desc">约 15–20 分钟</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mode-panel" id="panelKnowledge">
+        <div class="mode-hint" id="kpHint" data-i18n="mode_kp_hint">按粗分类知识点练习（基于题库标签聚合）。</div>
+        <div class="mode-b-only" id="kpBOnly" style="display:none;" data-i18n="mode_b_only">快速练 / 知识点练目前仅支持 Level B。</div>
+        <div class="quick-options" style="margin-bottom:14px;" id="kpTimerRow">
+            <label class="timer-toggle"><input type="checkbox" id="timerToggleKp" checked> <span data-i18n="timed_on">计时</span></label>
+        </div>
+        <div class="kp-grid" id="kpGrid"><div class="loading" data-i18n="kp_loading">加载知识点中…</div></div>
+    </div>
 
     <!-- History panel (hidden by default) -->
     <div id="historyPanel" style="display:none; margin-top:24px;">
@@ -1125,6 +1240,13 @@ window.I18N = {
     let currentLevel = new URLSearchParams(location.search).get('level') || 'b';
     let currentYear = null, questions = [], currentIndex = 0, userAnswers = {};
     let quizStartTime = null, quizSubmitted = false, timerInterval = null;
+    // #20 practice modes: full | quick | knowledge
+    let practiceMode = new URLSearchParams(location.search).get('mode') || 'full';
+    if (!['full', 'quick', 'knowledge'].includes(practiceMode)) practiceMode = 'full';
+    let timerEnabled = true;
+    let practiceLabel = ''; // display title for non-full modes
+    let levelBPool = null; // cached [{...q, sourceYear, sourceNumber, category}]
+    let levelBPoolPromise = null;
 
     function trackAnalytics(eventName, opts) {
         if (window.KangarooAnalytics && typeof window.KangarooAnalytics.track === 'function') {
@@ -1133,6 +1255,188 @@ window.I18N = {
     }
 
     const dataBase = () => currentLevel === 'b' ? 'data' : `level-${currentLevel}/data`;
+
+    function questionYear(q) {
+        return (q && (q.sourceYear || q._year)) || currentYear;
+    }
+
+    function questionImgPath(q) {
+        const y = questionYear(q);
+        const pre = imgBase() ? `${imgBase()}/${y}` : `${y}`;
+        return `${pre}/${q.image}`;
+    }
+
+    /** Coarse knowledge categories for Level B (#20) */
+    function coarseCategory(kp) {
+        const s = String(kp || '');
+        if (/空间|立体|视图|骰子|立方|投影|三维|搭建/.test(s)) return '空间想象';
+        if (/几何|图形|面积|对称|旋转|拼接|拼图|三角形|圆|角|周长|分割|形状/.test(s)) return '几何图形';
+        if (/运算|加减|乘|除|数|因子|倍数|方程|数字|整除|分数|百分比|日期|进制/.test(s)) return '数与运算';
+        if (/逻辑|推理|条件|排序|比较|传递|判断/.test(s)) return '逻辑推理';
+        if (/计数|组合|排列|容斥|配对|多少/.test(s)) return '计数组合';
+        if (/时间|钟|日历|路程|速率|速度|分钟/.test(s)) return '时间计量';
+        if (/路径|图论|迷宫|最长路|欧拉/.test(s)) return '路径与图';
+        if (/模式|周期|序列|规律/.test(s)) return '规律模式';
+        return '综合其他';
+    }
+
+    async function ensureLevelBPool() {
+        if (levelBPool) return levelBPool;
+        if (levelBPoolPromise) return levelBPoolPromise;
+        levelBPoolPromise = (async () => {
+            const idx = await fetch('data/index.json').then(r => r.json());
+            const years = (idx.years || []).map(y => y.year || y);
+            const pool = [];
+            await Promise.all(years.map(async (year) => {
+                try {
+                    const d = await fetch(`data/${year}.json`).then(r => r.json());
+                    (d.questions || []).forEach(q => {
+                        pool.push({
+                            ...q,
+                            sourceYear: year,
+                            sourceNumber: q.number,
+                            category: coarseCategory(q.knowledge_point),
+                        });
+                    });
+                } catch {}
+            }));
+            levelBPool = pool;
+            return pool;
+        })();
+        try {
+            return await levelBPoolPromise;
+        } finally {
+            // keep cache; allow retry only if empty
+            if (!levelBPool || !levelBPool.length) levelBPoolPromise = null;
+        }
+    }
+
+    function shufflePick(arr, n) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a.slice(0, Math.min(n, a.length));
+    }
+
+    function renumberPracticeSet(picked) {
+        return picked.map((q, i) => ({
+            ...q,
+            number: i + 1,
+            sourceYear: q.sourceYear,
+            sourceNumber: q.sourceNumber != null ? q.sourceNumber : q.number,
+            category: q.category || coarseCategory(q.knowledge_point),
+        }));
+    }
+
+    function setPracticeMode(mode) {
+        practiceMode = mode;
+        document.querySelectorAll('.mode-btn').forEach(b =>
+            b.classList.toggle('active', b.dataset.mode === mode));
+        document.getElementById('panelFull').classList.toggle('show', mode === 'full');
+        document.getElementById('panelQuick').classList.toggle('show', mode === 'quick');
+        document.getElementById('panelKnowledge').classList.toggle('show', mode === 'knowledge');
+        const isB = currentLevel === 'b';
+        document.getElementById('quickBOnly').style.display = (!isB && mode === 'quick') ? 'block' : 'none';
+        document.getElementById('quickOptions').style.display = (isB && mode === 'quick') ? 'flex' : 'none';
+        document.getElementById('quickHint').style.display = (isB && mode === 'quick') ? 'block' : 'none';
+        document.getElementById('kpBOnly').style.display = (!isB && mode === 'knowledge') ? 'block' : 'none';
+        document.getElementById('kpGrid').style.display = (isB && mode === 'knowledge') ? 'flex' : 'none';
+        document.getElementById('kpHint').style.display = (isB && mode === 'knowledge') ? 'block' : 'none';
+        document.getElementById('kpTimerRow').style.display = (isB && mode === 'knowledge') ? 'flex' : 'none';
+        if (mode === 'knowledge' && isB) renderKnowledgeGrid();
+        // URL hint without full reload
+        const sp = new URLSearchParams(location.search);
+        if (mode === 'full') sp.delete('mode'); else sp.set('mode', mode);
+        if (currentLevel !== 'b') sp.set('level', currentLevel); else if (mode === 'full') sp.delete('level');
+        const q = sp.toString();
+        history.replaceState(null, '', q ? `quiz.html?${q}` : 'quiz.html');
+        trackAnalytics('practice_mode_switch', { meta: { mode, level: currentLevel } });
+    }
+
+    async function renderKnowledgeGrid() {
+        const grid = document.getElementById('kpGrid');
+        grid.innerHTML = `<div class="loading">${I18n.t('kp_loading')}</div>`;
+        const pool = await ensureLevelBPool();
+        const counts = {};
+        pool.forEach(q => { counts[q.category] = (counts[q.category] || 0) + 1; });
+        const order = ['空间想象','几何图形','数与运算','逻辑推理','计数组合','时间计量','路径与图','规律模式','综合其他'];
+        const cats = order.filter(c => counts[c]).concat(Object.keys(counts).filter(c => !order.includes(c)));
+        grid.innerHTML = cats.map(cat => `
+            <button type="button" class="kp-chip" onclick="startKnowledgePractice('${cat.replace(/'/g, "\\'")}')">
+                <strong>${cat}</strong>
+                <span class="kp-count">${I18n.t('q_count').replace('{n}', counts[cat])}</span>
+            </button>
+        `).join('') || `<div class="loading">${I18n.t('kp_empty')}</div>`;
+    }
+
+    async function startQuickPractice(count) {
+        if (currentLevel !== 'b') { setPracticeMode('quick'); return; }
+        timerEnabled = document.getElementById('timerToggle').checked;
+        const pool = await ensureLevelBPool();
+        if (!pool.length) { alert(I18n.t('load_failed')); return; }
+        const picked = renumberPracticeSet(shufflePick(pool, count));
+        beginPracticeSession({
+            mode: 'quick',
+            year: 0,
+            questions: picked,
+            label: I18n.t('quick_title').replace('{n}', picked.length),
+            timed: timerEnabled,
+        });
+    }
+
+    async function startKnowledgePractice(category) {
+        if (currentLevel !== 'b') { setPracticeMode('knowledge'); return; }
+        timerEnabled = document.getElementById('timerToggleKp').checked;
+        const pool = await ensureLevelBPool();
+        const filtered = pool.filter(q => q.category === category);
+        if (!filtered.length) { alert(I18n.t('kp_empty')); return; }
+        const count = Math.min(10, filtered.length);
+        const picked = renumberPracticeSet(shufflePick(filtered, count));
+        beginPracticeSession({
+            mode: 'knowledge',
+            year: 0,
+            questions: picked,
+            label: I18n.t('kp_title').replace('{name}', category),
+            timed: timerEnabled,
+            category,
+        });
+    }
+
+    function beginPracticeSession({ mode, year, questions: qs, label, timed, category }) {
+        practiceMode = mode;
+        practiceLabel = label || '';
+        timerEnabled = timed !== false;
+        currentYear = year;
+        questions = qs;
+        currentIndex = 0;
+        userAnswers = {};
+        halfwayTracked = false;
+        quizStartTime = Date.now();
+        quizSubmitted = false;
+        clearProgress();
+        trackAnalytics('quiz_start', {
+            meta: {
+                level: currentLevel, year: currentYear, total: questions.length,
+                mode: practiceMode, timed: timerEnabled, category: category || null,
+            }
+        });
+        if (timerEnabled) startTimer(); else stopTimer();
+        enableBackGuard();
+        document.getElementById('homePage').style.display = 'none';
+        document.getElementById('quizPage').style.display = 'flex';
+        document.getElementById('resultsPage').style.display = 'none';
+        document.getElementById('quizTitle').textContent = practiceLabel || `${currentYear} · Level ${currentLevel.toUpperCase()}`;
+        const timerBlock = document.querySelector('.timer-block');
+        if (timerBlock) timerBlock.style.opacity = timerEnabled ? '1' : '0.45';
+        if (!timerEnabled) {
+            document.getElementById('timerDisplay').textContent = '--:--';
+        }
+        preloadImages(0);
+        renderQuestion();
+        saveProgress();
+    }
 
     // Cache for loaded question data (with explanations)
     const questionDataCache = {};
@@ -1169,13 +1473,14 @@ window.I18N = {
 
     function switchLevel(lv) {
         currentLevel = lv;
-        history.replaceState(null, '', lv === 'b' ? 'quiz.html' : `quiz.html?level=${lv}`);
         document.querySelectorAll('.lv-tab').forEach(t =>
             t.classList.toggle('active', t.dataset.level === lv));
         document.getElementById('pdfLink').href = lv === 'b' ? 'papers.html' : `papers.html?level=${lv}`;
         hidePanel();
         updateLevelNote();
         loadYears();
+        // Refresh practice mode panels (B-only gates)
+        setPracticeMode(practiceMode === 'full' || lv === 'b' ? practiceMode : 'full');
     }
 
     function renderYearGrid(years) {
@@ -1229,20 +1534,21 @@ window.I18N = {
     function confirmStart() {
         document.getElementById('startModal').classList.remove('open');
         if (!pendingYear || !pendingData) return;
-        currentYear = pendingYear; questions = pendingData.questions;
-        currentIndex = 0; userAnswers = {}; halfwayTracked = false;
-        quizStartTime = Date.now(); quizSubmitted = false;
-        trackAnalytics('quiz_start', { meta: { level: currentLevel, year: currentYear, total: questions.length } });
-        clearProgress();
-        startTimer();
-        enableBackGuard();
-        document.getElementById('homePage').style.display = 'none';
-        document.getElementById('quizPage').style.display = 'flex';
-        document.getElementById('resultsPage').style.display = 'none';
-        document.getElementById('quizTitle').textContent = `${currentYear} · Level ${currentLevel.toUpperCase()}`;
-        preloadImages(0);
-        renderQuestion();
-        saveProgress();
+        const year = pendingYear;
+        const qs = (pendingData.questions || []).map(q => ({
+            ...q,
+            sourceYear: year,
+            sourceNumber: q.number,
+            category: coarseCategory(q.knowledge_point),
+        }));
+        timerEnabled = true;
+        beginPracticeSession({
+            mode: 'full',
+            year,
+            questions: qs,
+            label: `${year} · Level ${currentLevel.toUpperCase()}`,
+            timed: true,
+        });
         pendingYear = null; pendingData = null;
     }
 
@@ -1250,8 +1556,7 @@ window.I18N = {
     function preloadImages(fromIndex) {
         for (let i = fromIndex; i < Math.min(fromIndex + 3, questions.length); i++) {
             const img = new Image();
-            const pre = imgBase() ? `${imgBase()}/${currentYear}` : `${currentYear}`;
-            img.src = `${pre}/${questions[i].image}`;
+            img.src = questionImgPath(questions[i]);
         }
     }
 
@@ -1329,7 +1634,12 @@ window.I18N = {
         document.getElementById('questionBadge').textContent = I18n.t('q_badge').replace('{n}', q.number);
         document.getElementById('questionPoints').textContent = I18n.t('q_points').replace('{n}', q.points);
         document.getElementById('qNumber').textContent = `Question ${q.number}`;
-        document.getElementById('qSub').textContent = `${currentYear} · Level ${currentLevel.toUpperCase()} · ${q.points} points`;
+        const srcY = questionYear(q);
+        const srcN = q.sourceNumber != null ? q.sourceNumber : q.number;
+        const fromHint = (practiceMode !== 'full')
+            ? I18n.t('practice_from').replace('{year}', srcY).replace('{n}', srcN) + ' · '
+            : `${srcY} · `;
+        document.getElementById('qSub').textContent = `${fromHint}Level ${currentLevel.toUpperCase()} · ${q.points} points`;
 
         // Issue #5 / #16: image loading state + fallback
         const imgEl = document.getElementById('questionImage');
@@ -1337,8 +1647,7 @@ window.I18N = {
         imgEl.classList.add('loading');
         imgEl.classList.remove('broken');
         if (fallback) fallback.classList.remove('show');
-        const pre = imgBase() ? `${imgBase()}/${currentYear}` : `${currentYear}`;
-        const imgSrc = `${pre}/${q.image}`;
+        const imgSrc = questionImgPath(q);
         imgEl.onload = () => {
             imgEl.classList.remove('loading', 'broken');
             if (fallback) fallback.classList.remove('show');
@@ -1356,7 +1665,7 @@ window.I18N = {
             }
             trackAnalytics('question_image_error', {
                 group: 'friction',
-                meta: { level: currentLevel, year: currentYear, question: q.number, src: imgSrc }
+                meta: { level: currentLevel, year: srcY, question: q.number, src: imgSrc }
             });
         };
         imgEl.src = imgSrc;
@@ -1646,11 +1955,10 @@ window.I18N = {
         const imgEl = document.getElementById('questionImage');
         if (!imgEl || !questions[currentIndex]) return;
         const q = questions[currentIndex];
-        const pre = imgBase() ? `${imgBase()}/${currentYear}` : `${currentYear}`;
         imgEl.classList.remove('broken');
         imgEl.classList.add('loading');
         document.getElementById('imgFallback')?.classList.remove('show');
-        imgEl.src = `${pre}/${q.image}?t=${Date.now()}`;
+        imgEl.src = questionImgPath(q) + `?t=${Date.now()}`;
     }
 
     function updateLevelNote() {
@@ -1777,7 +2085,19 @@ window.I18N = {
         } catch {}
     }
 
-    function restartQuiz() { startQuiz(currentYear); }
+    function restartQuiz() {
+        if (practiceMode === 'quick') {
+            startQuickPractice(questions.length || 10);
+            return;
+        }
+        if (practiceMode === 'knowledge') {
+            const cat = (questions[0] && questions[0].category) || null;
+            if (cat) startKnowledgePractice(cat);
+            else setPracticeMode('knowledge');
+            return;
+        }
+        startQuiz(currentYear);
+    }
     function goHome() {
         // 做题中（未提交）弹窗确认
         if (!quizSubmitted && quizStartTime && document.getElementById('quizPage').style.display === 'flex') {
@@ -1800,12 +2120,16 @@ window.I18N = {
     // Timer
     function startTimer() {
         stopTimer();
+        if (!timerEnabled) {
+            document.getElementById('timerDisplay').textContent = '--:--';
+            return;
+        }
         updateTimerDisplay();
         timerInterval = setInterval(updateTimerDisplay, 1000);
     }
     function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
     function updateTimerDisplay() {
-        if (!quizStartTime) return;
+        if (!quizStartTime || !timerEnabled) return;
         const s = Math.round((Date.now() - quizStartTime) / 1000);
         const m = Math.floor(s / 60), sec = s % 60;
         document.getElementById('timerDisplay').textContent =
@@ -1817,14 +2141,30 @@ window.I18N = {
         document.getElementById('historyPanel').style.display = 'none';
         document.getElementById('wrongPanel').style.display = 'none';
         document.getElementById('yearGrid').style.display = '';
+        const modeSwitch = document.getElementById('modeSwitch');
+        if (modeSwitch) modeSwitch.style.display = '';
+        // Restore practice mode panels visibility
+        setPracticeMode(practiceMode);
         // Remove active state from nav links
         document.querySelectorAll('.nav-row .nav-link').forEach(l => l.classList.remove('active'));
     }
 
+    function hideSelectorChrome() {
+        document.getElementById('yearGrid').style.display = 'none';
+        const modeSwitch = document.getElementById('modeSwitch');
+        if (modeSwitch) modeSwitch.style.display = 'none';
+        ['panelFull', 'panelQuick', 'panelKnowledge'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('show');
+        });
+    }
+
     // Issue #2: History - fixed
     async function showHistory() {
-        hidePanel();
-        document.getElementById('yearGrid').style.display = 'none';
+        document.getElementById('historyPanel').style.display = 'none';
+        document.getElementById('wrongPanel').style.display = 'none';
+        document.querySelectorAll('.nav-row .nav-link').forEach(l => l.classList.remove('active'));
+        hideSelectorChrome();
         document.getElementById('historyPanel').style.display = 'block';
         document.getElementById('historyLink').classList.add('active');
         document.getElementById('historyList').innerHTML = `<div class="loading">${I18n.t('loading')}</div>`;
@@ -1899,8 +2239,10 @@ window.I18N = {
     }
 
     async function showWrongBook() {
-        hidePanel();
-        document.getElementById('yearGrid').style.display = 'none';
+        document.getElementById('historyPanel').style.display = 'none';
+        document.getElementById('wrongPanel').style.display = 'none';
+        document.querySelectorAll('.nav-row .nav-link').forEach(l => l.classList.remove('active'));
+        hideSelectorChrome();
         document.getElementById('wrongPanel').style.display = 'block';
         document.getElementById('wrongLink').classList.add('active');
         document.getElementById('wrongList').innerHTML = `<div class="loading">${I18n.t('loading')}</div>`;
@@ -2091,6 +2433,11 @@ window.I18N = {
             userAnswers,
             startTime: quizStartTime,
             savedAt: Date.now(),
+            practiceMode,
+            practiceLabel,
+            timerEnabled,
+            // Persist mixed practice sets (quick / knowledge)
+            questions: (practiceMode !== 'full') ? questions : undefined,
         };
         localStorage.setItem(PROGRESS_KEY, JSON.stringify(data));
     }
@@ -2116,12 +2463,22 @@ window.I18N = {
     async function restoreProgress(prog) {
         try {
             currentLevel = prog.level;
+            practiceMode = prog.practiceMode || 'full';
+            practiceLabel = prog.practiceLabel || '';
+            timerEnabled = prog.timerEnabled !== false;
             document.querySelectorAll('.lv-tab').forEach(t =>
                 t.classList.toggle('active', t.dataset.level === currentLevel));
-            const r = await fetch(`${dataBase()}/${prog.year}.json`);
-            const d = await r.json();
-            currentYear = prog.year;
-            questions = Array.isArray(d.questions) ? d.questions : [];
+            if (practiceMode !== 'full' && Array.isArray(prog.questions) && prog.questions.length) {
+                questions = prog.questions;
+                currentYear = prog.year != null ? prog.year : 0;
+            } else {
+                const r = await fetch(`${dataBase()}/${prog.year}.json`);
+                const d = await r.json();
+                currentYear = prog.year;
+                questions = (Array.isArray(d.questions) ? d.questions : []).map(q => ({
+                    ...q, sourceYear: prog.year, sourceNumber: q.number,
+                }));
+            }
             if (questions.length === 0) { clearProgress(); return; }
             // Clamp restored index into range — paper data may have changed since save
             currentIndex = Math.min(Math.max(0, prog.currentIndex | 0), questions.length - 1);
@@ -2132,7 +2489,10 @@ window.I18N = {
             document.getElementById('homePage').style.display = 'none';
             document.getElementById('quizPage').style.display = 'flex';
             document.getElementById('resultsPage').style.display = 'none';
-            document.getElementById('quizTitle').textContent = `${currentYear} · Level ${currentLevel.toUpperCase()}`;
+            document.getElementById('quizTitle').textContent =
+                practiceLabel || `${currentYear} · Level ${currentLevel.toUpperCase()}`;
+            const timerBlock = document.querySelector('.timer-block');
+            if (timerBlock) timerBlock.style.opacity = timerEnabled ? '1' : '0.45';
             renderQuestion();
         } catch {
             clearProgress();
@@ -2186,6 +2546,8 @@ window.I18N = {
         await init();
         updateLevelNote();
         showPendingBannerIfNeeded();
+        // Apply mode from URL (?mode=quick|knowledge)
+        setPracticeMode(practiceMode);
         await submitPendingResult();
         showPendingBannerIfNeeded();
         // Deep-link back from login after saving score
@@ -2195,7 +2557,8 @@ window.I18N = {
         }
         const prog = getSavedProgress();
         if (prog) {
-            showConfirmModal('📋', I18n.t('found_progress'), I18n.t('progress_info').replace('{year}', prog.year).replace('{lv}', prog.level.toUpperCase()).replace('{n}', Object.keys(prog.userAnswers || {}).length), () => {
+            const yrLabel = prog.practiceLabel || prog.year || '';
+            showConfirmModal('📋', I18n.t('found_progress'), I18n.t('progress_info').replace('{year}', yrLabel).replace('{lv}', prog.level.toUpperCase()).replace('{n}', Object.keys(prog.userAnswers || {}).length), () => {
                 restoreProgress(prog);
             });
             // If user cancels, clear progress
@@ -2217,11 +2580,18 @@ window.I18N = {
             const lv = t.dataset.level;
             t.textContent = I18n.t('grade_' + lv + '_tab');
         });
+        document.querySelectorAll('.mode-btn').forEach(b => {
+            const m = b.dataset.mode;
+            if (m === 'full') b.textContent = I18n.t('mode_full');
+            else if (m === 'quick') b.textContent = I18n.t('mode_quick');
+            else if (m === 'knowledge') b.textContent = I18n.t('mode_kp');
+        });
         updateLevelNote();
         showPendingBannerIfNeeded();
         // Re-render current page state
         if (document.getElementById('homePage').style.display !== 'none') {
             init(); // re-render year grid
+            setPracticeMode(practiceMode);
         }
         // Re-render quiz page dynamic text if visible
         if (document.getElementById('quizPage').style.display === 'flex') {

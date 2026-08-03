@@ -95,7 +95,7 @@
 
         /* Entry cards */
         .entry-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
+            display: grid; grid-template-columns: repeat(2, 1fr);
             gap: 28px; max-width: 800px; margin: 0 auto;
         }
 
@@ -279,6 +279,9 @@
             .modal { padding: 28px 20px; }
             .bottom-actions { gap: 12px; }
         }
+        @media (min-width: 601px) and (max-width: 900px) {
+            .entry-grid { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
 <body>
@@ -325,6 +328,13 @@
                 <div class="entry-title" data-i18n="entry_quiz">在线练习</div>
                 <div class="entry-desc" data-i18n-html="entry_quiz_desc">逐题作答 · 提交判分<br>按年份选择套卷</div>
                 <div class="entry-action">Start →</div>
+            </a>
+
+            <a id="quickEntry" href="quiz.html?mode=quick" class="entry-card" onclick="if(window.KangarooAnalytics){window.KangarooAnalytics.track('home_entry_click',{meta:{target:'quick'}})}">
+                <div class="entry-icon">⚡</div>
+                <div class="entry-title" data-i18n="entry_quick">快速练</div>
+                <div class="entry-desc" data-i18n-html="entry_quick_desc">随机 10/15 题 · 可关计时<br>按知识点专项练</div>
+                <div class="entry-action">Practice →</div>
             </a>
 
             <a href="analysis.html" class="entry-card">
@@ -497,6 +507,8 @@
             entry_papers_desc: 'PDF 原卷查看与下载<br>含题目与详细解析',
             entry_quiz: '在线练习',
             entry_quiz_desc: '逐题作答 · 提交判分<br>按年份选择套卷',
+            entry_quick: '快速练',
+            entry_quick_desc: '随机 10/15 题 · 可关计时<br>按知识点专项练',
             entry_analysis: '学习诊断',
             entry_analysis_desc: '难度分析 · 趋势图表<br>个性化学习建议',
             btn_feedback: '意见反馈',
@@ -550,6 +562,8 @@
             entry_papers_desc: 'View & download original PDFs<br>with questions and detailed solutions',
             entry_quiz: 'Online Practice',
             entry_quiz_desc: 'Answer questions one by one<br>Auto-graded by year',
+            entry_quick: 'Quick Practice',
+            entry_quick_desc: 'Random 10/15 Qs · optional timer<br>Practice by knowledge topic',
             entry_analysis: 'Learning Analytics',
             entry_analysis_desc: 'Difficulty analysis · Trend charts<br>Personalized study tips',
             btn_feedback: 'Feedback',
