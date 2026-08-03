@@ -227,7 +227,21 @@
 
 <script>
     let token = localStorage.getItem('token');
-    let user = JSON.parse(localStorage.getItem('user') || 'null');
+    let user = null;
+    try {
+        user = JSON.parse(localStorage.getItem('user') || 'null');
+    } catch {
+        localStorage.removeItem('user');
+        user = null;
+    }
+
+    function goLogin(force) {
+        const q = new URLSearchParams();
+        if (force) q.set('force', '1');
+        // Always use rooted path so login allowlist accepts /admin
+        q.set('redirect', location.pathname + location.search || '/admin');
+        window.location.href = '/login.html?' + q.toString();
+    }
 
     async function api(path, opts = {}) {
         try {
@@ -238,6 +252,11 @@
             if (r.status === 401) {
                 const err = new Error('登录已过期，请重新登录');
                 err.status = 401;
+                throw err;
+            }
+            if (r.status === 403) {
+                const err = new Error('无管理员权限');
+                err.status = 403;
                 throw err;
             }
 
@@ -256,48 +275,57 @@
             }
             return data;
         } catch (err) {
-            if (err.message.startsWith('服务端')) throw err;
+            if (err.status || (err.message && err.message.startsWith('服务端'))) throw err;
             throw new Error('网络错误: ' + err.message);
         }
     }
 
     async function initAdminPage() {
         if (!token) {
-            window.location.href = 'login.html?redirect=' + encodeURIComponent(location.pathname + location.search);
+            goLogin(false);
             return;
         }
 
-        document.getElementById('welcomeText').textContent = `${(user && user.username) || ''} · ${user && user.role === 'admin' ? '管理员' : '用户'}`;
+        const welcome = document.getElementById('welcomeText');
+        if (welcome) {
+            welcome.textContent = `${(user && user.username) || '…'} · 校验中`;
+        }
 
+        // Optimistic show if local role says admin (avoids blank flash)
         if (user && user.role === 'admin') {
             document.getElementById('adminSection').style.display = 'block';
-            await Promise.allSettled([loadUsers('pending'), loadInvites()]);
         }
 
         try {
             const data = await api('/api/auth/me');
             user = (data && data.user) || user || {};
             localStorage.setItem('user', JSON.stringify(user));
-            document.getElementById('welcomeText').textContent = `${user.username || ''} · ${user.role === 'admin' ? '管理员' : '用户'}`;
-
-            if (user.role !== 'admin') {
-                throw new Error('当前账号不是管理员');
+            if (welcome) {
+                welcome.textContent = `${user.username || ''} · ${user.role === 'admin' ? '管理员' : '用户'}`;
             }
 
-            document.getElementById('adminSection').style.display = 'block';
-        } catch (e) {
-            if (e.status === 401 || /重新登录|未登录|过期/.test(e.message)) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = 'login.html?force=1&redirect=' + encodeURIComponent(location.pathname + location.search);
+            if (user.role !== 'admin') {
+                document.getElementById('adminSection').style.display = 'none';
+                showError('userList', '当前账号不是管理员。请使用 admin 账号登录，或先退出后重新登录。');
+                document.getElementById('codeList').innerHTML =
+                    `<div class="error-msg">无权限。可 <a href="/login.html?force=1&redirect=${encodeURIComponent('/admin')}">切换账号</a></div>`;
                 return;
             }
 
-            if (!user || !user.role || user.role !== 'admin') {
-                document.getElementById('welcomeText').textContent = '管理员';
-                showError('userList', e.message);
-                document.getElementById('codeList').innerHTML = `<div class="error-msg">${escapeHtml(e.message)}</div>`;
+            document.getElementById('adminSection').style.display = 'block';
+            await Promise.allSettled([loadUsers('pending'), loadInvites()]);
+        } catch (e) {
+            if (e.status === 401 || /重新登录|未登录|过期|账号不可用/.test(e.message || '')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                goLogin(true);
+                return;
             }
+
+            if (welcome) welcome.textContent = (user && user.username) || '管理员';
+            document.getElementById('adminSection').style.display = 'block';
+            showError('userList', e.message || '加载失败');
+            document.getElementById('codeList').innerHTML = `<div class="error-msg">${escapeHtml(e.message || '加载失败')}</div>`;
         }
     }
 
@@ -639,8 +667,9 @@
     }
 
     function logout() {
-        localStorage.clear();
-        window.location.href = 'login.html';
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login.html?force=1';
     }
 
     initAdminPage();

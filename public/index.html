@@ -410,10 +410,10 @@
             const user = JSON.parse(localStorage.getItem('user') || 'null');
             const area = document.getElementById('authArea');
             if (user) {
-                const adminLink = user.role === 'admin' ? ` <a href="admin.html">${authLabel('auth_admin', '管理后台')}</a>` : '';
+                const adminLink = user.role === 'admin' ? ` <a href="/admin">${authLabel('auth_admin', '管理后台')}</a>` : '';
                 area.innerHTML = `<span style="color:var(--text-light);font-size:0.85rem;">${user.username}</span> ` +
-                    `<a href="admin.html">${authLabel('auth_center', '个人中心')}</a>` + adminLink +
-                    ` <a href="javascript:void(0)" onclick="localStorage.clear();location.reload()">${authLabel('auth_logout', '退出')}</a>`;
+                    `<a href="/admin">${authLabel('auth_center', '个人中心')}</a>` + adminLink +
+                    ` <a href="javascript:void(0)" onclick="localStorage.removeItem('token');localStorage.removeItem('user');location.reload()">${authLabel('auth_logout', '退出')}</a>`;
             } else {
                 area.innerHTML = `<a href="login.html">${authLabel('auth_login', '登录 / 注册')}</a>`;
             }

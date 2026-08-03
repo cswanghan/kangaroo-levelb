@@ -200,11 +200,31 @@ window.I18N = {
 <script>
     const _redirect = new URLSearchParams(location.search).get('redirect') || 'index.html';
     function getRedirect() {
-        // Only allow relative redirects for safety
-        if (_redirect.startsWith('/') || _redirect.startsWith('index') || _redirect.startsWith('quiz') || _redirect.startsWith('papers') || _redirect.startsWith('analysis')) {
-            return _redirect;
-        }
-        return 'index.html';
+        // Only allow same-origin relative redirects (no protocol-relative //evil)
+        let r = (_redirect || 'index.html').trim();
+        try { r = decodeURIComponent(r); } catch {}
+        // Strip accidental origin prefix
+        try {
+            if (/^https?:\/\//i.test(r)) {
+                const u = new URL(r);
+                if (u.origin === location.origin) r = u.pathname + u.search + u.hash;
+                else return '/index.html';
+            }
+        } catch { return '/index.html'; }
+        if (r.startsWith('//') || r.includes('://')) return '/index.html';
+        // Normalize bare filenames to rooted paths
+        if (!r.startsWith('/')) r = '/' + r;
+        // Allow admin + app pages
+        const allowed =
+            r === '/' ||
+            r.startsWith('/index') ||
+            r.startsWith('/quiz') ||
+            r.startsWith('/papers') ||
+            r.startsWith('/analysis') ||
+            r.startsWith('/admin') ||
+            r.startsWith('/login') ||
+            r.startsWith('/complete-username');
+        return allowed ? r : '/index.html';
     }
 
     // Check if already logged in (skip if ?force=1 for re-login)
