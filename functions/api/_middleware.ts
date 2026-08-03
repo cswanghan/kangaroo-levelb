@@ -13,6 +13,8 @@ const PUBLIC_PATHS = [
   '/api/auth/google-config',
   '/api/invite/verify',
   '/api/analytics/track',
+  '/api/minsu/vote',
+  '/api/feedback/submit', // guests may report bugs without login
 ];
 
 export const onRequest: PagesFunction<Env> = async (context) => {

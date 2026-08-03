@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>袋鼠数学 · 在线练习</title>
+    <title>袋鼠数学在线练习 · 自动判分与解析</title>
+    <meta name="description" content="袋鼠数学在线刷题：按年份整卷练习、自动计分、查看解析与错题本。Level B 2013–2025 完整支持。">
+    <meta property="og:title" content="袋鼠数学在线练习">
+    <meta property="og:description" content="整卷计时 · 自动判分 · 解析 · 错题本">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#EAE6E1">
     <script src="auth-guard.js"></script>
     <script src="analytics.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Raleway:wght@300;400;500;600&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
 
@@ -15,8 +19,8 @@
             --ink: #171717; --ink-med: #5a5652; --ink-light: #A39E99; --ink-faint: rgba(23,23,23,0.08);
             --rose: #BA6D73; --blush: #F1BABA; --blush-faint: rgba(241,186,186,0.3);
             --ring: linear-gradient(90deg, #d5d1cc 0%, #fcfbfa 30%, #b8b3ae 80%, #9e9a95 100%);
-            --font-serif: 'Lora', 'Noto Serif SC', serif;
-            --font-sans: 'Raleway', 'Noto Serif SC', sans-serif;
+            --font-serif: "Songti SC", "STSong", "Noto Serif SC", "Georgia", "Times New Roman", serif;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Raleway", sans-serif;
             --success: #6b9a7d; --success-bg: #edf5f0; --error: #c47070; --error-bg: #fdf0f0;
         }
 
@@ -534,27 +538,30 @@
         @media (max-width: 768px) {
             .quiz-layout {
                 grid-template-columns: 1fr;
-                padding-bottom: 72px;
+                padding-bottom: 88px;
+                gap: 12px;
             }
-            .quiz-question { max-height: none; }
+            .quiz-question { max-height: none; order: 1; }
+            .quiz-answer { order: 2; }
             .quiz-sidebar {
                 position: fixed; bottom: 0; left: 0; right: 0;
                 z-index: 100; flex-direction: row;
                 background: var(--paper);
-                padding: 12px 20px;
+                padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
                 box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
                 border-radius: 16px 16px 0 0;
-                align-items: center; gap: 12px;
+                align-items: center; gap: 10px;
+                order: 3;
             }
             .timer-block {
                 box-shadow: none; padding: 0; flex-shrink: 0;
             }
-            .timer-display { font-size: 1.3rem; }
+            .timer-display { font-size: 1.15rem; }
             .timer-bar { display: none; }
-            .timer-progress-text { font-size: 0.75rem; }
+            .timer-progress-text { font-size: 0.72rem; }
             .nav-grid-block {
                 display: none;
-                position: fixed; bottom: 60px; left: 0; right: 0;
+                position: fixed; bottom: 72px; left: 0; right: 0;
                 max-height: 50vh; overflow-y: auto;
                 border-radius: 16px 16px 0 0; z-index: 99;
                 box-shadow: 0 -8px 24px rgba(0,0,0,0.1);
@@ -563,17 +570,33 @@
             .nav-grid { grid-template-columns: repeat(6, 1fr); }
             .mobile-nav-toggle {
                 display: flex; align-items: center; justify-content: center;
-                width: 40px; height: 40px;
+                width: 44px; height: 44px;
                 background: var(--blush-faint); border: 1px solid var(--paper-shadow);
-                border-radius: 10px; cursor: pointer; font-size: 1.1rem;
+                border-radius: 12px; cursor: pointer; font-size: 1.1rem;
                 flex-shrink: 0;
             }
             .sidebar-submit {
-                padding: 10px 18px; font-size: 0.85rem; flex-shrink: 0;
+                padding: 12px 16px; font-size: 0.9rem; flex: 1; min-height: 44px;
             }
             .notebook-dots { display: none; }
-            .quiz-question { padding: 24px 20px; }
-            .quiz-answer { padding: 24px 20px; }
+            .quiz-question { padding: 20px 16px; }
+            .quiz-answer { padding: 16px; }
+            .option {
+                min-height: 52px; padding: 14px 16px;
+                font-size: 1.05rem;
+            }
+            .question-image {
+                width: 100%; max-height: 52vh; object-fit: contain;
+                cursor: zoom-in; touch-action: manipulation;
+            }
+            .action-bar { gap: 10px; }
+            .action-bar .btn { min-height: 44px; flex: 1; }
+            .img-fallback {
+                display: none; padding: 24px 16px; text-align: center;
+                color: var(--ink-med); font-size: 0.9rem; line-height: 1.6;
+                background: var(--error-bg); border-radius: 10px; border: 1px dashed var(--error);
+            }
+            .img-fallback.show { display: block; }
         }
         @media (max-width: 600px) {
             .select-header h1 { font-size: 1.6rem; }
@@ -581,6 +604,37 @@
             .quiz-wrapper { padding: 12px; }
             .lv-tab { padding: 8px 12px; font-size: 0.8rem; }
         }
+
+        /* Results login CTA */
+        .save-cta {
+            display: none; margin: 18px 0 8px; padding: 16px 18px;
+            background: linear-gradient(135deg, #fdf5f0, #fff);
+            border: 1px solid var(--blush); border-radius: 14px; text-align: left;
+        }
+        .save-cta.show { display: block; }
+        .save-cta h4 {
+            font-family: var(--font-serif); font-size: 1.05rem; margin-bottom: 6px; color: var(--ink);
+        }
+        .save-cta p { color: var(--ink-med); font-size: 0.85rem; line-height: 1.55; margin-bottom: 12px; }
+        .save-cta .btn { width: 100%; }
+        .pending-banner {
+            display: none; max-width: 800px; margin: 0 auto 16px; padding: 12px 16px;
+            background: #edf5f0; border: 1px solid #c5dfd0; border-radius: 12px;
+            color: #3d6b4f; font-size: 0.88rem; text-align: center;
+        }
+        .pending-banner.show { display: block; }
+        .level-note {
+            text-align: center; color: var(--ink-light); font-size: 0.82rem;
+            margin: -12px 0 20px; line-height: 1.5;
+        }
+        .img-fallback {
+            display: none; padding: 28px 18px; text-align: center;
+            color: var(--ink-med); font-size: 0.9rem; line-height: 1.65;
+            background: var(--error-bg); border-radius: 10px; border: 1px dashed var(--error);
+            margin-top: 12px;
+        }
+        .img-fallback.show { display: block; }
+        .question-image.broken { display: none; }
     </style>
 </head>
 <script>
@@ -657,6 +711,16 @@ window.I18N = {
         medal_none: '未获奖',
         medal_none_desc: '继续努力，争取数学探花！',
         login_save: '登录后可保存成绩到云端，查看错题本和学习诊断。',
+        save_cta_title: '保存本次成绩',
+        save_cta_desc: '登录后自动同步得分与错题，下次可直接复习。免费，约 30 秒完成。',
+        save_cta_btn: '登录 / 注册并保存',
+        pending_restored: '已检测到未保存的练习成绩，登录后将自动同步到云端。',
+        img_load_fail: '题目图片加载失败。可点击重试，或改用 PDF 原卷。',
+        img_retry: '重新加载',
+        img_pdf: '打开 PDF',
+        level_cap_b: 'Level B：2013–2025 在线含解析',
+        level_cap_c: 'Level C：2013–2025 在线可判分（解析完善中）',
+        level_cap_other: '本等级在线年份有限（约 2013–2019），完整卷请用 PDF',
         exit_confirm: '确定退出？',
         exit_msg: '做题进度已自动保存，下次可继续。',
         exit_msg_alt: '做题进度已自动保存，可稍后继续。',
@@ -778,6 +842,16 @@ window.I18N = {
         medal_none: 'No Award',
         medal_none_desc: 'Keep practicing!',
         login_save: 'Login to save scores, view wrong answers and analytics.',
+        save_cta_title: 'Save this attempt',
+        save_cta_desc: 'Sign in to sync your score and wrong answers for later review. Free, ~30 seconds.',
+        save_cta_btn: 'Login / Register to save',
+        pending_restored: 'Unsaved practice result found — it will sync after you log in.',
+        img_load_fail: 'Failed to load question image. Retry or open the PDF paper.',
+        img_retry: 'Retry',
+        img_pdf: 'Open PDF',
+        level_cap_b: 'Level B: 2013–2025 online with solutions',
+        level_cap_c: 'Level C: 2013–2025 online grading (solutions in progress)',
+        level_cap_other: 'Limited online years (~2013–2019). Use PDF for full coverage.',
         exit_confirm: 'Leave quiz?',
         exit_msg: 'Progress saved. You can continue later.',
         exit_msg_alt: 'Progress saved. You can continue later.',
@@ -854,6 +928,8 @@ window.I18N = {
         <div class="lv-tab" data-level="e" onclick="switchLevel('e')" data-i18n="grade_e_tab">Level E · 9-10年级</div>
         <div class="lv-tab" data-level="f" onclick="switchLevel('f')" data-i18n="grade_f_tab">Level F · 11-12年级</div>
     </div>
+    <div class="level-note" id="levelNote">Level B：2013–2025 在线含解析</div>
+    <div class="pending-banner" id="pendingBanner"></div>
     <div class="year-grid" id="yearGrid"><div class="loading" data-i18n="loading">加载中...</div></div>
 
     <!-- History panel (hidden by default) -->
@@ -900,6 +976,13 @@ window.I18N = {
             <div class="q-number" id="qNumber">Question 1</div>
             <div class="q-sub" id="qSub"></div>
             <img class="question-image" id="questionImage" alt="题目" draggable="false" onclick="openLightbox()">
+            <div class="img-fallback" id="imgFallback">
+                <div id="imgFallbackMsg">题目图片加载失败</div>
+                <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+                    <button class="btn btn-outline" type="button" onclick="retryQuestionImage()" id="imgRetryBtn">重新加载</button>
+                    <a class="btn btn-primary" id="imgPdfLink" href="papers.html" style="text-decoration:none;display:inline-flex;align-items:center;">打开 PDF</a>
+                </div>
+            </div>
         </div>
 
         <!-- Middle: answers -->
@@ -964,6 +1047,11 @@ window.I18N = {
         </div>
         <div class="medal-badge" id="medalBadge"></div>
         <div class="medal-desc" id="medalDesc"></div>
+        <div class="save-cta" id="saveCta">
+            <h4 id="saveCtaTitle">保存本次成绩</h4>
+            <p id="saveCtaDesc">登录后自动同步得分与错题，下次可直接复习。免费，约 30 秒完成。</p>
+            <button class="btn btn-primary" type="button" onclick="goLoginToSave()" id="saveCtaBtn">登录 / 注册并保存</button>
+        </div>
         <div class="results-actions">
             <button class="btn btn-primary" onclick="restartQuiz()" data-i18n="btn_restart">重新做题</button>
             <button class="btn btn-outline" onclick="goHome()" data-i18n="btn_back">返回</button>
@@ -1086,6 +1174,7 @@ window.I18N = {
             t.classList.toggle('active', t.dataset.level === lv));
         document.getElementById('pdfLink').href = lv === 'b' ? 'papers.html' : `papers.html?level=${lv}`;
         hidePanel();
+        updateLevelNote();
         loadYears();
     }
 
@@ -1242,13 +1331,35 @@ window.I18N = {
         document.getElementById('qNumber').textContent = `Question ${q.number}`;
         document.getElementById('qSub').textContent = `${currentYear} · Level ${currentLevel.toUpperCase()} · ${q.points} points`;
 
-        // Issue #5: image loading state
+        // Issue #5 / #16: image loading state + fallback
         const imgEl = document.getElementById('questionImage');
+        const fallback = document.getElementById('imgFallback');
         imgEl.classList.add('loading');
+        imgEl.classList.remove('broken');
+        if (fallback) fallback.classList.remove('show');
         const pre = imgBase() ? `${imgBase()}/${currentYear}` : `${currentYear}`;
-        imgEl.src = `${pre}/${q.image}`;
-        imgEl.onload = () => imgEl.classList.remove('loading');
-        imgEl.onerror = () => imgEl.classList.remove('loading');
+        const imgSrc = `${pre}/${q.image}`;
+        imgEl.onload = () => {
+            imgEl.classList.remove('loading', 'broken');
+            if (fallback) fallback.classList.remove('show');
+        };
+        imgEl.onerror = () => {
+            imgEl.classList.remove('loading');
+            imgEl.classList.add('broken');
+            if (fallback) {
+                document.getElementById('imgFallbackMsg').textContent = I18n.t('img_load_fail');
+                document.getElementById('imgRetryBtn').textContent = I18n.t('img_retry');
+                const pdfLink = document.getElementById('imgPdfLink');
+                pdfLink.textContent = I18n.t('img_pdf');
+                pdfLink.href = `papers.html?level=${currentLevel}`;
+                fallback.classList.add('show');
+            }
+            trackAnalytics('question_image_error', {
+                group: 'friction',
+                meta: { level: currentLevel, year: currentYear, question: q.number, src: imgSrc }
+            });
+        };
+        imgEl.src = imgSrc;
 
         // Preload upcoming images
         preloadImages(currentIndex + 1);
@@ -1506,6 +1617,66 @@ window.I18N = {
         // Medal display
         lastScorePercent = p;
         switchMedalStandard('international');
+
+        // Guest save CTA (#17)
+        const loggedIn = !!localStorage.getItem('token');
+        const cta = document.getElementById('saveCta');
+        if (cta) {
+            if (!loggedIn) {
+                document.getElementById('saveCtaTitle').textContent = I18n.t('save_cta_title');
+                document.getElementById('saveCtaDesc').textContent = I18n.t('save_cta_desc');
+                document.getElementById('saveCtaBtn').textContent = I18n.t('save_cta_btn');
+                cta.classList.add('show');
+                // Ensure pending payload exists for post-login sync
+                savePendingResult(duration);
+            } else {
+                cta.classList.remove('show');
+            }
+        }
+        trackAnalytics('results_view', { meta: { level: currentLevel, year: currentYear, loggedIn } });
+    }
+
+    function goLoginToSave() {
+        trackAnalytics('results_save_cta_click', { meta: { level: currentLevel, year: currentYear } });
+        const redirect = encodeURIComponent(location.pathname + location.search + '#results');
+        window.location.href = '/login.html?redirect=' + redirect;
+    }
+
+    function retryQuestionImage() {
+        const imgEl = document.getElementById('questionImage');
+        if (!imgEl || !questions[currentIndex]) return;
+        const q = questions[currentIndex];
+        const pre = imgBase() ? `${imgBase()}/${currentYear}` : `${currentYear}`;
+        imgEl.classList.remove('broken');
+        imgEl.classList.add('loading');
+        document.getElementById('imgFallback')?.classList.remove('show');
+        imgEl.src = `${pre}/${q.image}?t=${Date.now()}`;
+    }
+
+    function updateLevelNote() {
+        const el = document.getElementById('levelNote');
+        if (!el) return;
+        if (currentLevel === 'b') el.textContent = I18n.t('level_cap_b');
+        else if (currentLevel === 'c') el.textContent = I18n.t('level_cap_c');
+        else el.textContent = I18n.t('level_cap_other');
+    }
+
+    function showPendingBannerIfNeeded() {
+        const el = document.getElementById('pendingBanner');
+        if (!el) return;
+        const token = localStorage.getItem('token');
+        const raw = localStorage.getItem('pendingQuizResult');
+        if (!token && raw) {
+            try {
+                const data = JSON.parse(raw);
+                if (Date.now() - data.savedAt <= 24 * 60 * 60 * 1000) {
+                    el.textContent = I18n.t('pending_restored');
+                    el.classList.add('show');
+                    return;
+                }
+            } catch {}
+        }
+        el.classList.remove('show');
     }
 
     let lastScorePercent = 0;
@@ -2013,7 +2184,15 @@ window.I18N = {
     // Check for saved progress on load
     async function initWithProgress() {
         await init();
-        submitPendingResult();
+        updateLevelNote();
+        showPendingBannerIfNeeded();
+        await submitPendingResult();
+        showPendingBannerIfNeeded();
+        // Deep-link back from login after saving score
+        if (location.hash === '#results' && localStorage.getItem('token') && !localStorage.getItem('pendingQuizResult')) {
+            // nothing more — history/wrong book available after sync
+            history.replaceState(null, '', location.pathname + location.search);
+        }
         const prog = getSavedProgress();
         if (prog) {
             showConfirmModal('📋', I18n.t('found_progress'), I18n.t('progress_info').replace('{year}', prog.year).replace('{lv}', prog.level.toUpperCase()).replace('{n}', Object.keys(prog.userAnswers || {}).length), () => {
@@ -2038,6 +2217,8 @@ window.I18N = {
             const lv = t.dataset.level;
             t.textContent = I18n.t('grade_' + lv + '_tab');
         });
+        updateLevelNote();
+        showPendingBannerIfNeeded();
         // Re-render current page state
         if (document.getElementById('homePage').style.display !== 'none') {
             init(); // re-render year grid

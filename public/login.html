@@ -3,19 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>袋鼠数学 · 登录</title>
+    <title>袋鼠数学 · 登录 / 注册</title>
+    <meta name="description" content="登录袋鼠数学练习站，保存成绩并使用错题本与学习诊断。">
     <script src="analytics.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --cream: #faf8f5; --warm: #f3ede6; --rose: #c4a08a; --rose-light: #e8d5c8;
             --rose-bg: #fdf5f0; --text: #3d3530; --text-light: #8a7e76; --accent: #b07d62;
             --success: #6b9a7d; --error: #c47070;
+            --font-serif: "Songti SC", "STSong", "Noto Serif SC", "Georgia", serif;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
         }
         body {
-            font-family: 'Noto Serif SC', 'Georgia', serif;
+            font-family: var(--font-sans);
             background: var(--cream); min-height: 100vh; color: var(--text);
             display: flex; align-items: center; justify-content: center; padding: 20px;
         }
@@ -23,7 +25,7 @@
         .auth-header { text-align: center; margin-bottom: 36px; }
         .auth-header .icon { font-size: 2.4rem; margin-bottom: 8px; }
         .auth-header h1 {
-            font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 4px;
+            font-family: var(--font-serif); font-size: 1.8rem; font-weight: 700; margin-bottom: 4px;
         }
         .auth-header .sub { color: var(--text-light); font-size: 0.85rem; }
 

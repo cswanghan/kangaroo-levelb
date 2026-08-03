@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>袋鼠数学 · Kangaroo Math</title>
+    <title>袋鼠数学在线真题 · Level A–F | Kangaroo Math</title>
+    <meta name="description" content="免费袋鼠数学竞赛在线练习：Level B（3–4年级）2013–2025 真题自动判分、解析与错题本；其他等级提供 PDF 原卷。">
+    <meta property="og:title" content="袋鼠数学在线真题 · Kangaroo Math">
+    <meta property="og:description" content="Level B 13 年真题在线刷题 + 自动判分 + 解析。A–F 历年 PDF 齐全。">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/images/wechat-qr.png">
+    <meta name="theme-color" content="#faf8f5">
     <script src="auth-guard.js"></script>
     <script src="analytics.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -19,10 +24,12 @@
             --text: #3d3530;
             --text-light: #8a7e76;
             --accent: #b07d62;
+            --font-serif: "Songti SC", "STSong", "Noto Serif SC", "Georgia", "Times New Roman", serif;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
         }
 
         body {
-            font-family: 'Noto Serif SC', 'Georgia', serif;
+            font-family: var(--font-sans);
             background: var(--cream);
             min-height: 100vh;
             color: var(--text);
@@ -49,7 +56,7 @@
         .i18n-toggle:hover { border-color: var(--accent); color: var(--accent); }
 
         .site-header h1 {
-            font-family: 'Playfair Display', 'Noto Serif SC', serif;
+            font-family: var(--font-serif);
             font-size: 2.6rem;
             font-weight: 700;
             letter-spacing: 2px;
@@ -106,7 +113,13 @@
         .entry-card:hover::before { background: var(--accent); }
 
         .entry-icon { font-size: 2.2rem; }
-        .entry-title { font-family: 'Playfair Display', 'Noto Serif SC', serif; font-size: 1.3rem; font-weight: 600; }
+        .entry-title { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 600; }
+        .level-cap {
+            display: inline-block; margin-top: 8px; padding: 3px 12px; border-radius: 999px;
+            font-size: 0.75rem; background: var(--warm); color: var(--text-light);
+        }
+        .level-cap.full { background: #edf5f0; color: #5a8a6a; }
+        .level-cap.partial { background: #fff6e8; color: #a67c3a; }
         .entry-desc { color: var(--text-light); font-size: 0.85rem; line-height: 1.7; text-align: center; }
         .entry-action { font-size: 0.8rem; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
 
@@ -152,7 +165,7 @@
         }
         .modal-close:hover { color: var(--text); }
         .modal h2 {
-            font-family: 'Playfair Display', 'Noto Serif SC', serif;
+            font-family: var(--font-serif);
             font-size: 1.4rem; margin-bottom: 20px; text-align: center;
         }
 
@@ -206,7 +219,7 @@
         }
         .support-ribbon strong {
             color: var(--accent);
-            font-family: 'Playfair Display', 'Noto Serif SC', serif;
+            font-family: var(--font-serif);
             font-size: 0.95rem;
             letter-spacing: 0.5px;
         }
@@ -296,6 +309,7 @@
         <div class="level-info" id="levelInfo">
             <div>等级 B · 2013 — 2025 · 共 13 年真题</div>
             <div class="grade">适合 3-4 年级</div>
+            <div class="level-cap full">在线练习含解析 · PDF 齐全</div>
         </div>
 
         <div class="entry-grid">
@@ -409,7 +423,7 @@
         });
 
         function openFeedback() {
-            if (!requireLogin(I18n.t('fb_login_required'))) return;
+            // Guests can submit bug reports; suggestion/praise still prefer login
             document.getElementById('fbContent').value = '';
             document.getElementById('fbMsg').textContent = '';
             document.getElementById('fbSubmit').disabled = false;
@@ -420,14 +434,23 @@
         async function submitFeedback() {
             const content = document.getElementById('fbContent').value.trim();
             if (!content) { showFbMsg(I18n.t('fb_empty'), 'err'); return; }
+            const token = localStorage.getItem('token');
+            if (!token && fbType !== 'bug') {
+                if (!requireLogin(I18n.t('fb_login_required'))) return;
+            }
             const btn = document.getElementById('fbSubmit');
             btn.disabled = true; btn.textContent = I18n.t('fb_submitting');
             try {
-                const token = localStorage.getItem('token');
+                const headers = { 'Content-Type': 'application/json' };
+                if (token) headers['Authorization'] = 'Bearer ' + token;
                 const r = await fetch('/api/feedback/submit', {
                     method: 'POST',
-                    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ type: fbType, content })
+                    headers,
+                    body: JSON.stringify({
+                        type: fbType,
+                        content,
+                        context: { page: location.pathname }
+                    })
                 });
                 const data = await r.json();
                 if (data.ok) {
@@ -498,18 +521,24 @@
             donate_alipay: '支付宝',
             donate_wechat: '微信',
             donate_thanks: '感谢你的支持与鼓励<br>每一份心意都是继续更新的动力',
-            level_a_label: '等级 A · 历年真题',
+            level_a_label: '等级 A · 在线 2013–2019 · PDF 至 2025',
             level_a_grade: '适合 1-2 年级',
+            level_a_cap: '在线仅判分（无解析）· PDF 齐全',
             level_b_label: '等级 B · 2013 — 2025 · 共 13 年真题',
             level_b_grade: '适合 3-4 年级',
+            level_b_cap: '在线练习含解析 · PDF 齐全',
             level_c_label: '等级 C · 2013 — 2025 · 共 13 年真题',
             level_c_grade: '适合 5-6 年级',
-            level_d_label: '等级 D · 历年真题',
+            level_c_cap: '在线可判分（解析完善中）· PDF 齐全',
+            level_d_label: '等级 D · 在线 2013–2019 · PDF 至 2025',
             level_d_grade: '适合 7-8 年级',
-            level_e_label: '等级 E · 历年真题',
+            level_d_cap: '在线仅判分（无解析）· PDF 齐全',
+            level_e_label: '等级 E · 在线 2013–2019 · PDF 至 2025',
             level_e_grade: '适合 9-10 年级',
-            level_f_label: '等级 F · 历年真题',
+            level_e_cap: '在线仅判分（无解析）· PDF 齐全',
+            level_f_label: '等级 F · 在线 2013–2019 · PDF 至 2025',
             level_f_grade: '适合 11-12 年级',
+            level_f_cap: '在线仅判分（无解析）· PDF 齐全',
         },
         en: {
             tagline: 'International Math Kangaroo · Past Papers & Practice',
@@ -545,18 +574,24 @@
             donate_alipay: 'Alipay',
             donate_wechat: 'WeChat Pay',
             donate_thanks: 'Thank you for your support and encouragement.<br>Every bit of kindness keeps this project going.',
-            level_a_label: 'Level A · Past Papers',
+            level_a_label: 'Level A · Online 2013–2019 · PDF to 2025',
             level_a_grade: 'Grades 1-2',
+            level_a_cap: 'Online grading only (no solutions yet) · Full PDFs',
             level_b_label: 'Level B · 2013–2025 · 13 Years',
             level_b_grade: 'Grades 3-4',
+            level_b_cap: 'Online practice with solutions · Full PDFs',
             level_c_label: 'Level C · 2013–2025 · 13 Years',
             level_c_grade: 'Grades 5-6',
-            level_d_label: 'Level D · Past Papers',
+            level_c_cap: 'Online grading (solutions in progress) · Full PDFs',
+            level_d_label: 'Level D · Online 2013–2019 · PDF to 2025',
             level_d_grade: 'Grades 7-8',
-            level_e_label: 'Level E · Past Papers',
+            level_d_cap: 'Online grading only (no solutions yet) · Full PDFs',
+            level_e_label: 'Level E · Online 2013–2019 · PDF to 2025',
             level_e_grade: 'Grades 9-10',
-            level_f_label: 'Level F · Past Papers',
+            level_e_cap: 'Online grading only (no solutions yet) · Full PDFs',
+            level_f_label: 'Level F · Online 2013–2019 · PDF to 2025',
             level_f_grade: 'Grades 11-12',
+            level_f_cap: 'Online grading only (no solutions yet) · Full PDFs',
         }
     };
     </script>
@@ -580,13 +615,20 @@
             e: { pdf: 'papers.html?level=e', quiz: 'quiz.html?level=e' },
             f: { pdf: 'papers.html?level=f', quiz: 'quiz.html?level=f' }
         };
+        // Honest capability flags for each level
+        const levelCapability = {
+            a: 'partial', b: 'full', c: 'partial', d: 'partial', e: 'partial', f: 'partial'
+        };
         function switchLevel(level) {
             currentLevel = level;
             const urls = levelUrls[level];
             const tabs = document.querySelectorAll('.level-tab');
             tabs.forEach((t, i) => t.classList.toggle('active', levelOrder[i] === level));
+            const capClass = levelCapability[level] === 'full' ? 'full' : 'partial';
             document.getElementById('levelInfo').innerHTML =
-                `<div>${I18n.t('level_' + level + '_label')}</div><div class="grade">${I18n.t('level_' + level + '_grade')}</div>`;
+                `<div>${I18n.t('level_' + level + '_label')}</div>` +
+                `<div class="grade">${I18n.t('level_' + level + '_grade')}</div>` +
+                `<div class="level-cap ${capClass}">${I18n.t('level_' + level + '_cap')}</div>`;
             document.getElementById('pdfEntry').href = urls.pdf;
             document.getElementById('quizEntry').href = urls.quiz;
         }
