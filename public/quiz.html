@@ -612,21 +612,33 @@
         @media (max-width: 768px) {
             .quiz-layout {
                 grid-template-columns: 1fr;
-                padding-bottom: 88px;
-                gap: 12px;
+                padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+                gap: 10px;
             }
-            /* Mobile order: 题号(底栏) · 题目选项 · 图案 */
-            .quiz-answer { order: 1; }
-            .quiz-question { max-height: none; order: 2; }
+            /* Mobile order: 图案优先 → 选项 → 底栏题号（数学题先看图） */
+            .quiz-question { max-height: none; order: 1; padding: 12px !important; }
+            .quiz-answer { order: 2; padding: 14px 14px 18px !important; }
             .quiz-sidebar {
                 position: fixed; bottom: 0; left: 0; right: 0;
                 z-index: 100; flex-direction: row;
                 background: var(--paper);
-                padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+                padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
                 box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
                 border-radius: 16px 16px 0 0;
-                align-items: center; gap: 10px;
+                align-items: center; gap: 8px;
                 order: 3;
+            }
+            .q-number { font-size: 1.55rem !important; }
+            .q-sub { font-size: 0.88rem !important; margin-bottom: 10px !important; }
+            .section-title { font-size: 1.1rem !important; margin-bottom: 12px !important; }
+            .tts-bar { margin-bottom: 10px !important; }
+            .tts-btn { min-height: 40px; padding: 8px 14px; }
+            .figure-label { margin-bottom: 6px; }
+            .figure-hint { display: none; }
+            .quiz-answer .action-bar {
+                position: sticky; bottom: 0;
+                padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+                box-shadow: 0 -6px 12px rgba(253,251,249,0.9);
             }
             .timer-block {
                 box-shadow: none; padding: 0; flex-shrink: 0;
@@ -657,15 +669,18 @@
             .quiz-question { padding: 16px; }
             .quiz-answer { padding: 16px; }
             .option {
-                min-height: 52px; padding: 14px 16px;
-                font-size: 1.05rem;
+                min-height: 56px; padding: 14px 16px;
+                font-size: 1.08rem;
+                -webkit-tap-highlight-color: rgba(186,109,115,0.15);
             }
             .question-image {
-                width: 100%; max-height: 48vh; object-fit: contain; flex: none;
+                width: 100%; max-height: 42vh; min-height: 160px; object-fit: contain; flex: none;
                 cursor: zoom-in; touch-action: manipulation;
             }
-            .action-bar { gap: 10px; }
-            .action-bar .btn { min-height: 44px; flex: 1; }
+            .action-bar { gap: 8px; }
+            .action-bar .btn { min-height: 48px; flex: 1; font-size: 0.95rem; }
+            .quiz-topbar { margin-bottom: 8px !important; font-size: 0.8rem; }
+            .exam-banner { border-radius: 8px; }
             .img-fallback {
                 display: none; padding: 24px 16px; text-align: center;
                 color: var(--ink-med); font-size: 0.9rem; line-height: 1.6;
@@ -711,6 +726,36 @@
         }
         .img-fallback.show { display: block; }
         .question-image.broken { display: none; }
+
+        /* In-session tip toast */
+        .quiz-tip {
+            display: none; width: 100%; max-width: 1280px;
+            background: #edf5f0; border: 1px solid #c5dfd0; color: #3d6b4f;
+            border-radius: 10px; padding: 10px 14px; margin-bottom: 10px;
+            font-size: 0.84rem; line-height: 1.45;
+            align-items: center; justify-content: space-between; gap: 10px;
+        }
+        .quiz-tip.show { display: flex; }
+        .quiz-tip button {
+            border: none; background: transparent; color: #3d6b4f;
+            font-size: 0.8rem; cursor: pointer; white-space: nowrap; font-family: inherit;
+            text-decoration: underline;
+        }
+
+        /* Feature notice banner */
+        .feature-notice {
+            display: none; max-width: 800px; margin: 0 auto 18px; padding: 12px 16px;
+            background: linear-gradient(135deg, #fdf5f0, #fff);
+            border: 1px solid var(--blush); border-radius: 12px;
+            font-size: 0.88rem; color: var(--ink-med); line-height: 1.5;
+            align-items: center; justify-content: space-between; gap: 12px;
+        }
+        .feature-notice.show { display: flex; }
+        .feature-notice button {
+            flex-shrink: 0; border: 1px solid var(--blush); background: white;
+            color: var(--rose); border-radius: 14px; padding: 6px 12px;
+            font-size: 0.8rem; cursor: pointer; font-family: inherit;
+        }
 
         /* Practice mode switcher (#20) */
         .mode-switch {
@@ -783,9 +828,13 @@ window.I18N = {
         btn_back: '返回',
         btn_back_arrow: '← 返回',
         start_title: '开始做题',
-        start_desc: '点击开始后将自动计时，请确保准备好后再开始。',
+        start_desc: '开始后自动计时。可随时交卷；未答不加不扣。右侧可放大题图。',
         btn_cancel: '取消',
         btn_start: '开始',
+        login_to_practice: '登录后即可开始练习，成绩与错题会自动保存。',
+        quiz_tip_first: '提示：先看右侧图案，选完答案点「下一题」。可点题号跳题。',
+        feature_notice: '新功能：模拟考场 · 快速练 · 读题。登录后即可使用。',
+        feature_notice_dismiss: '知道了',
         btn_confirm: '确定',
         confirm_title: '确认',
         confirm_msg: '确定要执行此操作吗？',
@@ -954,9 +1003,13 @@ window.I18N = {
         btn_back: 'Back',
         btn_back_arrow: '← Back',
         start_title: 'Start Quiz',
-        start_desc: 'Timer starts automatically. Make sure you are ready.',
+        start_desc: 'Timer starts when you begin. Submit anytime; unanswered has no penalty. Tap figure to zoom.',
         btn_cancel: 'Cancel',
         btn_start: 'Start',
+        login_to_practice: 'Sign in to practice. Scores and wrong answers are saved automatically.',
+        quiz_tip_first: 'Tip: check the figure on the right, pick an answer, then Next. Use numbers to jump.',
+        feature_notice: 'New: mock exam · quick practice · read-aloud. Sign in to use.',
+        feature_notice_dismiss: 'Got it',
         btn_confirm: 'OK',
         confirm_title: 'Confirm',
         confirm_msg: 'Are you sure?',
@@ -1134,6 +1187,10 @@ window.I18N = {
     </div>
     <div class="level-note" id="levelNote">Level B：2013–2025 在线含解析</div>
     <div class="pending-banner" id="pendingBanner"></div>
+    <div class="feature-notice" id="featureNotice">
+        <span data-i18n="feature_notice">新功能：模拟考场 · 快速练 · 读题。登录后即可使用。</span>
+        <button type="button" onclick="dismissFeatureNotice()" data-i18n="feature_notice_dismiss">知道了</button>
+    </div>
 
     <!-- Practice mode switcher (#20) + 模拟考场 -->
     <div class="mode-switch" id="modeSwitch">
@@ -1230,6 +1287,11 @@ window.I18N = {
             <span class="exam-rules" data-i18n="exam_banner_rules"> · 作答期间不显示对错 · 时间到自动交卷</span>
         </div>
         <span id="examBannerExtra"></span>
+    </div>
+
+    <div class="quiz-tip" id="quizTip">
+        <span id="quizTipText">提示：先看右侧图案，选完答案点「下一题」。</span>
+        <button type="button" onclick="dismissQuizTip()">OK</button>
     </div>
 
     <div class="quiz-layout">
@@ -1418,6 +1480,46 @@ window.I18N = {
         }
     }
 
+    /** Practice requires login (product decision: keep gated access). */
+    function ensureLoggedIn(msg) {
+        if (localStorage.getItem('token')) return true;
+        const text = msg || (typeof I18n !== 'undefined' ? I18n.t('login_to_practice') : '请先登录');
+        if (typeof requireLogin === 'function') {
+            requireLogin(text);
+        } else {
+            window.location.href = '/login.html?redirect=' + encodeURIComponent(location.pathname + location.search);
+        }
+        return false;
+    }
+
+    const FEATURE_NOTICE_KEY = 'featureNotice_v2';
+    function showFeatureNoticeIfNeeded() {
+        const el = document.getElementById('featureNotice');
+        if (!el) return;
+        if (localStorage.getItem(FEATURE_NOTICE_KEY)) {
+            el.classList.remove('show');
+            return;
+        }
+        el.classList.add('show');
+    }
+    function dismissFeatureNotice() {
+        localStorage.setItem(FEATURE_NOTICE_KEY, '1');
+        document.getElementById('featureNotice')?.classList.remove('show');
+    }
+
+    function showQuizTip() {
+        if (localStorage.getItem('quizTip_v1')) return;
+        const el = document.getElementById('quizTip');
+        const text = document.getElementById('quizTipText');
+        if (!el) return;
+        if (text) text.textContent = I18n.t('quiz_tip_first');
+        el.classList.add('show');
+    }
+    function dismissQuizTip() {
+        localStorage.setItem('quizTip_v1', '1');
+        document.getElementById('quizTip')?.classList.remove('show');
+    }
+
     const dataBase = () => currentLevel === 'b' ? 'data' : `level-${currentLevel}/data`;
 
     function questionYear(q) {
@@ -1566,6 +1668,7 @@ window.I18N = {
     }
 
     async function startQuickPractice(count) {
+        if (!ensureLoggedIn()) return;
         if (currentLevel !== 'b') { setPracticeMode('quick'); return; }
         timerEnabled = document.getElementById('timerToggle').checked;
         const pool = await ensureLevelBPool();
@@ -1581,6 +1684,7 @@ window.I18N = {
     }
 
     async function startKnowledgePractice(category) {
+        if (!ensureLoggedIn()) return;
         if (currentLevel !== 'b') { setPracticeMode('knowledge'); return; }
         timerEnabled = document.getElementById('timerToggleKp').checked;
         const pool = await ensureLevelBPool();
@@ -1644,10 +1748,27 @@ window.I18N = {
         }
         preloadImages(0);
         renderQuestion();
+        showQuizTip();
+        // Scroll figure into view on mobile so user sees the image first
+        if (window.matchMedia('(max-width: 768px)').matches) {
+            setTimeout(() => document.getElementById('panelLeft')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+        }
         saveProgress();
     }
 
+    function preloadFirstQuestionImage(qs, year) {
+        try {
+            const q = qs && qs[0];
+            if (!q || !q.image) return;
+            const y = year || q.sourceYear || currentYear;
+            const pre = imgBase() ? `${imgBase()}/${y}` : `${y}`;
+            const img = new Image();
+            img.src = `${pre}/${q.image}`;
+        } catch {}
+    }
+
     async function startExam(year) {
+        if (!ensureLoggedIn()) return;
         examDurationMin = getSelectedExamDuration();
         trackAnalytics('quiz_test_select', { meta: { level: currentLevel, year, mode: 'exam' } });
         try {
@@ -1656,6 +1777,7 @@ window.I18N = {
             pendingYear = year;
             pendingData = d;
             pendingExam = true;
+            preloadFirstQuestionImage(d.questions || [], year);
             const lv = currentLevel.toUpperCase();
             const total = d.questions.length;
             const maxPts = total + d.questions.reduce((s, q) => s + q.points, 0);
@@ -1739,6 +1861,7 @@ window.I18N = {
     let pendingYear = null, pendingData = null, pendingExam = false;
 
     async function startQuiz(year) {
+        if (!ensureLoggedIn()) return;
         trackAnalytics('quiz_test_select', { meta: { level: currentLevel, year } });
         try {
             const r = await fetch(`${dataBase()}/${year}.json`);
@@ -1746,11 +1869,15 @@ window.I18N = {
             pendingYear = year;
             pendingData = d;
             pendingExam = false;
+            preloadFirstQuestionImage(d.questions || [], year);
             const lv = currentLevel.toUpperCase();
             const total = d.questions.length;
             const maxPts = total + d.questions.reduce((s, q) => s + q.points, 0);
             document.getElementById('modalTitle').textContent = I18n.t('year_level').replace('{year}', year).replace('{lv}', lv);
             document.getElementById('modalInfo').textContent = I18n.t('total_info').replace('{t}', total).replace('{m}', maxPts);
+            // Soften pressure: show short tip under info
+            const modalBox = document.querySelector('#startModal .modal-box p');
+            if (modalBox) modalBox.textContent = I18n.t('start_desc');
             document.getElementById('startModal').classList.add('open');
         } catch { alert(I18n.t('load_failed')); }
     }
@@ -2957,13 +3084,13 @@ window.I18N = {
         await init();
         updateLevelNote();
         showPendingBannerIfNeeded();
-        // Apply mode from URL (?mode=quick|knowledge)
+        showFeatureNoticeIfNeeded();
+        // Apply mode from URL (?mode=quick|knowledge|exam)
         setPracticeMode(practiceMode);
         await submitPendingResult();
         showPendingBannerIfNeeded();
         // Deep-link back from login after saving score
         if (location.hash === '#results' && localStorage.getItem('token') && !localStorage.getItem('pendingQuizResult')) {
-            // nothing more — history/wrong book available after sync
             history.replaceState(null, '', location.pathname + location.search);
         }
         const prog = getSavedProgress();
@@ -2972,13 +3099,22 @@ window.I18N = {
             showConfirmModal('📋', I18n.t('found_progress'), I18n.t('progress_info').replace('{year}', yrLabel).replace('{lv}', prog.level.toUpperCase()).replace('{n}', Object.keys(prog.userAnswers || {}).length), () => {
                 restoreProgress(prog);
             });
-            // If user cancels, clear progress
             const origClose = closeConfirmModal;
             closeConfirmModal = function() {
                 origClose();
                 clearProgress();
                 closeConfirmModal = origClose;
             };
+            return;
+        }
+        // Deep-link: quiz.html?level=b&year=2024[&mode=exam]
+        const yearParam = parseInt(new URLSearchParams(location.search).get('year') || '', 10);
+        if (yearParam && yearParam >= 2010 && yearParam <= 2030) {
+            // Wait a tick so year grid / mode panel is ready
+            setTimeout(() => {
+                if (practiceMode === 'exam') startExam(yearParam);
+                else startQuiz(yearParam);
+            }, 200);
         }
     }
 

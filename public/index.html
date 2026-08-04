@@ -130,6 +130,28 @@
         }
         .login-link a:hover { color: var(--accent); border-color: var(--rose); }
 
+        .feature-notice {
+            display: none; max-width: 800px; margin: 0 auto 24px; padding: 14px 16px;
+            background: linear-gradient(135deg, #fdf5f0, #fff);
+            border: 1px solid var(--rose-light); border-radius: 14px;
+            font-size: 0.88rem; color: var(--text); line-height: 1.55;
+            align-items: flex-start; justify-content: space-between; gap: 12px;
+        }
+        .feature-notice.show { display: flex; }
+        .feature-notice .fn-body { flex: 1; }
+        .feature-notice .fn-title { font-weight: 600; margin-bottom: 4px; color: var(--accent); }
+        .feature-notice button {
+            flex-shrink: 0; border: 1px solid var(--rose-light); background: white;
+            color: var(--accent); border-radius: 14px; padding: 8px 12px;
+            font-size: 0.8rem; cursor: pointer; font-family: inherit; min-height: 40px;
+        }
+        @media (max-width: 600px) {
+            .entry-grid { grid-template-columns: 1fr; gap: 14px; }
+            .entry-card { padding: 28px 20px; }
+            .page { padding: 28px 16px 48px; }
+            .feature-notice { flex-direction: column; }
+        }
+
         .site-footer { text-align: center; margin-top: 60px; color: var(--text-light); font-size: 0.8rem; opacity: 0.7; }
 
         /* Bottom action row */
@@ -315,6 +337,14 @@
             <div class="level-cap full">在线练习含解析 · PDF 齐全</div>
         </div>
 
+        <div class="feature-notice" id="featureNotice">
+            <div class="fn-body">
+                <div class="fn-title" data-i18n="fn_title">新功能通知</div>
+                <div data-i18n-html="fn_body">模拟考场 · 快速练 · 读题已上线。PDF 页可一键「在线做这一年」。练习需登录后使用，成绩自动保存。</div>
+            </div>
+            <button type="button" onclick="dismissFeatureNotice()" data-i18n="fn_dismiss">知道了</button>
+        </div>
+
         <div class="entry-grid">
             <a id="pdfEntry" href="papers.html" class="entry-card">
                 <div class="entry-icon">📄</div>
@@ -323,25 +353,25 @@
                 <div class="entry-action">Browse →</div>
             </a>
 
-            <a id="quizEntry" href="quiz.html" class="entry-card" onclick="if(window.KangarooAnalytics){window.KangarooAnalytics.track('home_entry_click',{meta:{target:'quiz'}})}">
+            <a id="quizEntry" href="quiz.html" class="entry-card" onclick="return goPracticeEntry(event,'quiz')">
                 <div class="entry-icon">✏️</div>
                 <div class="entry-title" data-i18n="entry_quiz">在线练习</div>
                 <div class="entry-desc" data-i18n-html="entry_quiz_desc">逐题作答 · 提交判分<br>按年份选择套卷</div>
                 <div class="entry-action">Start →</div>
             </a>
 
-            <a id="quickEntry" href="quiz.html?mode=quick" class="entry-card" onclick="if(window.KangarooAnalytics){window.KangarooAnalytics.track('home_entry_click',{meta:{target:'quick'}})}">
+            <a id="quickEntry" href="quiz.html?mode=quick" class="entry-card" onclick="return goPracticeEntry(event,'quick')">
                 <div class="entry-icon">⚡</div>
                 <div class="entry-title" data-i18n="entry_quick">快速练</div>
                 <div class="entry-desc" data-i18n-html="entry_quick_desc">随机 10/15 题 · 可关计时<br>按知识点专项练</div>
                 <div class="entry-action">Practice →</div>
             </a>
 
-            <a href="analysis.html" class="entry-card">
-                <div class="entry-icon">📊</div>
-                <div class="entry-title" data-i18n="entry_analysis">学习诊断</div>
-                <div class="entry-desc" data-i18n-html="entry_analysis_desc">难度分析 · 趋势图表<br>个性化学习建议</div>
-                <div class="entry-action">Analyze →</div>
+            <a id="examEntry" href="quiz.html?mode=exam" class="entry-card" onclick="return goPracticeEntry(event,'exam')">
+                <div class="entry-icon">📝</div>
+                <div class="entry-title" data-i18n="entry_exam">模拟考场</div>
+                <div class="entry-desc" data-i18n-html="entry_exam_desc">倒计时交卷 · 正式竞赛节奏<br>作答期间不显示对错</div>
+                <div class="entry-action">Exam →</div>
             </a>
         </div>
 
@@ -509,8 +539,14 @@
             entry_quiz_desc: '逐题作答 · 提交判分<br>按年份选择套卷',
             entry_quick: '快速练',
             entry_quick_desc: '随机 10/15 题 · 可关计时<br>按知识点专项练',
+            entry_exam: '模拟考场',
+            entry_exam_desc: '倒计时交卷 · 正式竞赛节奏<br>作答期间不显示对错',
             entry_analysis: '学习诊断',
             entry_analysis_desc: '难度分析 · 趋势图表<br>个性化学习建议',
+            fn_title: '新功能通知',
+            fn_body: '模拟考场 · 快速练 · 读题已上线。PDF 页可一键「在线做这一年」。练习需登录后使用，成绩自动保存。',
+            fn_dismiss: '知道了',
+            login_to_practice: '登录后即可开始练习，成绩与错题会自动保存。',
             btn_feedback: '意见反馈',
             auth_login: '登录 / 注册',
             auth_admin: '管理后台',
@@ -564,8 +600,14 @@
             entry_quiz_desc: 'Answer questions one by one<br>Auto-graded by year',
             entry_quick: 'Quick Practice',
             entry_quick_desc: 'Random 10/15 Qs · optional timer<br>Practice by knowledge topic',
+            entry_exam: 'Mock Exam',
+            entry_exam_desc: 'Countdown · contest pace<br>No instant grading',
             entry_analysis: 'Learning Analytics',
             entry_analysis_desc: 'Difficulty analysis · Trend charts<br>Personalized study tips',
+            fn_title: 'What\'s new',
+            fn_body: 'Mock exam · quick practice · read-aloud are live. Practice this year from the PDF page. Sign in to practice and save scores.',
+            fn_dismiss: 'Got it',
+            login_to_practice: 'Sign in to practice. Scores and wrong answers are saved automatically.',
             btn_feedback: 'Feedback',
             auth_login: 'Login / Register',
             auth_admin: 'Admin',
@@ -615,6 +657,35 @@
         I18n.onSwitch(() => renderAuthArea());
         // Also render on first load (after i18n init via setTimeout 0, so use setTimeout 0 too)
         setTimeout(() => renderAuthArea(), 0);
+
+        const FEATURE_NOTICE_KEY = 'featureNotice_v2';
+        function showFeatureNoticeIfNeeded() {
+            const el = document.getElementById('featureNotice');
+            if (!el) return;
+            if (localStorage.getItem(FEATURE_NOTICE_KEY)) el.classList.remove('show');
+            else el.classList.add('show');
+        }
+        function dismissFeatureNotice() {
+            localStorage.setItem(FEATURE_NOTICE_KEY, '1');
+            document.getElementById('featureNotice')?.classList.remove('show');
+        }
+        setTimeout(showFeatureNoticeIfNeeded, 0);
+
+        /** Gate practice entries behind login; PDF stays open to browse. */
+        function goPracticeEntry(e, target) {
+            if (window.KangarooAnalytics) {
+                window.KangarooAnalytics.track('home_entry_click', { meta: { target } });
+            }
+            if (localStorage.getItem('token')) return true;
+            e.preventDefault();
+            const href = e.currentTarget.getAttribute('href') || 'quiz.html';
+            if (typeof requireLogin === 'function') {
+                requireLogin(I18n.t('login_to_practice'), null, href);
+            } else {
+                window.location.href = 'login.html?redirect=' + encodeURIComponent('/' + href.replace(/^\//, ''));
+            }
+            return false;
+        }
     </script>
 
     <!-- Level switch -->
@@ -622,12 +693,12 @@
         let currentLevel = 'b';
         const levelOrder = ['a','b','c','d','e','f'];
         const levelUrls = {
-            a: { pdf: 'papers.html?level=a', quiz: 'quiz.html?level=a' },
-            b: { pdf: 'papers.html', quiz: 'quiz.html' },
-            c: { pdf: 'papers.html?level=c', quiz: 'quiz.html?level=c' },
-            d: { pdf: 'papers.html?level=d', quiz: 'quiz.html?level=d' },
-            e: { pdf: 'papers.html?level=e', quiz: 'quiz.html?level=e' },
-            f: { pdf: 'papers.html?level=f', quiz: 'quiz.html?level=f' }
+            a: { pdf: 'papers.html?level=a', quiz: 'quiz.html?level=a', quick: 'quiz.html?level=a&mode=quick', exam: 'quiz.html?level=a&mode=exam' },
+            b: { pdf: 'papers.html', quiz: 'quiz.html', quick: 'quiz.html?mode=quick', exam: 'quiz.html?mode=exam' },
+            c: { pdf: 'papers.html?level=c', quiz: 'quiz.html?level=c', quick: 'quiz.html?level=c&mode=quick', exam: 'quiz.html?level=c&mode=exam' },
+            d: { pdf: 'papers.html?level=d', quiz: 'quiz.html?level=d', quick: 'quiz.html?level=d&mode=quick', exam: 'quiz.html?level=d&mode=exam' },
+            e: { pdf: 'papers.html?level=e', quiz: 'quiz.html?level=e', quick: 'quiz.html?level=e&mode=quick', exam: 'quiz.html?level=e&mode=exam' },
+            f: { pdf: 'papers.html?level=f', quiz: 'quiz.html?level=f', quick: 'quiz.html?level=f&mode=quick', exam: 'quiz.html?level=f&mode=exam' }
         };
         // Honest capability flags for each level
         const levelCapability = {
@@ -645,6 +716,10 @@
                 `<div class="level-cap ${capClass}">${I18n.t('level_' + level + '_cap')}</div>`;
             document.getElementById('pdfEntry').href = urls.pdf;
             document.getElementById('quizEntry').href = urls.quiz;
+            const qe = document.getElementById('quickEntry');
+            if (qe) qe.href = urls.quick;
+            const ee = document.getElementById('examEntry');
+            if (ee) ee.href = urls.exam;
         }
         // Re-render level info on language switch
         I18n.onSwitch(() => {

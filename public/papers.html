@@ -117,7 +117,7 @@
         }
 
         .paper-card .year {
-            font-family: 'Playfair Display', serif;
+            font-family: var(--font-serif);
             font-size: 1.5rem;
             font-weight: 600;
             color: var(--accent);
@@ -125,6 +125,27 @@
         }
 
         .paper-card .label { color: var(--text-light); font-size: 0.8rem; }
+        .paper-card-actions {
+            display: flex; flex-direction: column; gap: 6px; margin-top: 10px;
+        }
+        .paper-card .pc-btn {
+            display: block; padding: 7px 8px; border-radius: 10px;
+            font-size: 0.75rem; text-decoration: none; cursor: pointer;
+            border: 1px solid var(--warm); background: var(--cream); color: var(--text);
+            transition: all 0.15s; font-family: inherit;
+        }
+        .paper-card .pc-btn:hover { border-color: var(--rose); color: var(--accent); }
+        .paper-card .pc-btn.primary {
+            background: var(--accent); color: white; border-color: var(--accent);
+        }
+        .paper-card .pc-btn.primary:hover { background: #9a6b52; }
+        .pdf-header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .practice-btn {
+            background: white; color: var(--accent); border: 1px solid var(--rose-light);
+            padding: 7px 14px; border-radius: 16px; text-decoration: none;
+            font-size: 0.8rem; transition: all 0.2s; font-family: inherit; cursor: pointer;
+        }
+        .practice-btn:hover { border-color: var(--accent); background: var(--rose-bg); }
 
         /* PDF viewer */
         .pdf-viewer {
@@ -218,8 +239,10 @@
             papers_title: '历年真题', nav_home: '← 首页', nav_quiz: '在线练习',
             subtitle_tpl: '袋鼠数学 {label} · {grade}',
             back_list: '← 返回列表', download_pdf: '下载 PDF', year_paper: '{year} 年真题',
-            view_download: '查看 / 下载', no_data: '暂无 PDF 数据',
+            view_download: '查看 PDF', practice_online: '在线做这一年',
+            no_data: '暂无 PDF 数据',
             login_download: '登录后可下载 PDF 真题文件。',
+            login_practice: '登录后即可在线做这一年真题。',
             grade_a: '1-2年级', grade_b: '3-4年级', grade_c: '5-6年级',
             grade_d: '7-8年级', grade_e: '9-10年级', grade_f: '11-12年级',
         },
@@ -227,8 +250,10 @@
             papers_title: 'Past Papers', nav_home: '← Home', nav_quiz: 'Online Practice',
             subtitle_tpl: 'Math Kangaroo {label} · {grade}',
             back_list: '← Back to List', download_pdf: 'Download PDF', year_paper: '{year} Paper',
-            view_download: 'View / Download', no_data: 'No papers available',
+            view_download: 'View PDF', practice_online: 'Practice this year',
+            no_data: 'No papers available',
             login_download: 'Please login to download PDF papers.',
+            login_practice: 'Sign in to practice this paper online.',
             grade_a: 'Grades 1-2', grade_b: 'Grades 3-4', grade_c: 'Grades 5-6',
             grade_d: 'Grades 7-8', grade_e: 'Grades 9-10', grade_f: 'Grades 11-12',
         }
@@ -360,14 +385,14 @@
             };
         }
 
-        function switchLevel(level) {
+        window.switchLevel = function switchLevel(level) {
             currentLevel = level;
             history.replaceState(null, '', level === 'b' ? 'papers.html' : `papers.html?level=${level}`);
             document.querySelectorAll('.lv-tab').forEach(t =>
                 t.classList.toggle('active', t.dataset.level === level));
             updateHeader();
             renderList();
-        }
+        };
 
         function updateHeader() {
             const cfg = getConfig();
@@ -383,18 +408,35 @@
             });
         }
 
+        function practiceUrl(year) {
+            const lv = currentLevel === 'b' ? '' : `level=${currentLevel}&`;
+            return `quiz.html?${lv}year=${year}`;
+        }
+
+        function goPractice(year) {
+            if (!requireLogin(I18n.t('login_practice'))) return;
+            if (window.KangarooAnalytics) {
+                window.KangarooAnalytics.track('papers_to_quiz', { meta: { level: currentLevel, year } });
+            }
+            window.location.href = practiceUrl(year);
+        }
+
         function showPaper(file, year) {
             const cfg = getConfig();
-            const downloadUrl = `${cfg.dir}/${file}`;
+            const decoded = decodeURIComponent(file);
+            const downloadUrl = `${cfg.dir}/${decoded}`;
             document.getElementById('content').className = '';
             document.getElementById('content').innerHTML = `
                 <a href="javascript:renderList()" class="back-list-btn">${I18n.t('back_list')}</a>
                 <div class="pdf-viewer">
                     <div class="pdf-header">
                         <span class="pdf-title">${I18n.t('year_paper').replace('{year}', year)}</span>
-                        <a href="javascript:void(0)" onclick="downloadPDF('${downloadUrl}')" class="download-btn">${I18n.t('download_pdf')}</a>
+                        <div class="pdf-header-actions">
+                            <button type="button" class="practice-btn" onclick="goPractice(${year})">${I18n.t('practice_online')}</button>
+                            <a href="javascript:void(0)" onclick="downloadPDF('${downloadUrl.replace(/'/g, "\\'")}')" class="download-btn">${I18n.t('download_pdf')}</a>
+                        </div>
                     </div>
-                    <iframe src="${cfg.dir}/${file}"></iframe>
+                    <iframe src="${cfg.dir}/${decoded}"></iframe>
                 </div>`;
             window.scrollTo(0, 0);
         }
@@ -428,12 +470,17 @@
             }
 
             document.getElementById('content').className = 'papers-grid';
-            document.getElementById('content').innerHTML = papers.map(p => `
-                <a href="javascript:showPaper('${encodeURIComponent(p.file)}', ${p.year})" class="paper-card">
+            document.getElementById('content').innerHTML = papers.map(p => {
+                const fileEnc = encodeURIComponent(p.file);
+                return `
+                <div class="paper-card" style="cursor:default;">
                     <div class="year">${p.year}</div>
-                    <div class="label">${I18n.t('view_download')}</div>
-                </a>
-            `).join('');
+                    <div class="paper-card-actions">
+                        <button type="button" class="pc-btn" onclick="showPaper('${fileEnc}', ${p.year})">${I18n.t('view_download')}</button>
+                        <button type="button" class="pc-btn primary" onclick="goPractice(${p.year})">${I18n.t('practice_online')}</button>
+                    </div>
+                </div>`;
+            }).join('');
         }
 
         // Re-render on language switch

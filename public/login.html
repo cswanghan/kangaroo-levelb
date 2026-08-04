@@ -94,14 +94,34 @@
         #loginForm.active, #registerForm.active { display: block; }
 
         .divider {
-            display: flex; align-items: center; margin: 20px 0 16px; color: var(--text-light);
+            display: flex; align-items: center; margin: 16px 0; color: var(--text-light);
             font-size: 0.78rem; letter-spacing: 1px;
         }
         .divider::before, .divider::after {
             content: ''; flex: 1; height: 1px; background: var(--warm);
         }
         .divider span { padding: 0 12px; }
-        .google-btn-wrap { display: flex; justify-content: center; }
+        .google-btn-wrap { display: flex; justify-content: center; min-height: 44px; }
+        .google-first {
+            background: var(--rose-bg); border: 1px solid var(--rose-light);
+            border-radius: 12px; padding: 14px 12px 12px; margin-bottom: 4px;
+        }
+        .google-first .gf-title {
+            font-size: 0.82rem; color: var(--text-light); text-align: center; margin-bottom: 10px;
+        }
+        .pwd-wrap { position: relative; }
+        .pwd-wrap .form-input { padding-right: 72px; }
+        .pwd-toggle {
+            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+            border: none; background: transparent; color: var(--accent);
+            font-size: 0.78rem; cursor: pointer; padding: 6px 8px; font-family: inherit;
+        }
+        .login-hint {
+            margin-top: 10px; font-size: 0.78rem; color: var(--text-light); line-height: 1.5;
+            display: none;
+        }
+        .login-hint.show { display: block; }
+        .login-hint a { color: var(--accent); cursor: pointer; text-decoration: underline; }
         .i18n-toggle {
             position: absolute; top: 0; right: 0;
             padding: 4px 14px; border-radius: 999px;
@@ -110,6 +130,11 @@
             cursor: pointer; transition: all 0.2s;
         }
         .i18n-toggle:hover { border-color: var(--accent); color: var(--accent); }
+        @media (max-width: 480px) {
+            .auth-card { padding: 28px 18px; }
+            .submit-btn { min-height: 48px; }
+            .form-input { min-height: 48px; font-size: 16px; }
+        }
     </style>
 </head>
 <body>
@@ -118,7 +143,7 @@
         <button class="i18n-toggle" onclick="I18n.toggle()">EN</button>
         <div class="icon">🦘</div>
         <h1>Kangaroo Math</h1>
-        <p class="sub" data-i18n="login_sub">登录或注册开始练习</p>
+        <p class="sub" data-i18n="login_sub">登录后开始练习 · 保存成绩与错题</p>
     </div>
 
     <div class="auth-card">
@@ -128,20 +153,35 @@
         </div>
 
         <form id="loginForm" class="active" onsubmit="handleLogin(event)">
+            <!-- Google first: analytics show high password failure rate -->
+            <div class="google-first">
+                <div class="gf-title" data-i18n="google_recommend">推荐 · 一键 Google 登录</div>
+                <div class="google-btn-wrap" id="googleBtnWrap"></div>
+                <div class="message" id="googleMsg"></div>
+            </div>
+
+            <div class="divider"><span data-i18n="divider_or">或用账号密码</span></div>
+
             <div class="form-group">
-                <label class="form-label" data-i18n="label_username">用户名</label>
-                <input class="form-input" name="username" data-i18n-placeholder="ph_username" placeholder="请输入用户名" required>
+                <label class="form-label" data-i18n="label_account">用户名 / 邮箱</label>
+                <input class="form-input" name="username" autocomplete="username"
+                    data-i18n-placeholder="ph_account" placeholder="用户名或注册邮箱" required>
             </div>
             <div class="form-group">
                 <label class="form-label" data-i18n="label_password">密码</label>
-                <input class="form-input" name="password" type="password" data-i18n-placeholder="ph_password" placeholder="请输入密码" required>
+                <div class="pwd-wrap">
+                    <input class="form-input" id="loginPassword" name="password" type="password"
+                        autocomplete="current-password"
+                        data-i18n-placeholder="ph_password" placeholder="请输入密码" required>
+                    <button type="button" class="pwd-toggle" onclick="togglePwd('loginPassword', this)" data-i18n="show_pwd">显示</button>
+                </div>
             </div>
             <button class="submit-btn" type="submit" data-i18n="btn_login">登录</button>
             <div class="message" id="loginMsg"></div>
-
-            <div class="divider"><span data-i18n="divider_or">OR</span></div>
-            <div class="google-btn-wrap" id="googleBtnWrap"></div>
-            <div class="message" id="googleMsg"></div>
+            <div class="login-hint" id="loginHint">
+                <span data-i18n="login_help">忘记密码？可尝试注册邮箱登录，或用 Google 登录；仍不行请重新注册账号。</span>
+                <a onclick="showTab('register')" data-i18n="go_register">去注册 →</a>
+            </div>
         </form>
 
         <form id="registerForm" onsubmit="handleRegister(event)">
@@ -174,24 +214,36 @@
 <script>
 window.I18N = {
     zh: {
-        login_sub: '登录或注册开始练习', tab_login: '登录', tab_register: '注册',
-        label_username: '用户名', label_password: '密码', label_email: '邮箱', label_phone: '手机号（选填）',
-        ph_username: '请输入用户名', ph_password: '请输入密码',
+        login_sub: '登录后开始练习 · 保存成绩与错题', tab_login: '登录', tab_register: '注册',
+        label_username: '用户名', label_account: '用户名 / 邮箱', label_password: '密码',
+        label_email: '邮箱', label_phone: '手机号（选填）',
+        ph_username: '请输入用户名', ph_account: '用户名或注册邮箱', ph_password: '请输入密码',
         ph_username_reg: '3-20 字符', ph_password_reg: '至少 6 位',
-        ph_email: '用于找回密码', ph_phone: '选填',
+        ph_email: '用于账号识别与找回提示', ph_phone: '选填',
         btn_login: '登录', btn_register: '注册', back_home: '← 返回首页',
         err_server: '服务端错误', err_network: '网络错误',
-        divider_or: '或',
+        divider_or: '或用账号密码',
+        google_recommend: '推荐 · 一键 Google 登录',
+        show_pwd: '显示', hide_pwd: '隐藏',
+        login_help: '忘记密码？可尝试注册邮箱登录，或用 Google 登录；仍不行请重新注册账号。',
+        go_register: '去注册 →',
+        login_fail_hint: '账号或密码不正确。可试：用户名 / 注册邮箱 / Google 登录',
     },
     en: {
-        login_sub: 'Login or register to start practicing', tab_login: 'Login', tab_register: 'Register',
-        label_username: 'USERNAME', label_password: 'PASSWORD', label_email: 'EMAIL', label_phone: 'PHONE (OPTIONAL)',
-        ph_username: 'Enter username', ph_password: 'Enter password',
+        login_sub: 'Sign in to practice · save scores & wrong answers', tab_login: 'Login', tab_register: 'Register',
+        label_username: 'USERNAME', label_account: 'USERNAME / EMAIL', label_password: 'PASSWORD',
+        label_email: 'EMAIL', label_phone: 'PHONE (OPTIONAL)',
+        ph_username: 'Enter username', ph_account: 'Username or email', ph_password: 'Enter password',
         ph_username_reg: '3-20 characters', ph_password_reg: 'At least 6 characters',
-        ph_email: 'For password recovery', ph_phone: 'Optional',
+        ph_email: 'For account recovery hints', ph_phone: 'Optional',
         btn_login: 'Login', btn_register: 'Register', back_home: '← Back to Home',
         err_server: 'Server error', err_network: 'Network error',
-        divider_or: 'OR',
+        divider_or: 'OR use password',
+        google_recommend: 'Recommended · Google sign-in',
+        show_pwd: 'Show', hide_pwd: 'Hide',
+        login_help: 'Forgot password? Try your email, Google sign-in, or register a new account.',
+        go_register: 'Register →',
+        login_fail_hint: 'Incorrect account or password. Try username / email / Google.',
     }
 };
 </script>
@@ -267,11 +319,23 @@ window.I18N = {
         }
     }
 
+    let loginFailCount = 0;
+
+    function togglePwd(inputId, btn) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        btn.textContent = show ? I18n.t('hide_pwd') : I18n.t('show_pwd');
+    }
+
     async function handleLogin(e) {
         e.preventDefault();
         const form = e.target;
-        const data = { username: form.username.value, password: form.password.value };
+        const account = (form.username.value || '').trim();
+        const data = { username: account, account, password: form.password.value };
         trackAnalytics('auth_login_attempt');
+        const hint = document.getElementById('loginHint');
 
         try {
             const r = await fetch('/api/auth/login', {
@@ -291,16 +355,27 @@ window.I18N = {
 
             if (r.ok) {
                 trackAnalytics('auth_login_success');
+                loginFailCount = 0;
                 localStorage.setItem('token', res.token);
                 localStorage.setItem('user', JSON.stringify(res.user));
                 window.location.href = getRedirect();
             } else {
-                trackAnalytics('auth_login_failure', { group: 'friction', label: res.error });
-                showMsg('loginMsg', res.error, 'error');
+                loginFailCount += 1;
+                trackAnalytics('auth_login_failure', { group: 'friction', label: res.error || res.code });
+                const msg = res.hint
+                    ? `${res.error || I18n.t('login_fail_hint')}（${res.hint}）`
+                    : (res.error || I18n.t('login_fail_hint'));
+                showMsg('loginMsg', msg, 'error');
+                if (hint) hint.classList.add('show');
+                // After 2 failures, gently push Google / register
+                if (loginFailCount >= 2 && hint) {
+                    hint.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
             }
         } catch (err) {
             trackAnalytics('auth_login_failure', { group: 'friction', label: err.message });
             showMsg('loginMsg', I18n.t('err_network') + ': ' + err.message, 'error');
+            if (hint) hint.classList.add('show');
         }
     }
 
@@ -328,10 +403,15 @@ window.I18N = {
                 window.google.accounts.id.renderButton(wrap, {
                     theme: 'outline',
                     size: 'large',
-                    width: 300,
-                    text: 'signin_with',
+                    width: Math.min(320, wrap.parentElement?.clientWidth || 300),
+                    text: 'continue_with',
                     shape: 'pill',
+                    logo_alignment: 'left',
                 });
+                // Prefer Google when redirected from login gate
+                if (new URLSearchParams(location.search).get('prefer') === 'google') {
+                    try { window.google.accounts.id.prompt(); } catch {}
+                }
             };
             tryInit();
         } catch {
