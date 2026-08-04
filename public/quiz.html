@@ -72,51 +72,125 @@
             color: var(--rose); cursor: pointer; padding: 4px 0;
         }
 
-        /* 3-column grid */
+        /* 3-column grid: 左题号 | 中题目选项 | 右图案 */
         .quiz-layout {
             display: grid;
-            grid-template-columns: 1fr 340px 240px;
-            gap: 20px;
-            max-width: 1200px;
+            grid-template-columns: 220px minmax(280px, 1fr) minmax(320px, 1.15fr);
+            gap: 16px;
+            max-width: 1280px;
             width: 100%;
             min-height: calc(100vh - 100px);
         }
 
+        /* Right: question figure / 图案 */
         .quiz-question {
             background: var(--paper);
             border-radius: 12px;
-            padding: 32px 36px 32px 48px;
+            padding: 20px 20px 20px 24px;
             position: relative;
             box-shadow: 0 2px 12px rgba(0,0,0,0.06);
             overflow-y: auto;
             max-height: calc(100vh - 100px);
+            display: flex;
+            flex-direction: column;
         }
 
         /* Notebook dots */
         .notebook-dots {
-            position: absolute; left: 14px; top: 40px; bottom: 40px;
-            width: 12px; display: flex; flex-direction: column;
+            position: absolute; left: 10px; top: 28px; bottom: 28px;
+            width: 10px; display: flex; flex-direction: column;
             justify-content: space-evenly; pointer-events: none;
         }
         .notebook-dot {
-            width: 10px; height: 10px;
+            width: 8px; height: 8px;
             background: var(--desk); border-radius: 50%;
             box-shadow: inset 1px 1px 3px rgba(0,0,0,0.15);
         }
 
+        /* Middle: stem + options */
         .quiz-answer {
             background: var(--paper);
             border-radius: 12px;
-            padding: 32px 28px;
+            padding: 24px 22px;
             display: flex; flex-direction: column;
             box-shadow: 0 2px 12px rgba(0,0,0,0.06);
             overflow-y: auto;
             max-height: calc(100vh - 100px);
+            min-width: 0;
         }
 
+        /* Left: 题号 navigation */
         .quiz-sidebar {
-            display: flex; flex-direction: column; gap: 16px;
+            display: flex; flex-direction: column; gap: 12px;
+            order: 0;
         }
+
+        .figure-label {
+            font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1.5px;
+            color: var(--ink-light); margin-bottom: 10px;
+        }
+        .figure-hint {
+            margin-top: 10px; font-size: 0.75rem; color: var(--ink-light); line-height: 1.4;
+        }
+        .img-fallback {
+            display: none; padding: 24px 16px; text-align: center;
+            color: var(--ink-med); font-size: 0.9rem; line-height: 1.6;
+            background: var(--error-bg); border-radius: 10px; border: 1px dashed var(--error);
+        }
+        .img-fallback.show { display: block; }
+
+        /* TTS / read-aloud */
+        .tts-bar {
+            display: flex; align-items: center; gap: 8px;
+            margin: 0 0 14px; flex-wrap: wrap;
+        }
+        .tts-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 7px 12px; border-radius: 16px;
+            border: 1px solid var(--paper-shadow); background: var(--blush-faint);
+            color: var(--rose); font-size: 0.8rem; font-family: inherit; cursor: pointer;
+            transition: all 0.15s;
+        }
+        .tts-btn:hover { border-color: var(--blush); background: rgba(241,186,186,0.45); }
+        .tts-btn.speaking { background: var(--rose); color: #fff; border-color: var(--rose); }
+        .tts-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+        .tts-status { font-size: 0.72rem; color: var(--ink-light); }
+
+        /* Exam mode chrome */
+        body.exam-mode { background: #e4e0db; }
+        body.exam-mode .quiz-wrapper { padding-top: 12px; }
+        .exam-banner {
+            display: none; width: 100%; max-width: 1280px;
+            background: linear-gradient(90deg, #2c2a28, #4a4440);
+            color: #f5f0ea; border-radius: 10px; padding: 10px 16px;
+            margin-bottom: 12px; font-size: 0.82rem;
+            align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+        }
+        body.exam-mode .exam-banner { display: flex; }
+        .exam-banner strong { font-weight: 600; letter-spacing: 0.5px; }
+        .exam-banner .exam-rules { color: rgba(255,255,255,0.72); font-size: 0.75rem; }
+        .timer-display.countdown-warn { color: #c45c5c; animation: pulse-warn 1s infinite; }
+        @keyframes pulse-warn { 50% { opacity: 0.55; } }
+        .exam-mode-card {
+            background: var(--paper); border: 1px solid var(--paper-shadow);
+            border-radius: 12px; padding: 22px; max-width: 720px; margin: 0 auto 16px;
+        }
+        .exam-mode-card h3 {
+            font-family: var(--font-serif); font-size: 1.2rem; font-weight: 500; margin-bottom: 8px;
+        }
+        .exam-mode-card p { color: var(--ink-med); font-size: 0.88rem; line-height: 1.65; margin-bottom: 12px; }
+        .exam-mode-card ul {
+            margin: 0 0 16px 18px; color: var(--ink-med); font-size: 0.85rem; line-height: 1.7;
+        }
+        .exam-duration-row {
+            display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px;
+        }
+        .exam-duration-row label {
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px;
+            border: 1px solid var(--paper-shadow); border-radius: 10px; cursor: pointer;
+            font-size: 0.85rem; color: var(--ink-med);
+        }
+        .exam-duration-row input { accent-color: var(--rose); }
 
         /* Timer block */
         .timer-block {
@@ -224,11 +298,11 @@
         }
         .q-sub { font-family: var(--font-serif); font-size: 1rem; color: var(--ink-med); font-style: italic; margin-bottom: 20px; }
 
-        /* Issue #5: larger default image */
+        /* Issue #5: larger default image — right column figure */
         .question-image {
             width: 100%; max-width: 100%; border-radius: 6px; border: 1px solid var(--paper-shadow);
             background: white; cursor: zoom-in;
-            min-height: 200px; object-fit: contain;
+            min-height: 240px; flex: 1; object-fit: contain;
             -webkit-user-select: none; user-select: none; -webkit-user-drag: none;
         }
         .question-image.loading {
@@ -518,21 +592,21 @@
         .modal-actions .btn { flex: 1; }
 
         /* Question transition */
-        .quiz-question.fade-out, .quiz-answer.fade-out {
+        .quiz-question.fade-out, .quiz-answer.fade-out, .quiz-sidebar.fade-out {
             opacity: 0; transform: translateY(6px);
         }
-        .quiz-question, .quiz-answer {
+        .quiz-question, .quiz-answer, .quiz-sidebar {
             transition: opacity 0.2s ease, transform 0.2s ease;
         }
 
-        /* Responsive */
+        /* Responsive: tablet keeps left nav, stacks figure under stem */
         @media (max-width: 1100px) {
             .quiz-layout {
-                grid-template-columns: 1fr 220px;
+                grid-template-columns: 200px 1fr;
             }
-            .quiz-question { grid-column: 1; grid-row: 1; max-height: 50vh; }
-            .quiz-answer { grid-column: 1; grid-row: 2; max-height: none; }
-            .quiz-sidebar { grid-column: 2; grid-row: 1 / 3; }
+            .quiz-sidebar { grid-column: 1; grid-row: 1 / 3; }
+            .quiz-answer { grid-column: 2; grid-row: 1; max-height: none; }
+            .quiz-question { grid-column: 2; grid-row: 2; max-height: 48vh; }
             .nav-grid { grid-template-columns: repeat(4, 1fr); }
         }
         @media (max-width: 768px) {
@@ -541,8 +615,9 @@
                 padding-bottom: 88px;
                 gap: 12px;
             }
-            .quiz-question { max-height: none; order: 1; }
-            .quiz-answer { order: 2; }
+            /* Mobile order: 题号(底栏) · 题目选项 · 图案 */
+            .quiz-answer { order: 1; }
+            .quiz-question { max-height: none; order: 2; }
             .quiz-sidebar {
                 position: fixed; bottom: 0; left: 0; right: 0;
                 z-index: 100; flex-direction: row;
@@ -579,14 +654,14 @@
                 padding: 12px 16px; font-size: 0.9rem; flex: 1; min-height: 44px;
             }
             .notebook-dots { display: none; }
-            .quiz-question { padding: 20px 16px; }
+            .quiz-question { padding: 16px; }
             .quiz-answer { padding: 16px; }
             .option {
                 min-height: 52px; padding: 14px 16px;
                 font-size: 1.05rem;
             }
             .question-image {
-                width: 100%; max-height: 52vh; object-fit: contain;
+                width: 100%; max-height: 48vh; object-fit: contain; flex: none;
                 cursor: zoom-in; touch-action: manipulation;
             }
             .action-bar { gap: 10px; }
@@ -597,6 +672,7 @@
                 background: var(--error-bg); border-radius: 10px; border: 1px dashed var(--error);
             }
             .img-fallback.show { display: block; }
+            .exam-banner { font-size: 0.75rem; padding: 8px 12px; }
         }
         @media (max-width: 600px) {
             .select-header h1 { font-size: 1.6rem; }
@@ -696,7 +772,6 @@ window.I18N = {
         nav_wrong: '错题本',
         nav_analysis: '学习诊断',
         choose_answer: '选择答案',
-        nav_title: '题目导航',
         legend_answered: '已答',
         legend_unanswered: '未答',
         legend_current: '当前',
@@ -770,11 +845,35 @@ window.I18N = {
         level_cap_c: 'Level C：2013–2025 在线可判分（解析完善中）',
         level_cap_other: '本等级在线年份有限（约 2013–2019），完整卷请用 PDF',
         mode_full: '整卷练习',
+        mode_exam: '模拟考场',
         mode_quick: '快速练',
         mode_kp: '按知识点',
         mode_quick_hint: '从 Level B 历年真题中随机抽题，适合每天 10 分钟。',
         mode_kp_hint: '按粗分类知识点练习（基于题库标签聚合）。',
         mode_b_only: '快速练 / 知识点练目前仅支持 Level B，请先切换到 Level B。',
+        exam_card_title: '模拟考场模式',
+        exam_card_desc: '还原正式竞赛节奏：倒计时交卷、作答期间不显示对错与解析，交卷后统一批改。',
+        exam_rule_1: '默认 75 分钟倒计时（可改），时间到自动交卷',
+        exam_rule_2: '可自由跳题、修改答案；不即时判分',
+        exam_rule_3: '布局：左题号 · 中题目选项 · 右图案；支持读题',
+        exam_duration_label: '考试时长',
+        exam_pick_year: '选择年份开始模拟考：',
+        exam_banner_title: '模拟考场',
+        exam_banner_rules: ' · 作答期间不显示对错 · 时间到自动交卷',
+        exam_title: '模拟考 · {year} · Level {lv}',
+        exam_time_up: '考试时间到，已自动交卷。',
+        exam_remaining: '剩余 {m} 分',
+        tts_read: '🔊 读题',
+        tts_stop: '⏹ 停止',
+        tts_reading: '正在朗读…',
+        tts_unsupported: '当前浏览器不支持语音朗读',
+        tts_stem: '第 {n} 题，{p} 分。请看右侧题目图案，从 A 到 E 中选择答案。',
+        tts_kp: '知识点：{kp}。',
+        tts_selected: '你当前选择了选项 {a}。',
+        tts_explain: '解析：{exp}',
+        figure_label: '题目图案',
+        figure_hint: '点击图案可放大查看',
+        nav_title: '题号',
         quick_10: '10 题',
         quick_15: '15 题',
         quick_10_desc: '约 10–15 分钟',
@@ -788,6 +887,7 @@ window.I18N = {
         exit_confirm: '确定退出？',
         exit_msg: '做题进度已自动保存，下次可继续。',
         exit_msg_alt: '做题进度已自动保存，可稍后继续。',
+        exit_exam_msg: '模拟考进行中，退出后进度会保存，但计时会继续按截止时间扣减。',
         history_title: '历史成绩',
         wrong_title: '错题本',
         retry_wrong: '重做错题',
@@ -843,7 +943,6 @@ window.I18N = {
         nav_wrong: 'Wrong Answers',
         nav_analysis: 'Analytics',
         choose_answer: 'Choose Answer',
-        nav_title: 'Navigation',
         legend_answered: 'Done',
         legend_unanswered: 'Todo',
         legend_current: 'Current',
@@ -917,11 +1016,35 @@ window.I18N = {
         level_cap_c: 'Level C: 2013–2025 online grading (solutions in progress)',
         level_cap_other: 'Limited online years (~2013–2019). Use PDF for full coverage.',
         mode_full: 'Full paper',
+        mode_exam: 'Mock exam',
         mode_quick: 'Quick practice',
         mode_kp: 'By topic',
         mode_quick_hint: 'Random questions from Level B past papers — great for 10 minutes a day.',
         mode_kp_hint: 'Practice by coarse knowledge topics (aggregated from tags).',
         mode_b_only: 'Quick / topic practice is Level B only. Switch to Level B first.',
+        exam_card_title: 'Mock exam mode',
+        exam_card_desc: 'Contest-style: countdown, no instant grading or solutions until you submit.',
+        exam_rule_1: 'Default 75-minute countdown (editable); auto-submit when time is up',
+        exam_rule_2: 'Free navigation and answer changes; no live scoring',
+        exam_rule_3: 'Layout: numbers · stem/options · figure; text-to-speech supported',
+        exam_duration_label: 'Duration',
+        exam_pick_year: 'Pick a year to start:',
+        exam_banner_title: 'Mock exam',
+        exam_banner_rules: ' · No instant grading · Auto-submit when time is up',
+        exam_title: 'Exam · {year} · Level {lv}',
+        exam_time_up: 'Time is up — paper submitted automatically.',
+        exam_remaining: '{m} min left',
+        tts_read: '🔊 Read',
+        tts_stop: '⏹ Stop',
+        tts_reading: 'Reading…',
+        tts_unsupported: 'Speech synthesis is not supported in this browser',
+        tts_stem: 'Question {n}, {p} points. Look at the figure on the right and choose A to E.',
+        tts_kp: 'Topic: {kp}.',
+        tts_selected: 'You selected option {a}.',
+        tts_explain: 'Explanation: {exp}',
+        figure_label: 'Figure',
+        figure_hint: 'Tap the figure to zoom',
+        nav_title: 'Numbers',
         quick_10: '10 Qs',
         quick_15: '15 Qs',
         quick_10_desc: '~10–15 min',
@@ -935,6 +1058,7 @@ window.I18N = {
         exit_confirm: 'Leave quiz?',
         exit_msg: 'Progress saved. You can continue later.',
         exit_msg_alt: 'Progress saved. You can continue later.',
+        exit_exam_msg: 'Mock exam in progress. Progress is saved; the deadline keeps counting down.',
         history_title: 'History',
         wrong_title: 'Wrong Answers',
         retry_wrong: 'Retry Wrong',
@@ -1011,15 +1135,36 @@ window.I18N = {
     <div class="level-note" id="levelNote">Level B：2013–2025 在线含解析</div>
     <div class="pending-banner" id="pendingBanner"></div>
 
-    <!-- Practice mode switcher (#20) -->
+    <!-- Practice mode switcher (#20) + 模拟考场 -->
     <div class="mode-switch" id="modeSwitch">
         <button type="button" class="mode-btn active" data-mode="full" onclick="setPracticeMode('full')" data-i18n="mode_full">整卷练习</button>
+        <button type="button" class="mode-btn" data-mode="exam" onclick="setPracticeMode('exam')" data-i18n="mode_exam">模拟考场</button>
         <button type="button" class="mode-btn" data-mode="quick" onclick="setPracticeMode('quick')" data-i18n="mode_quick">快速练</button>
         <button type="button" class="mode-btn" data-mode="knowledge" onclick="setPracticeMode('knowledge')" data-i18n="mode_kp">按知识点</button>
     </div>
 
     <div class="mode-panel show" id="panelFull">
         <div class="year-grid" id="yearGrid"><div class="loading" data-i18n="loading">加载中...</div></div>
+    </div>
+
+    <div class="mode-panel" id="panelExam">
+        <div class="exam-mode-card">
+            <h3 data-i18n="exam_card_title">模拟考场模式</h3>
+            <p data-i18n="exam_card_desc">还原正式竞赛节奏：倒计时交卷、作答期间不显示对错与解析，交卷后统一批改。</p>
+            <ul>
+                <li data-i18n="exam_rule_1">默认 75 分钟倒计时（可改），时间到自动交卷</li>
+                <li data-i18n="exam_rule_2">可自由跳题、修改答案；不即时判分</li>
+                <li data-i18n="exam_rule_3">布局：左题号 · 中题目选项 · 右图案；支持读题</li>
+            </ul>
+            <div class="exam-duration-row" id="examDurationRow">
+                <span data-i18n="exam_duration_label">考试时长</span>
+                <label><input type="radio" name="examDuration" value="60"> 60′</label>
+                <label><input type="radio" name="examDuration" value="75" checked> 75′</label>
+                <label><input type="radio" name="examDuration" value="90"> 90′</label>
+            </div>
+            <div class="mode-hint" style="text-align:left;margin-bottom:10px;" data-i18n="exam_pick_year">选择年份开始模拟考：</div>
+        </div>
+        <div class="year-grid" id="examYearGrid"><div class="loading" data-i18n="loading">加载中...</div></div>
     </div>
 
     <div class="mode-panel" id="panelQuick">
@@ -1079,10 +1224,41 @@ window.I18N = {
         <button class="i18n-toggle" onclick="I18n.toggle()" style="padding:4px 14px;border-radius:999px;border:1px solid rgba(196,160,138,0.3);background:white;color:#3d3530;font-size:0.82rem;font-family:inherit;cursor:pointer;">EN</button>
     </div>
 
+    <div class="exam-banner" id="examBanner">
+        <div>
+            <strong data-i18n="exam_banner_title">模拟考场</strong>
+            <span class="exam-rules" data-i18n="exam_banner_rules"> · 作答期间不显示对错 · 时间到自动交卷</span>
+        </div>
+        <span id="examBannerExtra"></span>
+    </div>
+
     <div class="quiz-layout">
-        <!-- Left: question -->
-        <div class="quiz-question" id="panelLeft">
-            <div class="notebook-dots" id="notebookDots"></div>
+        <!-- Left: 题号导航 -->
+        <div class="quiz-sidebar" id="panelNav">
+            <div class="timer-block">
+                <div class="timer-row">
+                    <span id="timerDisplay" class="timer-display">00:00</span>
+                    <span class="timer-progress-text" id="progressText">已答 0 / 0</span>
+                </div>
+                <div class="timer-bar"><div class="timer-bar-fill" id="progressFill"></div></div>
+            </div>
+
+            <div class="nav-grid-block" id="navGridBlock">
+                <div class="nav-grid-title" data-i18n="nav_title">题号</div>
+                <div class="nav-grid" id="navGrid"></div>
+                <div class="nav-legend">
+                    <span class="nav-legend-item"><span class="nav-legend-dot answered"></span> <span data-i18n="legend_answered">已答</span></span>
+                    <span class="nav-legend-item"><span class="nav-legend-dot unanswered"></span> <span data-i18n="legend_unanswered">未答</span></span>
+                    <span class="nav-legend-item"><span class="nav-legend-dot current"></span> <span data-i18n="legend_current">当前</span></span>
+                </div>
+            </div>
+
+            <button class="mobile-nav-toggle" onclick="toggleNavDrawer()" title="题号" data-i18n-title="nav_title">&#9783;</button>
+            <button class="sidebar-submit" id="sidebarSubmit" onclick="submitQuiz()" data-i18n="submit_quiz">提交答卷</button>
+        </div>
+
+        <!-- Middle: 题目 + 选项 -->
+        <div class="quiz-answer" id="panelMiddle">
             <div class="q-meta">
                 <span id="questionBadge">第 1 题</span>
                 <div class="q-meta-line"></div>
@@ -1090,18 +1266,12 @@ window.I18N = {
             </div>
             <div class="q-number" id="qNumber">Question 1</div>
             <div class="q-sub" id="qSub"></div>
-            <img class="question-image" id="questionImage" alt="题目" draggable="false" onclick="openLightbox()">
-            <div class="img-fallback" id="imgFallback">
-                <div id="imgFallbackMsg">题目图片加载失败</div>
-                <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-                    <button class="btn btn-outline" type="button" onclick="retryQuestionImage()" id="imgRetryBtn">重新加载</button>
-                    <a class="btn btn-primary" id="imgPdfLink" href="papers.html" style="text-decoration:none;display:inline-flex;align-items:center;">打开 PDF</a>
-                </div>
-            </div>
-        </div>
 
-        <!-- Middle: answers -->
-        <div class="quiz-answer">
+            <div class="tts-bar">
+                <button type="button" class="tts-btn" id="ttsBtn" onclick="toggleReadQuestion()" data-i18n="tts_read">🔊 读题</button>
+                <span class="tts-status" id="ttsStatus"></span>
+            </div>
+
             <h2 class="section-title" data-i18n="choose_answer">选择答案</h2>
             <div class="options" id="options"></div>
             <div class="feedback" id="feedback"></div>
@@ -1112,28 +1282,19 @@ window.I18N = {
             <div class="action-bar" id="actionBar"></div>
         </div>
 
-        <!-- Right: sidebar -->
-        <div class="quiz-sidebar">
-            <div class="timer-block">
-                <div class="timer-row">
-                    <span id="timerDisplay" class="timer-display">00:00</span>
-                    <span class="timer-progress-text" id="progressText">已答 0 / 0</span>
-                </div>
-                <div class="timer-bar"><div class="timer-bar-fill" id="progressFill"></div></div>
-            </div>
-
-            <div class="nav-grid-block" id="navGridBlock">
-                <div class="nav-grid-title" data-i18n="nav_title">题目导航</div>
-                <div class="nav-grid" id="navGrid"></div>
-                <div class="nav-legend">
-                    <span class="nav-legend-item"><span class="nav-legend-dot answered"></span> <span data-i18n="legend_answered">已答</span></span>
-                    <span class="nav-legend-item"><span class="nav-legend-dot unanswered"></span> <span data-i18n="legend_unanswered">未答</span></span>
-                    <span class="nav-legend-item"><span class="nav-legend-dot current"></span> <span data-i18n="legend_current">当前</span></span>
+        <!-- Right: 图案 / 题图 -->
+        <div class="quiz-question" id="panelLeft">
+            <div class="notebook-dots" id="notebookDots"></div>
+            <div class="figure-label" data-i18n="figure_label">题目图案</div>
+            <img class="question-image" id="questionImage" alt="题目图案" draggable="false" onclick="openLightbox()">
+            <div class="img-fallback" id="imgFallback">
+                <div id="imgFallbackMsg">题目图片加载失败</div>
+                <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+                    <button class="btn btn-outline" type="button" onclick="retryQuestionImage()" id="imgRetryBtn">重新加载</button>
+                    <a class="btn btn-primary" id="imgPdfLink" href="papers.html" style="text-decoration:none;display:inline-flex;align-items:center;">打开 PDF</a>
                 </div>
             </div>
-
-            <button class="mobile-nav-toggle" onclick="toggleNavDrawer()" title="题目导航" data-i18n-title="nav_title">&#9783;</button>
-            <button class="sidebar-submit" id="sidebarSubmit" onclick="submitQuiz()" data-i18n="submit_quiz">提交答卷</button>
+            <div class="figure-hint" data-i18n="figure_hint">点击图案可放大查看</div>
         </div>
     </div>
 </div>
@@ -1240,13 +1401,16 @@ window.I18N = {
     let currentLevel = new URLSearchParams(location.search).get('level') || 'b';
     let currentYear = null, questions = [], currentIndex = 0, userAnswers = {};
     let quizStartTime = null, quizSubmitted = false, timerInterval = null;
-    // #20 practice modes: full | quick | knowledge
+    // #20 practice modes: full | exam | quick | knowledge
     let practiceMode = new URLSearchParams(location.search).get('mode') || 'full';
-    if (!['full', 'quick', 'knowledge'].includes(practiceMode)) practiceMode = 'full';
+    if (!['full', 'exam', 'quick', 'knowledge'].includes(practiceMode)) practiceMode = 'full';
     let timerEnabled = true;
     let practiceLabel = ''; // display title for non-full modes
+    let examDurationMin = 75; // mock exam countdown minutes
+    let examEndsAt = null; // timestamp when countdown hits zero
     let levelBPool = null; // cached [{...q, sourceYear, sourceNumber, category}]
     let levelBPoolPromise = null;
+    let ttsSpeaking = false;
 
     function trackAnalytics(eventName, opts) {
         if (window.KangarooAnalytics && typeof window.KangarooAnalytics.track === 'function') {
@@ -1330,11 +1494,19 @@ window.I18N = {
         }));
     }
 
+    function getSelectedExamDuration() {
+        const el = document.querySelector('input[name="examDuration"]:checked');
+        const v = el ? parseInt(el.value, 10) : 75;
+        return [60, 75, 90].includes(v) ? v : 75;
+    }
+
     function setPracticeMode(mode) {
         practiceMode = mode;
         document.querySelectorAll('.mode-btn').forEach(b =>
             b.classList.toggle('active', b.dataset.mode === mode));
         document.getElementById('panelFull').classList.toggle('show', mode === 'full');
+        const panelExam = document.getElementById('panelExam');
+        if (panelExam) panelExam.classList.toggle('show', mode === 'exam');
         document.getElementById('panelQuick').classList.toggle('show', mode === 'quick');
         document.getElementById('panelKnowledge').classList.toggle('show', mode === 'knowledge');
         const isB = currentLevel === 'b';
@@ -1346,6 +1518,7 @@ window.I18N = {
         document.getElementById('kpHint').style.display = (isB && mode === 'knowledge') ? 'block' : 'none';
         document.getElementById('kpTimerRow').style.display = (isB && mode === 'knowledge') ? 'flex' : 'none';
         if (mode === 'knowledge' && isB) renderKnowledgeGrid();
+        if (mode === 'exam') syncExamYearGrid();
         // URL hint without full reload
         const sp = new URLSearchParams(location.search);
         if (mode === 'full') sp.delete('mode'); else sp.set('mode', mode);
@@ -1353,6 +1526,27 @@ window.I18N = {
         const q = sp.toString();
         history.replaceState(null, '', q ? `quiz.html?${q}` : 'quiz.html');
         trackAnalytics('practice_mode_switch', { meta: { mode, level: currentLevel } });
+    }
+
+    function syncExamYearGrid() {
+        const src = document.getElementById('yearGrid');
+        const dst = document.getElementById('examYearGrid');
+        if (!src || !dst) return;
+        // Mirror full-year cards but start exam session
+        const cards = src.querySelectorAll('.year-card');
+        if (!cards.length) {
+            dst.innerHTML = src.innerHTML;
+            return;
+        }
+        dst.innerHTML = Array.from(cards).map(card => {
+            const yr = card.querySelector('.yr')?.textContent?.trim();
+            const cnt = card.querySelector('.cnt')?.textContent || '';
+            if (!yr) return '';
+            return `<div class="year-card" onclick="startExam(${yr})">
+                <div class="yr">${yr}</div>
+                <div class="cnt">${cnt}</div>
+            </div>`;
+        }).join('');
     }
 
     async function renderKnowledgeGrid() {
@@ -1404,7 +1598,8 @@ window.I18N = {
         });
     }
 
-    function beginPracticeSession({ mode, year, questions: qs, label, timed, category }) {
+    function beginPracticeSession({ mode, year, questions: qs, label, timed, category, examMinutes, resumeEndsAt }) {
+        stopReadQuestion();
         practiceMode = mode;
         practiceLabel = label || '';
         timerEnabled = timed !== false;
@@ -1415,11 +1610,21 @@ window.I18N = {
         halfwayTracked = false;
         quizStartTime = Date.now();
         quizSubmitted = false;
+        examDurationMin = examMinutes || examDurationMin || 75;
+        if (mode === 'exam') {
+            examEndsAt = resumeEndsAt || (Date.now() + examDurationMin * 60 * 1000);
+            document.body.classList.add('exam-mode');
+            timerEnabled = true;
+        } else {
+            examEndsAt = null;
+            document.body.classList.remove('exam-mode');
+        }
         clearProgress();
         trackAnalytics('quiz_start', {
             meta: {
                 level: currentLevel, year: currentYear, total: questions.length,
                 mode: practiceMode, timed: timerEnabled, category: category || null,
+                examMinutes: mode === 'exam' ? examDurationMin : null,
             }
         });
         if (timerEnabled) startTimer(); else stopTimer();
@@ -1433,9 +1638,34 @@ window.I18N = {
         if (!timerEnabled) {
             document.getElementById('timerDisplay').textContent = '--:--';
         }
+        const bannerExtra = document.getElementById('examBannerExtra');
+        if (bannerExtra && mode === 'exam') {
+            bannerExtra.textContent = I18n.t('exam_remaining').replace('{m}', examDurationMin);
+        }
         preloadImages(0);
         renderQuestion();
         saveProgress();
+    }
+
+    async function startExam(year) {
+        examDurationMin = getSelectedExamDuration();
+        trackAnalytics('quiz_test_select', { meta: { level: currentLevel, year, mode: 'exam' } });
+        try {
+            const r = await fetch(`${dataBase()}/${year}.json`);
+            const d = await r.json();
+            pendingYear = year;
+            pendingData = d;
+            pendingExam = true;
+            const lv = currentLevel.toUpperCase();
+            const total = d.questions.length;
+            const maxPts = total + d.questions.reduce((s, q) => s + q.points, 0);
+            document.getElementById('modalTitle').textContent = I18n.t('exam_title')
+                .replace('{year}', year).replace('{lv}', lv);
+            document.getElementById('modalInfo').textContent =
+                I18n.t('total_info').replace('{t}', total).replace('{m}', maxPts) +
+                ` · ${examDurationMin}′`;
+            document.getElementById('startModal').classList.add('open');
+        } catch { alert(I18n.t('load_failed')); }
     }
 
     // Cache for loaded question data (with explanations)
@@ -1479,8 +1709,10 @@ window.I18N = {
         hidePanel();
         updateLevelNote();
         loadYears();
-        // Refresh practice mode panels (B-only gates)
-        setPracticeMode(practiceMode === 'full' || lv === 'b' ? practiceMode : 'full');
+        // Refresh practice mode panels (B-only gates for quick/knowledge)
+        const nextMode = ((practiceMode === 'quick' || practiceMode === 'knowledge') && lv !== 'b')
+            ? 'full' : practiceMode;
+        setPracticeMode(nextMode);
     }
 
     function renderYearGrid(years) {
@@ -1490,9 +1722,21 @@ window.I18N = {
                 <div class="yr">${y.year}</div>
                 <div class="cnt">${I18n.t('q_count').replace('{n}', y.totalQuestions)}</div>
             </div>`).join('');
+        if (practiceMode === 'exam') syncExamYearGrid();
+        else {
+            // keep exam grid in sync for later switch
+            const dst = document.getElementById('examYearGrid');
+            if (dst) {
+                dst.innerHTML = years.map(y => `
+                    <div class="year-card" onclick="startExam(${y.year})">
+                        <div class="yr">${y.year}</div>
+                        <div class="cnt">${I18n.t('q_count').replace('{n}', y.totalQuestions)}</div>
+                    </div>`).join('');
+            }
+        }
     }
 
-    let pendingYear = null, pendingData = null;
+    let pendingYear = null, pendingData = null, pendingExam = false;
 
     async function startQuiz(year) {
         trackAnalytics('quiz_test_select', { meta: { level: currentLevel, year } });
@@ -1501,6 +1745,7 @@ window.I18N = {
             const d = await r.json();
             pendingYear = year;
             pendingData = d;
+            pendingExam = false;
             const lv = currentLevel.toUpperCase();
             const total = d.questions.length;
             const maxPts = total + d.questions.reduce((s, q) => s + q.points, 0);
@@ -1512,7 +1757,7 @@ window.I18N = {
 
     function closeStartModal() {
         document.getElementById('startModal').classList.remove('open');
-        pendingYear = null; pendingData = null;
+        pendingYear = null; pendingData = null; pendingExam = false;
     }
 
     // Generic confirm modal
@@ -1535,6 +1780,7 @@ window.I18N = {
         document.getElementById('startModal').classList.remove('open');
         if (!pendingYear || !pendingData) return;
         const year = pendingYear;
+        const isExam = pendingExam || practiceMode === 'exam';
         const qs = (pendingData.questions || []).map(q => ({
             ...q,
             sourceYear: year,
@@ -1542,14 +1788,26 @@ window.I18N = {
             category: coarseCategory(q.knowledge_point),
         }));
         timerEnabled = true;
-        beginPracticeSession({
-            mode: 'full',
-            year,
-            questions: qs,
-            label: `${year} · Level ${currentLevel.toUpperCase()}`,
-            timed: true,
-        });
-        pendingYear = null; pendingData = null;
+        if (isExam) {
+            examDurationMin = getSelectedExamDuration();
+            beginPracticeSession({
+                mode: 'exam',
+                year,
+                questions: qs,
+                label: I18n.t('exam_title').replace('{year}', year).replace('{lv}', currentLevel.toUpperCase()),
+                timed: true,
+                examMinutes: examDurationMin,
+            });
+        } else {
+            beginPracticeSession({
+                mode: 'full',
+                year,
+                questions: qs,
+                label: `${year} · Level ${currentLevel.toUpperCase()}`,
+                timed: true,
+            });
+        }
+        pendingYear = null; pendingData = null; pendingExam = false;
     }
 
     // Issue #5: Preload images ahead
@@ -1584,20 +1842,25 @@ window.I18N = {
 
     function jumpToQuestion(index) {
         if (index < 0 || index >= questions.length) return;
+        if (index === currentIndex) {
+            document.getElementById('navGridBlock').classList.remove('mobile-open');
+            return;
+        }
         transitionToQuestion(() => { currentIndex = index; });
         document.getElementById('navGridBlock').classList.remove('mobile-open');
     }
 
     function transitionToQuestion(updateFn) {
+        stopReadQuestion();
         const qEl = document.querySelector('.quiz-question');
         const aEl = document.querySelector('.quiz-answer');
-        qEl.classList.add('fade-out');
-        aEl.classList.add('fade-out');
+        if (qEl) qEl.classList.add('fade-out');
+        if (aEl) aEl.classList.add('fade-out');
         setTimeout(() => {
             updateFn();
             renderQuestion();
-            qEl.classList.remove('fade-out');
-            aEl.classList.remove('fade-out');
+            if (qEl) qEl.classList.remove('fade-out');
+            if (aEl) aEl.classList.remove('fade-out');
         }, 180);
     }
 
@@ -1748,7 +2011,20 @@ window.I18N = {
             return;
         }
 
-        // Before submit
+        // Mock exam: free navigation like a real paper (no forced confirm-next)
+        if (practiceMode === 'exam') {
+            let html = '';
+            if (!isFirst) html += `<button class="btn btn-ghost" onclick="prevQuestion()">${I18n.t('prev_q')}</button>`;
+            if (isLast) {
+                html += `<button class="btn btn-primary" onclick="submitQuiz()">${I18n.t('submit_paper')}</button>`;
+            } else {
+                html += `<button class="btn btn-primary" onclick="skipQuestion()">${I18n.t('next_q')} →</button>`;
+            }
+            bar.innerHTML = html;
+            return;
+        }
+
+        // Before submit (practice)
         let html = '';
 
         // Prev button
@@ -1777,6 +2053,76 @@ window.I18N = {
         bar.innerHTML = html;
     }
 
+    /* ===== Text-to-speech read-aloud ===== */
+    function stopReadQuestion() {
+        try {
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+        } catch {}
+        ttsSpeaking = false;
+        const btn = document.getElementById('ttsBtn');
+        const st = document.getElementById('ttsStatus');
+        if (btn) {
+            btn.classList.remove('speaking');
+            btn.textContent = I18n.t('tts_read');
+        }
+        if (st) st.textContent = '';
+    }
+
+    function buildReadAloudText(q) {
+        if (!q) return '';
+        const parts = [];
+        parts.push(I18n.t('tts_stem').replace('{n}', q.number).replace('{p}', q.points));
+        if (q.knowledge_point) {
+            parts.push(I18n.t('tts_kp').replace('{kp}', q.knowledge_point));
+        }
+        const selected = userAnswers[q.number];
+        if (selected) parts.push(I18n.t('tts_selected').replace('{a}', selected));
+        // After submit, also read explanation when available
+        if (quizSubmitted && q.explanation) {
+            parts.push(I18n.t('tts_explain').replace('{exp}', q.explanation));
+        }
+        return parts.join(' ');
+    }
+
+    function toggleReadQuestion() {
+        if (!window.speechSynthesis) {
+            const st = document.getElementById('ttsStatus');
+            if (st) st.textContent = I18n.t('tts_unsupported');
+            return;
+        }
+        if (ttsSpeaking) {
+            stopReadQuestion();
+            return;
+        }
+        const q = questions[currentIndex];
+        if (!q) return;
+        const text = buildReadAloudText(q);
+        const utter = new SpeechSynthesisUtterance(text);
+        const lang = (typeof I18n !== 'undefined' && I18n.lang === 'en') ? 'en-US' : 'zh-CN';
+        utter.lang = lang;
+        utter.rate = 0.95;
+        // Prefer a matching voice when available
+        try {
+            const voices = window.speechSynthesis.getVoices() || [];
+            const preferred = voices.find(v => v.lang && v.lang.toLowerCase().startsWith(lang.slice(0, 2)));
+            if (preferred) utter.voice = preferred;
+        } catch {}
+        utter.onstart = () => {
+            ttsSpeaking = true;
+            const btn = document.getElementById('ttsBtn');
+            const st = document.getElementById('ttsStatus');
+            if (btn) {
+                btn.classList.add('speaking');
+                btn.textContent = I18n.t('tts_stop');
+            }
+            if (st) st.textContent = I18n.t('tts_reading');
+        };
+        utter.onend = utter.onerror = () => stopReadQuestion();
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utter);
+        trackAnalytics('tts_read', { meta: { level: currentLevel, year: questionYear(q), question: q.number } });
+    }
+
     function selectOption(l) {
         if (quizSubmitted) return;
         userAnswers[questions[currentIndex].number] = l;
@@ -1787,6 +2133,8 @@ window.I18N = {
         }
         renderQuestion();
         saveProgress();
+        // Exam: auto-advance after a short beat (optional feel of bubble sheet)
+        // Keep user on the question so they can change mind; only free-nav buttons advance.
     }
 
     // Issue #6: Combined confirm + next
@@ -1841,11 +2189,13 @@ window.I18N = {
     }
     function doSubmitQuiz() {
         if (quizSubmitted) return;
-        trackAnalytics('quiz_submit_attempt', { meta: { level: currentLevel, year: currentYear } });
+        stopReadQuestion();
+        trackAnalytics('quiz_submit_attempt', { meta: { level: currentLevel, year: currentYear, mode: practiceMode } });
         quizSubmitted = true;
         stopTimer();
         clearProgress();
         disableBackGuard();
+        document.body.classList.remove('exam-mode');
         currentIndex = 0;
         renderQuestion();
         const duration = Math.round((Date.now() - quizStartTime) / 1000);
@@ -2086,6 +2436,7 @@ window.I18N = {
     }
 
     function restartQuiz() {
+        stopReadQuestion();
         if (practiceMode === 'quick') {
             startQuickPractice(questions.length || 10);
             return;
@@ -2096,6 +2447,10 @@ window.I18N = {
             else setPracticeMode('knowledge');
             return;
         }
+        if (practiceMode === 'exam') {
+            startExam(currentYear);
+            return;
+        }
         startQuiz(currentYear);
     }
     function goHome() {
@@ -2103,21 +2458,25 @@ window.I18N = {
         if (!quizSubmitted && quizStartTime && document.getElementById('quizPage').style.display === 'flex') {
             saveProgress();
             trackAnalytics('quiz_in_progress_leave', { group: 'friction', meta: { level: currentLevel, year: currentYear, answered: Object.keys(userAnswers).length, total: questions.length } });
-            showConfirmModal('🚪', I18n.t('exit_confirm'), I18n.t('exit_msg'), doGoHome);
+            const msg = practiceMode === 'exam' ? I18n.t('exit_exam_msg') : I18n.t('exit_msg');
+            showConfirmModal('🚪', I18n.t('exit_confirm'), msg, doGoHome);
             return;
         }
         doGoHome();
     }
     function doGoHome() {
+        stopReadQuestion();
         stopTimer();
         disableBackGuard();
+        document.body.classList.remove('exam-mode');
+        examEndsAt = null;
         document.getElementById('homePage').style.display = 'block';
         document.getElementById('quizPage').style.display = 'none';
         document.getElementById('resultsPage').style.display = 'none';
         hidePanel();
     }
 
-    // Timer
+    // Timer (count-up for practice; countdown for exam)
     function startTimer() {
         stopTimer();
         if (!timerEnabled) {
@@ -2130,10 +2489,40 @@ window.I18N = {
     function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
     function updateTimerDisplay() {
         if (!quizStartTime || !timerEnabled) return;
+        const el = document.getElementById('timerDisplay');
+        if (!el) return;
+
+        if (practiceMode === 'exam' && examEndsAt) {
+            const remain = Math.max(0, Math.round((examEndsAt - Date.now()) / 1000));
+            const m = Math.floor(remain / 60), sec = remain % 60;
+            el.textContent = `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+            el.classList.toggle('countdown-warn', remain > 0 && remain <= 5 * 60);
+            const bannerExtra = document.getElementById('examBannerExtra');
+            if (bannerExtra) bannerExtra.textContent = I18n.t('exam_remaining').replace('{m}', Math.ceil(remain / 60));
+            if (remain <= 0 && !quizSubmitted) {
+                stopTimer();
+                // Auto-submit when time is up
+                trackAnalytics('exam_time_up', { meta: { level: currentLevel, year: currentYear } });
+                showConfirmModal('⏰', I18n.t('exam_banner_title'), I18n.t('exam_time_up'), () => {
+                    doSubmitQuiz();
+                    showResultsPage();
+                });
+                // Also auto-run after short delay if user doesn't click
+                setTimeout(() => {
+                    if (!quizSubmitted) {
+                        closeConfirmModal();
+                        doSubmitQuiz();
+                        showResultsPage();
+                    }
+                }, 2500);
+            }
+            return;
+        }
+
         const s = Math.round((Date.now() - quizStartTime) / 1000);
         const m = Math.floor(s / 60), sec = s % 60;
-        document.getElementById('timerDisplay').textContent =
-            `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+        el.textContent = `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+        el.classList.remove('countdown-warn');
     }
 
     // Issue #2: Fix history panel - unified panel management
@@ -2153,7 +2542,7 @@ window.I18N = {
         document.getElementById('yearGrid').style.display = 'none';
         const modeSwitch = document.getElementById('modeSwitch');
         if (modeSwitch) modeSwitch.style.display = 'none';
-        ['panelFull', 'panelQuick', 'panelKnowledge'].forEach(id => {
+        ['panelFull', 'panelExam', 'panelQuick', 'panelKnowledge'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.classList.remove('show');
         });
@@ -2436,8 +2825,10 @@ window.I18N = {
             practiceMode,
             practiceLabel,
             timerEnabled,
-            // Persist mixed practice sets (quick / knowledge)
-            questions: (practiceMode !== 'full') ? questions : undefined,
+            examDurationMin,
+            examEndsAt: examEndsAt || null,
+            // Persist mixed practice sets (quick / knowledge / exam-as-full year is reloaded)
+            questions: (practiceMode !== 'full' && practiceMode !== 'exam') ? questions : undefined,
         };
         localStorage.setItem(PROGRESS_KEY, JSON.stringify(data));
     }
@@ -2462,13 +2853,16 @@ window.I18N = {
 
     async function restoreProgress(prog) {
         try {
+            stopReadQuestion();
             currentLevel = prog.level;
             practiceMode = prog.practiceMode || 'full';
             practiceLabel = prog.practiceLabel || '';
             timerEnabled = prog.timerEnabled !== false;
+            examDurationMin = prog.examDurationMin || 75;
+            examEndsAt = prog.examEndsAt || null;
             document.querySelectorAll('.lv-tab').forEach(t =>
                 t.classList.toggle('active', t.dataset.level === currentLevel));
-            if (practiceMode !== 'full' && Array.isArray(prog.questions) && prog.questions.length) {
+            if (practiceMode !== 'full' && practiceMode !== 'exam' && Array.isArray(prog.questions) && prog.questions.length) {
                 questions = prog.questions;
                 currentYear = prog.year != null ? prog.year : 0;
             } else {
@@ -2485,7 +2879,24 @@ window.I18N = {
             userAnswers = prog.userAnswers || {};
             quizStartTime = prog.startTime;
             quizSubmitted = false;
+            if (practiceMode === 'exam') {
+                document.body.classList.add('exam-mode');
+                timerEnabled = true;
+                // If deadline already passed while away, submit immediately
+                if (examEndsAt && Date.now() >= examEndsAt) {
+                    doSubmitQuiz();
+                    showResultsPage();
+                    return;
+                }
+                if (!examEndsAt) {
+                    examEndsAt = Date.now() + examDurationMin * 60 * 1000;
+                }
+            } else {
+                document.body.classList.remove('exam-mode');
+                examEndsAt = null;
+            }
             startTimer();
+            enableBackGuard();
             document.getElementById('homePage').style.display = 'none';
             document.getElementById('quizPage').style.display = 'flex';
             document.getElementById('resultsPage').style.display = 'none';
@@ -2573,6 +2984,14 @@ window.I18N = {
 
     initWithProgress();
 
+    // Chrome loads TTS voices asynchronously
+    if (window.speechSynthesis) {
+        try { window.speechSynthesis.getVoices(); } catch {}
+        window.speechSynthesis.onvoiceschanged = () => {
+            try { window.speechSynthesis.getVoices(); } catch {}
+        };
+    }
+
     // I18n: re-render dynamic content on language switch
     I18n.onSwitch(() => {
         // Re-render level tabs
@@ -2583,8 +3002,16 @@ window.I18N = {
         document.querySelectorAll('.mode-btn').forEach(b => {
             const m = b.dataset.mode;
             if (m === 'full') b.textContent = I18n.t('mode_full');
+            else if (m === 'exam') b.textContent = I18n.t('mode_exam');
             else if (m === 'quick') b.textContent = I18n.t('mode_quick');
             else if (m === 'knowledge') b.textContent = I18n.t('mode_kp');
+        });
+        // Refresh static exam card copy if present
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (key && I18n.t(key) !== key) {
+                // Don't stomp input labels that wrap text nodes carefully — only leaf text for exam cards handled by mode switch
+            }
         });
         updateLevelNote();
         showPendingBannerIfNeeded();
